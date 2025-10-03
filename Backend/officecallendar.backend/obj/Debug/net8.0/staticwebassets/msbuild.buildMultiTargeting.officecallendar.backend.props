@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\officecallendar.backend.props" />
+</Project>

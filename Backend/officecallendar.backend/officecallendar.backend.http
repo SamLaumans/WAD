@@ -1,0 +1,6 @@
+@officecallendar.backend_HostAddress = http://localhost:5267
+
+GET {{officecallendar.backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
