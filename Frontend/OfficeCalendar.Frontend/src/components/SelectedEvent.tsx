@@ -4,7 +4,7 @@ const SelectedEvent: React.FC = () => {
     const event = {
         title: 'WebDev React les 10',
         place: 'Hogeschool Rotterdam',
-        date: '10-10-2025',
+        date: '20-07-2025',
         time: '13:30 - 16:30',
         description: 'Attendence necesary. Make sure to have created a React component. 1 per person',
     };

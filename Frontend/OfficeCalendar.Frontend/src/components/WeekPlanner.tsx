@@ -1,4 +1,6 @@
 import React from 'react';
+import '../Styling/WeekPlanner.css'
+
 
 export default function WeekPlanner() {
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -23,13 +25,6 @@ export default function WeekPlanner() {
                     <button>Loguit</button>
                 </div>
             </header>
-
-
-            {/* Navigation */}
-            <div className="planner-nav">
-                <a href="#">Maandplanner</a>
-            </div>
-
 
             {/* Week Grid */}
             <div className="planner-table-container">
@@ -59,6 +54,7 @@ export default function WeekPlanner() {
             {/* Footer */}
             <footer className="planner-footer">
                 <a href="#">Contact</a>
+                <a href='#'>FAQ</a>
             </footer>
         </div>
     );
