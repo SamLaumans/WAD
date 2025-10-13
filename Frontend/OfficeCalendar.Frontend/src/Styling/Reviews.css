@@ -176,4 +176,60 @@ p {
     border-color: #007bff;
     color: white;
   }
+
+  /* ===== Add Review Form ===== */
+.review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.review-form input,
+.review-form textarea {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.review-form textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.review-form button {
+  align-self: flex-start;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.review-form button:hover {
+  background-color: #005ecb;
+}
+
+/* Dark theme support (inherits your existing colors) */
+@media (prefers-color-scheme: dark) {
+  .review-form input,
+  .review-form textarea {
+    background-color: #2b2b2b;
+    color: #eee;
+    border-color: #444;
+  }
+
+  .review-form button {
+    background-color: #007bff;
+  }
+
+  .review-form button:hover {
+    background-color: #005ecb;
+  }
+}
 }
