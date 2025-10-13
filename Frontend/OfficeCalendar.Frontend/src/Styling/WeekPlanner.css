@@ -1,0 +1,5 @@
+.planner-footer a {
+    margin: 0 10px; /* 10px space left and right of each link */
+    color: #6666ff;
+    text-decoration: none;
+}

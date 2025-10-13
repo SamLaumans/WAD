@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactPaginate from 'react-paginate';
+import '../Styling/Reviews.css'
 
 const Reviews: React.FC = () => {
     // Store the reviews fetched from the JSON file
