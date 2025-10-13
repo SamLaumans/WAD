@@ -3,8 +3,8 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./components/login";
-import Dashboard from "./components/Dashboard.tsx"; // Create this component
+import Login from "./pages/Login.tsx";
+import Dashboard from "./pages/Dashboard.tsx"; // Create this component
 
 function App() {
   return (
