@@ -40,3 +40,104 @@
 .read-the-docs {
   color: #888;
 }
+
+/* General table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+  }
+  
+  /* Header row styling */
+  table th {
+    background-color: #4a4a4a; /* Dark grey for headers */
+    color: #ffffff; /* White text for contrast */
+    font-weight: bold;
+    text-align: left;
+    padding: 12px;
+    border: 1px solid #333;
+  }
+  
+  /* Body row styling */
+  table td {
+    padding: 10px;
+    border: 1px solid #333;
+    text-align: left;
+    color: #e0e0e0; /* Light grey for text */
+  }
+  
+  /* Alternate row colors for better readability */
+  table tbody tr:nth-child(odd) {
+    background-color: #333333; /* Dark grey for odd rows */
+  }
+  
+  table tbody tr:nth-child(even) {
+    background-color: #444444; /* Slightly lighter grey for even rows */
+  }
+  
+  /* Add hover effect */
+  table tbody tr:hover {
+    background-color: #555555; /* Lighter grey when hovering */
+  }
+  
+  /* Ensure good text readability */
+  p {
+    line-height: 1.6;
+    color: #e0e0e0; /* Light grey for normal text */
+  }
+  
+  
+  /* Pagination container */
+  .pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  /* Individual page buttons */
+  .pagination .page {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    color: #e0e0e0;
+    background-color: #333333;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  /* Hover effect */
+  .pagination .page:hover {
+    background-color: #555555;
+  }
+  
+  /* Active page styling */
+  .pagination .active {
+    background-color: #4a4a4a;
+    color: #ffffff;
+    font-weight: bold;
+  }
+  
+  /* Previous and next buttons */
+  .pagination .prev,
+  .pagination .next {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    color: #e0e0e0;
+    background-color: #333333;
+  }
+  
+  .pagination .prev:hover,
+  .pagination .next:hover {
+    background-color: #555555;
+  }
+  
+  /* Disabled state */
+  .pagination .disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
