@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import '../Styling/WeekPlanner.css'
 
 
@@ -16,8 +17,8 @@ export default function WeekPlanner() {
             {/* Header */}
             <header className="planner-header">
                 <div className="planner-header-left">
-                    <h1>Naam Webcalendar</h1>
-                    <p>Naam Bedrijf</p>
+                    <h1>Langer dan 3m</h1>
+                    <p>voorbeeld bedrijf naam</p>
                 </div>
                 <h2 className="planner-title">Weekplanner</h2>
                 <div className="planner-header-right">
@@ -53,8 +54,8 @@ export default function WeekPlanner() {
 
             {/* Footer */}
             <footer className="planner-footer">
-                <a href="#">Contact</a>
-                <a href='#'>FAQ</a>
+                <Link to="/contact">Contact</Link>
+                <Link to="/faq">FAQ</Link>
             </footer>
         </div>
     );
