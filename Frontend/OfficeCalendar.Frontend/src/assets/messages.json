@@ -1,0 +1,19 @@
+{
+    "messages": [
+        {
+            "messageID": 0,
+            "title": "Nieuwe update",
+            "message": "Sinds deze nieuwe update kan je op dingen klikken keigaaf"
+        },
+        {
+            "messageID": 1,
+            "title": "Nieuws: CSS is kut",
+            "message": "Waarom aligned niks gewoon meteen"
+        },
+        {
+            "messageID": 2,
+            "title": "Geen koffie geen inzet",
+            "message": "Shotje espresso en door"
+        }
+    ]
+}
