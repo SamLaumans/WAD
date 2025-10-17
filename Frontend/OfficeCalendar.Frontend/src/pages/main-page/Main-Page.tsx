@@ -57,12 +57,12 @@ function Main_Page() {
                 </div>
 
                 <div className='bulletin' onClick={() => navigate("/messages")}>
-                    <h2>Berichten ({getMessageTitles().length})</h2>
+                    <h2>Berichten ({messages.length})</h2>
                     {getMessageTitles()}
                 </div>
 
                 <div className='events' onClick={() => navigate("/events")}>
-                    <h2>Evenementen ({getEventTitles().length})</h2>
+                    <h2>Evenementen ({events.length})</h2>
                     {getEventTitles()}
                 </div>
 

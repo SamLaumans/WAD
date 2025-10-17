@@ -18,6 +18,7 @@ function SingleEvent() {
 
     return (
         <div className="singleevent-wrapper">
+            <div className='singleevent-back' onClick={() => navigate("/events")}>&lt; Terug</div>
             <div className='singleevents-title'>
                 {events.find(evt => evt.eventID === Number(eventID))?.title}
                 <div className='singleevents-desc'>

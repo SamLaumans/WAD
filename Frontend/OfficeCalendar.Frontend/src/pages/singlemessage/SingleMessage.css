@@ -17,12 +17,21 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 90vh;
-    padding: 10vh 24px;
+    padding: 24px 24px;
     box-sizing: border-box;
     margin: 0 auto;
 
     overflow-y: auto;
 
+}
+
+.singlemessage-back {
+    align-self: flex-start;
+}
+
+.singlemessage-back:hover {
+    text-decoration: underline;
+    cursor: pointer;
 }
 
 .singlemessages-title {

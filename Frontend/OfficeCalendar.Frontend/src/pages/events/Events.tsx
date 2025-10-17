@@ -33,6 +33,8 @@ function Events() {
 
     return (
         <div className="events-event-wrapper">
+            <div className='events-back' onClick={() => navigate("/main-page")}>&lt; Terug</div>
+
             <h2 className='events-h2'>Evenementen ({getEvents().length})</h2>
             {getEvents()}
         </div>

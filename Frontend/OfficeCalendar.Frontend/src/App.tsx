@@ -23,7 +23,8 @@ const AppContent: React.FC = () => {
   const showHeaderFooter =
     location.pathname !== '/' &&
     location.pathname !== '/login' &&
-    location.pathname !== '/registreer';
+    location.pathname !== '/registreer' &&
+    location.pathname !== '/forgot-pw';
 
   return (
     <div className="app-container">

@@ -23,6 +23,15 @@ body {
     box-sizing: border-box;
 }
 
+.events-back {
+    align-self: flex-start;
+}
+
+.events-back:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .events-event {
     padding: 24px;
     background: rgba(255, 255, 255, 0.15);

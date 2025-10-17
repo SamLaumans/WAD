@@ -33,6 +33,8 @@ function Messages() {
 
     return (
         <div className="messages-message-wrapper">
+            <div className='messages-back' onClick={() => navigate("/main-page")}>&lt; Terug</div>
+
             <h2 className='messages-h2'>Berichten ({getMessages().length})</h2>
             {getMessages()}
         </div>

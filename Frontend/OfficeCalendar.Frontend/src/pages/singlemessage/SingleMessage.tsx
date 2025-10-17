@@ -18,6 +18,7 @@ function SingleMessage() {
 
     return (
         <div className="singlemessage-wrapper">
+            <div className='singlemessage-back' onClick={() => navigate("/messages")}>&lt; Terug</div>
             <div className='singlemessages-title'>
                 {messages.find(msg => msg.messageID === Number(messageID))?.title}
                 <div className='singlemessages-message'>

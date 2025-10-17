@@ -14,6 +14,16 @@
             "messageID": 2,
             "title": "Geen koffie geen inzet",
             "message": "Shotje espresso en door"
+        },
+        {
+            "messageID": 3,
+            "title": "Vanavond",
+            "message": "Yo maatje ik heb een fles vodka gehaald en die gaat in 1x op want ik ben met css bezig geweest"
+        },
+        {
+            "messageID": 4,
+            "title": "Veiligheid",
+            "message": "Misschien moeten we af van deze ID's want iedereen kan erbij"
         }
     ]
 }
