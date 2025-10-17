@@ -90,6 +90,11 @@ body {
     text-align: left;
 }
 
+.bulletin:hover,
+.events:hover {
+    background: rgba(255, 255, 255, 0.082);
+}
+
 .clock {
     font-size: 5rem;
     cursor: default;

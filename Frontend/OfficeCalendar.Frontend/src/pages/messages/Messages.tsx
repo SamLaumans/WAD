@@ -20,7 +20,7 @@ function Messages() {
             const titles: JSX.Element[] = [];
             for (let i = 0; i < messages.length; i++) {
                 titles.push(
-                    <div className='messages-message'>
+                    <div className='messages-message' onClick={() => navigate(`/messages/${messages[i].messageID}`)}>
                         <div className='messages-title'>{messages[i].title}</div>
                         <div className='messages-desc'>{messages[i].message}</div>
                     </div>

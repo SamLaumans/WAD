@@ -9,6 +9,16 @@
             "eventID": 1,
             "title": "Loon gehalveerd",
             "description": "Jammer joh, success met de huur; de groeten"
+        },
+        {
+            "eventID": 2,
+            "title": "De mist komt eraan",
+            "description": "Ze zitten in de muren"
+        },
+        {
+            "eventID": 3,
+            "title": "Pils drinken",
+            "description": "Lekker pilsje opentrekken met prins pils"
         }
     ]
 }

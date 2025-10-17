@@ -20,7 +20,7 @@ function Events() {
             const titles: JSX.Element[] = [];
             for (let i = 0; i < events.length; i++) {
                 titles.push(
-                    <div className='events-event'>
+                    <div className='events-event' onClick={() => navigate(`/events/${events[i].eventID}`)}>
                         <div className='events-title'>{events[i].title}</div>
                         <div className='events-desc'>{events[i].description}</div>
                     </div>
