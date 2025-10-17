@@ -1,0 +1,14 @@
+{
+    "events": [
+        {
+            "eventID": 0,
+            "title": "Gerard jarig",
+            "description": "Van harte gefeliciteerd met Gerard's 418e verjaardag"
+        },
+        {
+            "eventID": 1,
+            "title": "Loon gehalveerd",
+            "description": "Jammer joh, success met de huur; de groeten"
+        }
+    ]
+}
