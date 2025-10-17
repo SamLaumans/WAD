@@ -8,6 +8,12 @@ import Contact from './components/Contact';
 import FAQ from './components/FAQ';
 import Footer from './components/Footer';
 import Header from './components/Header';
+import Login from './components/Login';
+import Registreer from './pages/register/Registreer';
+import Forgot_Password from './pages/forgot-password/Forgot-Password';
+import Main_Page from './pages/main-page/Main-Page';
+import Messages from './pages/messages/Messages';
+import SingleMessage from './pages/singlemessage/SingleMessage';
 
 const App: React.FC = () => {
   return (
@@ -31,6 +37,13 @@ const App: React.FC = () => {
                 </div>
               }
             />
+            <Route path="/" element={<Login />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/registreer" element={<Registreer />} />
+            <Route path="/forgot-pw" element={<Forgot_Password />} />
+            <Route path="/main-page" element={<Main_Page />} />
+            <Route path="/messages" element={<Messages />} />
+            <Route path="/messages/:messageID" element={<SingleMessage />} />
           </Routes>
         </div>
 

@@ -1,0 +1,94 @@
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: "Arial Rounded MT", "Arial Rounded MT Bold", Arial, sans-serif;
+    font-weight: bold;
+    background-image: url('../../assets/blue_gradient.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.main-page-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 12px;
+    width: 100%;
+    height: 100vh;
+    padding: 2%;
+    box-sizing: border-box;
+}
+
+.placeholder,
+.infoboard {
+    flex: 0 0 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    height: 100%;
+}
+
+.placeholder {
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    font-size: 4em;
+    margin: 0 auto;
+}
+
+.infoboard {
+    flex-direction: column;
+    gap: 24px;
+}
+
+.bulletin h2,
+.events h2 {
+    margin: 0;
+    align-self: flex-start;
+    font-size: 2rem;
+}
+
+.clock,
+.bulletin,
+.events {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 24px 24px;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    width: 55vw;
+    font-size: 1.5rem;
+    margin-left: 12px;
+    cursor: pointer;
+}
+
+.clock {
+    align-items: center;
+    justify-content: center;
+    font-size: 8rem;
+    cursor: default;
+}
+
+.event,
+.message {
+    font-size: 1.5rem;
+    color: aliceblue;
+}
+
+.event:hover,
+.message:hover {
+    text-decoration: underline;
+}
