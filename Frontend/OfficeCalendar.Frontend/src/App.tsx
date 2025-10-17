@@ -7,10 +7,14 @@ import WeekPlanner from './components/WeekPlanner';
 import Contact from './components/Contact';
 import FAQ from './components/FAQ';
 import Footer from './components/Footer';
+import Header from './components/Header';
 
 const App: React.FC = () => {
   return (
     <BrowserRouter>
+      <div>
+        <Header />
+      </div>
       <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <div style={{ flex: 1, padding: '20px' }}>
           <Routes>
