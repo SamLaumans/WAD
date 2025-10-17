@@ -50,13 +50,6 @@ export default function WeekPlanner() {
                     </tbody>
                 </table>
             </div>
-
-
-            {/* Footer */}
-            <footer className="planner-footer">
-                <Link to="/contact">Contact</Link>
-                <Link to="/faq">FAQ</Link>
-            </footer>
         </div>
     );
 }
