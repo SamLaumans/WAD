@@ -51,9 +51,11 @@ function Main_Page() {
             </div>
 
             <div className='infoboard'>
+
                 <div className='clock'>
                     18:02
                 </div>
+
                 <div className='bulletin' onClick={() => navigate("/messages")}>
                     <h2>Berichten ({getMessageTitles().length})</h2>
                     {getMessageTitles()}
@@ -63,6 +65,7 @@ function Main_Page() {
                     <h2>Evenementen ({getEventTitles().length})</h2>
                     {getEventTitles()}
                 </div>
+
             </div>
         </div>
     );

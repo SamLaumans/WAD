@@ -14,6 +14,8 @@ import Forgot_Password from './pages/forgot-password/Forgot-Password';
 import Main_Page from './pages/main-page/Main-Page';
 import Messages from './pages/messages/Messages';
 import SingleMessage from './pages/singlemessage/SingleMessage';
+import Events from './pages/events/Events';
+import SingleEvent from './pages/singleevent/SingleEvent';
 
 const AppContent: React.FC = () => {
   const location = useLocation();
@@ -36,6 +38,8 @@ const AppContent: React.FC = () => {
           <Route path="/main-page" element={<Main_Page />} />
           <Route path="/messages" element={<Messages />} />
           <Route path="/messages/:messageID" element={<SingleMessage />} />
+          <Route path="/events" element={<Events />} />
+          <Route path="/events/:eventID" element={<SingleEvent />} />
           <Route path="/weekplanner" element={<WeekPlanner />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/faq" element={<FAQ />} />
