@@ -7,7 +7,7 @@ const Header: React.FC = () => {
 
     return (
         <div className="topbar">
-            <Link to="/" className={location.pathname === '/' ? 'active' : ''}>Home</Link>
+            <Link to="/main-page" className={location.pathname === '/main-page' ? 'active' : ''}>Home</Link>
             <Link to="/agenda" className={location.pathname === '/agenda' ? 'active' : ''}>Agenda</Link>
             <Link to="/contact" className={location.pathname === '/contact' ? 'active' : ''}>Contact</Link>
             <Link to="/about" className={location.pathname === '/about' ? 'active' : ''}>About</Link>
