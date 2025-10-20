@@ -33,7 +33,7 @@ body {
     height: 90vh;
 }
 
-.placeholder,
+.weekplanner,
 .infoboard {
     flex: 1;
     display: flex;
@@ -43,7 +43,7 @@ body {
     min-height: 0;
 }
 
-.placeholder {
+.weekplanner {
     justify-content: center;
     align-items: center;
     padding: 12px;
@@ -74,7 +74,6 @@ body {
     gap: 24px;
     background: rgba(255, 255, 255, 0.15);
     border-radius: 10px;
-    cursor: pointer;
     height: auto;
     width: auto;
     font-size: 1.5rem;
@@ -90,14 +89,15 @@ body {
     text-align: left;
 }
 
+.weekplanner:hover,
 .bulletin:hover,
 .events:hover {
     background: rgba(255, 255, 255, 0.082);
+    cursor: pointer;
 }
 
 .clock {
     font-size: 5rem;
-    cursor: default;
     padding: 20px;
 }
 
