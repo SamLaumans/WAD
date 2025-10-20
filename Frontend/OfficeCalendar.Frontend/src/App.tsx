@@ -16,6 +16,7 @@ import Messages from './pages/messages/Messages';
 import SingleMessage from './pages/singlemessage/SingleMessage';
 import Events from './pages/events/Events';
 import SingleEvent from './pages/singleevent/SingleEvent';
+import Send_Message from './pages/send-message/send-message';
 
 const AppContent: React.FC = () => {
   const location = useLocation();
@@ -45,6 +46,7 @@ const AppContent: React.FC = () => {
           <Route path="/contact" element={<Contact />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/event" element={<div><SelectedEvent /><Reviews /></div>} />
+          <Route path="/send-message" element={<Send_Message />} />
         </Routes>
       </main>
 
