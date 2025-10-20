@@ -8,7 +8,7 @@ function Messages() {
     const navigate = useNavigate()
 
     interface Message {
-        messageID: number;
+        messageID: string;
         title: string;
         message: string;
     }

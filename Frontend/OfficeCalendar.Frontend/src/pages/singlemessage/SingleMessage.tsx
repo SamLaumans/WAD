@@ -9,7 +9,7 @@ function SingleMessage() {
     const { messageID } = useParams<{ messageID: string }>();
 
     interface Message {
-        messageID: number;
+        messageID: string;
         title: string;
         message: string;
     }
@@ -20,9 +20,9 @@ function SingleMessage() {
         <div className="singlemessage-wrapper">
             <div className='singlemessage-back' onClick={() => navigate("/messages")}>&lt; Terug</div>
             <div className='singlemessages-title'>
-                {messages.find(msg => msg.messageID === Number(messageID))?.title}
+                {messages.find(msg => msg.messageID === messageID)?.title}
                 <div className='singlemessages-message'>
-                    {messages.find(msg => msg.messageID === Number(messageID))?.message}
+                    {messages.find(msg => msg.messageID === messageID)?.message}
                 </div>
             </div>
 

@@ -9,7 +9,7 @@ function SingleEvent() {
     const { eventID } = useParams<{ eventID: string }>();
 
     interface Event {
-        eventID: number;
+        eventID: string;
         title: string;
         description: string;
     }
@@ -20,9 +20,9 @@ function SingleEvent() {
         <div className="singleevent-wrapper">
             <div className='singleevent-back' onClick={() => navigate("/events")}>&lt; Terug</div>
             <div className='singleevents-title'>
-                {events.find(evt => evt.eventID === Number(eventID))?.title}
+                {events.find(evt => evt.eventID === eventID)?.title}
                 <div className='singleevents-desc'>
-                    {events.find(evt => evt.eventID === Number(eventID))?.description}
+                    {events.find(evt => evt.eventID === eventID)?.description}
                 </div>
             </div>
 

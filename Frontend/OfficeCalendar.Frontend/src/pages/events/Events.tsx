@@ -8,7 +8,7 @@ function Events() {
     const navigate = useNavigate()
 
     interface Event {
-        eventID: number;
+        eventID: string;
         title: string;
         description: string;
     }
