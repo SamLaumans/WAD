@@ -1,0 +1,63 @@
+h1 {
+    text-align: center;
+    margin-top: 40px;
+}
+
+#form-wrapper {
+    width: 70%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.event-form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+#form1,
+#form2 {
+    flex: 1 1 300px;
+    max-width: 500px;
+    background: white;
+    margin: 20px;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    display: block;
+    margin-top: 15px;
+    color: black;
+    font-weight: bold;
+}
+
+input,
+textarea,
+select {
+    width: 95%;
+    /* ruimte tussen typvlak en border */
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+button {
+    /* ruimte boven */
+    margin-top: 20px;
+    width: 100%;
+    background-color: #28a745;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #00d52e;
+}

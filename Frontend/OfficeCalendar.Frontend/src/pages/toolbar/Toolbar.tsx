@@ -1,12 +1,12 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import '../Styling/Topbar.css';
+import './Toolbar.css';
 
 const Header: React.FC = () => {
     const location = useLocation();
 
     return (
-        <div className="topbar">
+        <div className="toolbar">
             <Link to="/" className={location.pathname === '/' ? 'active' : ''}>Home</Link>
             <Link to="/agenda" className={location.pathname === '/agenda' ? 'active' : ''}>Agenda</Link>
             <Link to="/contact" className={location.pathname === '/contact' ? 'active' : ''}>Contact</Link>
