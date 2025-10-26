@@ -22,6 +22,7 @@ export default function WeekPlanner() {
                 </div>
                 <h2 className="planner-title">Weekplanner</h2>
                 <div className="planner-header-right">
+                    <Link to="/create-event" className={location.pathname === '/create-event' ? 'active' : ''}>Create Event</Link>
                     <span>Gebruikersnaam</span>
                     <button>Loguit</button>
                 </div>

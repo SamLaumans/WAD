@@ -45,7 +45,7 @@ function Event() {
 
   return (
     <div>
-      <h1>Event Aanmaken</h1>
+      <div id="Eventheader">Event Aanmaken</div>
 
       <div id="form-wrapper">
         <form onSubmit={handleSubmit} className="event-form">
