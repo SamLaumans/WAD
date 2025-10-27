@@ -53,7 +53,10 @@ const MonthPlanner: React.FC = () => {
         </h2>
         <button onClick={() => handleMonthChange("next")} className="nav-button">▶</button>
       </div>
-
+    
+      <div>
+        <Link to="/DayPlanner" className={location.pathname === '/DayPlanner' ? 'active' : ''}>Dag Planner</Link>
+      </div>
       <div>
         <Link to="/WeekPlanner" className={location.pathname === '/WeekPlanner' ? 'active' : ''}>Week Planner</Link>
       </div>
