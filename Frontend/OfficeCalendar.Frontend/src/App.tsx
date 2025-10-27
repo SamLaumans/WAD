@@ -55,6 +55,10 @@ const AppContent: React.FC = () => {
           <Route path="/send-message" element={<Send_Message />} />
           <Route path="/create-event" element={<CreateEvent />} />
           <Route path="/admin-panel" element={<AdminPanel />} />
+          <Route path="/admin-promote" element={<AdminToevoegen />} />
+          <Route path="/admin-demote" element={<AdminVerwijderen />} />
+          <Route path="/admin-profile" element={<Profiel />} />
+
         </Routes>
       </main>
 
