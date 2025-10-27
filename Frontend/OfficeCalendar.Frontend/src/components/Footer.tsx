@@ -8,6 +8,10 @@ const Footer: React.FC = () => {
         padding: '20px',
         backgroundColor: '#2b2b2b',
         textAlign: 'center',
+        height: '25px',
+        position: 'fixed',
+        bottom: '0',
+        width: '100%',
       }}
     >
       <Link to="/contact" style={{ margin: '0 10px' }}>

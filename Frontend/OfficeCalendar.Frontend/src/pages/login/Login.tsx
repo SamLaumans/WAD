@@ -44,7 +44,7 @@ function Login() {
                 <button type="button" onClick={() => checkFields(username, password)}>Login</button>
             </div>
 
-            {loginMessage && <h2>{loginMessage}</h2>}
+            {loginMessage && <h2 className='login-login-message'>{loginMessage}</h2>}
 
             <button className="textbutton" onClick={() => navigate("/registreer")}>Registreer</button>
             <button className="textbutton" onClick={() => navigate("/forgot-pw")}>Wachtwoord vergeten</button>
