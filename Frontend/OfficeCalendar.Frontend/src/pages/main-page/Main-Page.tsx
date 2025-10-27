@@ -3,6 +3,7 @@ import { useState, type JSX } from 'react';
 import { useNavigate } from 'react-router-dom';
 import messageData from "../../assets/messages.json"
 import eventData from "../../assets/events.json"
+import Clock from '../../components/Clock';
 
 function Main_Page() {
 
@@ -56,7 +57,7 @@ function Main_Page() {
             <div className='infoboard'>
 
                 <div className='clock'>
-                    18:02
+                    <Clock />
                 </div>
 
                 <div className='bulletin' onClick={() => navigate("/messages")}>
