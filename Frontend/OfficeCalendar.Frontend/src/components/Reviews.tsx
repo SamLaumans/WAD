@@ -30,7 +30,7 @@ const Reviews: React.FC = () => {
         review: '',
     });
 
-    // === FETCH REVIEWS FROM JSON ===
+    // FETCH REVIEWS FROM JSON
     useEffect(() => {
         fetch('/data/reviews.json')
             .then((response) => {
@@ -41,7 +41,7 @@ const Reviews: React.FC = () => {
             .catch((error) => console.error('Error fetching reviews:', error));
     }, []); // Empty dependency array ensures this runs only once on component mount
 
-    // === PAGINATION LOGIC ===
+    // PAGINATION LOGIC
     const offset = currentPage * itemsPerPage; // Starting index for current page
     const currentReviews = reviews.slice(offset, offset + itemsPerPage); // Reviews to display on current page
 
@@ -50,7 +50,7 @@ const Reviews: React.FC = () => {
         setCurrentPage(event.selected);
     };
 
-    // === FORM HANDLERS ===
+    //FORM HANDLERS
 
     // Update input values in the review form
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -88,12 +88,12 @@ const Reviews: React.FC = () => {
         }
     };
 
-    // === RENDER COMPONENT ===
+    // RENDER COMPONENT
     return (
         <div>
             <h2>Reviews</h2>
 
-            {/* --- ADD REVIEW FORM --- */}
+            {/*ADD REVIEW FORM*/}
             <form className="review-form" onSubmit={handleAddReview}>
                 <input
                     type="text"
@@ -129,12 +129,12 @@ const Reviews: React.FC = () => {
                 <button type="submit">Add Review</button>
             </form>
 
-            {/* --- REVIEWS TABLE OR LOADING TEXT --- */}
+            {/*REVIEWS TABLE OR LOADING TEXT*/}
             {reviews.length === 0 ? (
                 <p>Loading reviews...</p>
             ) : (
                 <>
-                    {/* === REVIEWS TABLE === */}
+                    {/*EVIEWS TABLE*/}
                     <table>
                         <thead>
                             <tr>
@@ -159,7 +159,7 @@ const Reviews: React.FC = () => {
                         </tbody>
                     </table>
 
-                    {/* === PAGINATION CONTROL === */}
+                    {/*PAGINATION CONTROL*/}
                     <ReactPaginate
                         previousLabel={"← Previous"}
                         nextLabel={"Next →"}

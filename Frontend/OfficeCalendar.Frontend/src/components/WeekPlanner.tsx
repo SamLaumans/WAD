@@ -18,7 +18,7 @@ export default function WeekPlanner() {
 
     return (
         <div className="planner-container">
-            {/* ===== HEADER SECTION ===== */}
+            {/* HEADER SECTION */}
             <header className="planner-header">
                 {/* Left side: company or project information */}
                 <div className="planner-header-left">
@@ -45,7 +45,7 @@ export default function WeekPlanner() {
                 </div>
             </header>
 
-            {/* ===== MAIN WEEK GRID SECTION ===== */}
+            {/*MAIN WEEK GRID SECTION*/}
             <div className="planner-table-container">
                 <table className="planner-table">
                     <thead>
