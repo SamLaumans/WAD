@@ -24,6 +24,7 @@ import AdminVerwijderen from "./pages/admin-demote/admin-demote";
 import Events from './pages/events/Events';
 import SingleEvent from './pages/singleevent/SingleEvent';
 import Send_Message from './pages/send-message/send-message';
+import DayPlanner from "./components/DayPlanner";
 
 const AppContent: React.FC = () => {
   const location = useLocation();
@@ -60,6 +61,7 @@ const AppContent: React.FC = () => {
           <Route path="/admin-demote" element={<AdminVerwijderen />} />
           <Route path="/admin-profile" element={<Profiel />} />
           <Route path="/MonthPlanner" element={<MonthPlanner />} />
+          <Route path="/DayPlanner" element={<DayPlanner />} />
 
         </Routes>
       </main>
