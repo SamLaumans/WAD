@@ -7,7 +7,7 @@ const Toolbar: React.FC = () => {
 
     return (
         <div className="toolbar">
-            <Link to="/" className={location.pathname === '/' ? 'active' : ''}>Home</Link>
+            <Link to="/main-page" className={location.pathname === '/main-page' ? 'active' : ''}>Home</Link>
             <Link to="/weekplanner" className={location.pathname === '/weekplanner' ? 'active' : ''}>Agenda</Link>
             <Link to="/create-event" className={location.pathname === '/create-event' ? 'active' : ''}>Create Event</Link>
             <Link to="/about" className={location.pathname === '/about' ? 'active' : ''}>About</Link>
