@@ -12,7 +12,7 @@ body {
     background-attachment: fixed;
 }
 
-.messages-message-wrapper {
+.events-event-wrapper {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -23,27 +23,16 @@ body {
     box-sizing: border-box;
 }
 
-.messages-back {
+.events-back {
     align-self: flex-start;
 }
 
-.messages-back:hover {
+.events-back:hover {
     text-decoration: underline;
     cursor: pointer;
 }
 
-.messages-logic-wrapper {
-    width: 80%;
-    display: flex;
-    flex-direction: row;
-    gap: 24px
-}
-
-
-.messages-message-sender,
-.messages-message-sent,
-.messages-messages-sent,
-.messages-message {
+.events-event {
     padding: 24px;
     background: rgba(255, 255, 255, 0.15);
     border-radius: 10px;
@@ -57,56 +46,26 @@ body {
     cursor: pointer;
 }
 
-.messages-message-sender:hover,
-.messages-message-sent:hover,
-.messages-message:hover {
+.events-event:hover {
     background: rgba(255, 255, 255, 0.082);
 }
 
-.messages-title {
+.events-title {
     font-size: 1.5em;
     margin-bottom: 20px;
     margin-left: 10px;
 }
 
-.messages-desc {
+.events-desc {
     font-size: 1em;
     margin-left: 10px;
     font-weight: lighter;
 }
 
-.messages-messages-sent,
-.messages-message-sender {
-    display: flex;
-    font-size: 1.5em;
-    height: 52px;
-    align-items: center;
-    justify-content: center;
-}
-
-.messages-messages-sent {
-    cursor: default;
-}
-
-.messages-sending-block,
-.messages-receive-block {
-    flex: 1;
-}
-
-.messages-sending-block,
-.messages-receive-block {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-}
-
-.messages-sending-block .messages-sending,
-.messages-receive-block .messages-received {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 10px;
-    font-size: 110%;
-    box-sizing: border-box;
+.events-h2 {
+    padding: 2%;
+    width: 80%;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 3rem;
 }

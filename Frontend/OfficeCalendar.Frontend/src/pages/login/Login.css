@@ -66,7 +66,7 @@ body {
     text-decoration: underline;
 }
 
-h2 {
+.login-login-message {
     padding: 12px;
     background: rgba(255, 255, 255, 0.15);
     border-radius: 10px;

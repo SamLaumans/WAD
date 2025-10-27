@@ -1,14 +1,24 @@
 {
     "events": [
         {
-            "eventID": 0,
+            "eventID": "3e3fae89-8a4d-4898-8288-965750659cf7",
             "title": "Gerard jarig",
             "description": "Van harte gefeliciteerd met Gerard's 418e verjaardag"
         },
         {
-            "eventID": 1,
+            "eventID": "7b089218-06e7-475d-810f-c8c2153b9687",
             "title": "Loon gehalveerd",
             "description": "Jammer joh, success met de huur; de groeten"
+        },
+        {
+            "eventID": "e3e0e882-8d12-4b2d-b23a-92807606b36a",
+            "title": "De mist komt eraan",
+            "description": "Ze zitten in de muren"
+        },
+        {
+            "eventID": "4e5ce45b-db41-4b20-8bce-03fe833483e4",
+            "title": "Pils drinken",
+            "description": "Lekker pilsje opentrekken met prins pils"
         }
     ]
 }

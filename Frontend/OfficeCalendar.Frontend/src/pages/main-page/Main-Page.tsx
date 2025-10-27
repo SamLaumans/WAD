@@ -8,13 +8,15 @@ function Main_Page() {
 
     const navigate = useNavigate()
     interface Message {
-        messageID: number;
+        messageID: string;
+        senderID: string;
+        receiverID: string[];
         title: string;
         message: string;
     }
 
     interface Event {
-        eventID: number;
+        eventID: string;
         title: string;
         description: string;
     }
@@ -22,11 +24,12 @@ function Main_Page() {
     const messages: Message[] = messageData.messages;
     const events: Event[] = eventData.events;
 
-    const getMessageTitles = (): JSX.Element[] => {
+    const getMessageTitles = (receiverid: string): JSX.Element[] => {
         if (messages.length > 0) {
             const titles: JSX.Element[] = [];
             for (let i = 0; i < messages.length && i < 3; i++) {
-                titles.push(<div className='message' onClick={(e) => { e.stopPropagation(); navigate(`/messages/${messages[i].messageID}`); }}>- {messages[i].title}</div>)
+                if (messages[i].receiverID.includes(receiverid))
+                    titles.push(<div className='message' onClick={(e) => { e.stopPropagation(); navigate(`/messages/${messages[i].messageID}`); }}>- {messages[i].title}</div>)
             }
             return titles
         }
@@ -46,23 +49,26 @@ function Main_Page() {
 
     return (
         <div className="main-page-wrapper">
-            <div className='placeholder'>
-                Placeholder
+            <div className='weekplanner' onClick={() => navigate("/weekplanner")}>
+                Weekplanner
             </div>
 
             <div className='infoboard'>
+
                 <div className='clock'>
                     18:02
                 </div>
+
                 <div className='bulletin' onClick={() => navigate("/messages")}>
-                    <h2>Berichten ({getMessageTitles().length})</h2>
-                    {getMessageTitles()}
+                    <h2>Berichten ({getMessageTitles("1").length})</h2>
+                    {getMessageTitles("1")}
                 </div>
 
                 <div className='events' onClick={() => navigate("/events")}>
-                    <h2>Evenementen ({getEventTitles().length})</h2>
+                    <h2>Evenementen ({events.length})</h2>
                     {getEventTitles()}
                 </div>
+
             </div>
         </div>
     );

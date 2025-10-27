@@ -1,19 +1,42 @@
 {
     "messages": [
         {
-            "messageID": 0,
+            "messageID": "879b196a-ab0e-4546-b698-b3a13f9d24c7",
+            "senderID": "0",
+            "receiverID": [
+                "1"
+            ],
             "title": "Nieuwe update",
             "message": "Sinds deze nieuwe update kan je op dingen klikken keigaaf"
         },
         {
-            "messageID": 1,
+            "messageID": "82a3ced7-d8ec-451d-9c79-36d6171c290b",
+            "senderID": "0",
+            "receiverID": [
+                "1",
+                "2"
+            ],
             "title": "Nieuws: CSS is kut",
             "message": "Waarom aligned niks gewoon meteen"
         },
         {
-            "messageID": 2,
+            "messageID": "60d808d3-5dad-4583-94eb-3d87f56ab636",
+            "senderID": "1",
+            "receiverID": [
+                "0"
+            ],
             "title": "Geen koffie geen inzet",
             "message": "Shotje espresso en door"
+        },
+        {
+            "messageID": "10a12197-aee8-49b9-9c22-106572180cb9",
+            "senderID": "1",
+            "receiverID": [
+                "0",
+                "2"
+            ],
+            "title": "Vanavond",
+            "message": "Yo maatje ik heb een fles vodka gehaald en die gaat in 1x op want ik ben met css bezig geweest"
         }
     ]
 }
