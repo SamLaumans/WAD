@@ -4,6 +4,7 @@ import Dashboard from './components/Dashboard';
 import SelectedEvent from './components/SelectedEvent';
 import Reviews from './components/Reviews';
 import WeekPlanner from './components/WeekPlanner';
+import MonthPlanner from "./components/MonthPlanner";
 import Contact from './components/Contact';
 import FAQ from './components/FAQ';
 import Footer from './components/Footer';
@@ -58,6 +59,7 @@ const AppContent: React.FC = () => {
           <Route path="/admin-promote" element={<AdminToevoegen />} />
           <Route path="/admin-demote" element={<AdminVerwijderen />} />
           <Route path="/admin-profile" element={<Profiel />} />
+          <Route path="/MonthPlanner" element={<MonthPlanner />} />
 
         </Routes>
       </main>
