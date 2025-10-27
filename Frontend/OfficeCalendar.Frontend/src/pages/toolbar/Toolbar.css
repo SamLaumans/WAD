@@ -1,9 +1,9 @@
-.topbar {
+.toolbar {
     background-color: #b1b1b1;
     overflow: hidden;
 }
 
-.topbar a {
+.toolbar a {
     float: left;
     color: #ffffff;
     text-align: center;
@@ -13,12 +13,12 @@
     transition: 0.3s;
 }
 
-.topbar a:hover {
+.toolbar a:hover {
     background-color: white;
     color: black;
 }
 
-.topbar a.active {
+.toolbar a.active {
     background-color: #04AA6D;
     color: white;
 }

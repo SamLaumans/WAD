@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import SelectedEvent from './components/SelectedEvent';
@@ -7,13 +7,17 @@ import WeekPlanner from './components/WeekPlanner';
 import Contact from './components/Contact';
 import FAQ from './components/FAQ';
 import Footer from './components/Footer';
-import Header from './components/Header';
+import Toolbar from './pages/toolbar/Toolbar';
+import Login from './components/Login';
 import Registreer from './pages/register/Registreer';
 import Login from './pages/login/Login';
 import Forgot_Password from './pages/forgot-password/Forgot-Password';
 import Main_Page from './pages/main-page/Main-Page';
 import Messages from './pages/messages/Messages';
 import SingleMessage from './pages/singlemessage/SingleMessage';
+import CreateEvent from './pages/create-event/Event';
+import AdminPanel from './pages/admin-panel/AdminPanel';
+//import EventModal from "./pages/create-event/EventModal";
 import Events from './pages/events/Events';
 import SingleEvent from './pages/singleevent/SingleEvent';
 import Send_Message from './pages/send-message/send-message';
@@ -29,7 +33,7 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="app-container">
-      {showHeaderFooter && <Header />}
+      {showHeaderFooter && <Toolbar />}
 
       <main className="main-content" style={{ height: '80px' }}>
         <Routes>
@@ -47,6 +51,8 @@ const AppContent: React.FC = () => {
           <Route path="/faq" element={<FAQ />} />
           <Route path="/event" element={<div><SelectedEvent /><Reviews /></div>} />
           <Route path="/send-message" element={<Send_Message />} />
+          <Route path="/create-event" element={<CreateEvent />} />
+          <Route path="/admin-panel" element={<AdminPanel />} />
         </Routes>
       </main>
 
@@ -61,5 +67,16 @@ const App: React.FC = () => (
     <AppContent />
   </BrowserRouter>
 );
+// popup event code
+// const [showModal, setShowModal] = useState(false);
+
+// return (
+//   <div>
+//     <h1>Welkom op de hoofdpagina</h1>
+//     <button onClick={() => setShowModal(true)}>Nieuw Event Aanmaken</button>
+
+//     <EventModal show={showModal} onClose={() => setShowModal(false)} />
+//   </div>
+// );
 
 export default App;
