@@ -21,6 +21,9 @@ export default function WeekPlanner() {
                     <p>voorbeeld bedrijf naam</p>
                 </div>
                 <h2 className="planner-title">Weekplanner</h2>
+                <div>
+                    <Link to="/MonthPlanner" className={location.pathname === '/MonthPlanner' ? 'active' : ''}>Maand Planner</Link>
+                </div>
                 <div className="planner-header-right">
                     <Link to="/create-event" className={location.pathname === '/create-event' ? 'active' : ''}>Create Event</Link>
                     <span>Gebruikersnaam</span>

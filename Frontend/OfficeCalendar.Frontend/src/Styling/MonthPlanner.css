@@ -1,0 +1,98 @@
+.month-planner {
+  background-color: #0d0d0d;
+  color: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px;
+  font-family: "Inter", sans-serif;
+}
+
+.month-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.month-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.nav-button {
+  background-color: #1f1f1f;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.nav-button:hover {
+  background-color: #333;
+}
+
+.year-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.year-button {
+  background-color: #1f1f1f;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.year-button:hover {
+  background-color: #333;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  width: 90%;
+  max-width: 900px;
+}
+
+.day-header {
+  text-align: center;
+  font-weight: 600;
+  padding: 10px 0;
+  border-bottom: 1px solid #222;
+}
+
+.calendar-cell {
+  height: 100px;
+  border: 1px solid #222;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 8px;
+  font-size: 0.9rem;
+}
+
+.day-cell {
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.day-cell:hover {
+  background-color: #2a2a2a;
+}
+
+.empty-cell {
+  background-color: transparent;
+  border: none;
+}
