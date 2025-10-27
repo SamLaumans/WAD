@@ -1,0 +1,85 @@
+.admin-demote-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.15);
+  ;
+  border-radius: 15px;
+  padding: 40px;
+  width: 50%;
+  height: 600px;
+  margin: 30px auto;
+}
+
+.admin-demote-form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.admin-demote-label {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+input[type="admin-demote-text"] {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.admin-demote-upgrade-btn {
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  background-color: #626262;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.admin-demote-upgrade-btn:hover {
+  background-color: #444;
+}
+
+.admin-demote-main-layout {
+  display: flex;
+  flex: 1;
+}
+
+.admin-demote-profile-pic {
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-left: 60px;
+  margin-top: 30px;
+}
+
+.admin-demote-text {
+  margin-top: 0px;
+  font-size: 18px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.admin-demote-text2 {
+  margin-top: 50px;
+}
+
+
+.admin-demote-text .h1 {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.admin-demote-label {
+  display: block;
+  margin-top: 15px;
+  font-weight: bold;
+}

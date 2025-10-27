@@ -1,0 +1,59 @@
+.admin-profile-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 15px;
+    padding: 40px;
+    width: 50%;
+    height: 600px;
+    margin: 30px auto;
+}
+
+.admin-profile-text-wrapper {
+    height: 100%;
+}
+
+.admin-profile-pic {
+    width: 250px;
+    height: auto;
+    border-radius: 50%;
+    object-fit: cover;
+    padding: 3%;
+}
+
+.admin-profile-text {
+    margin-top: 0px;
+    font-size: 18px;
+    line-height: 1.6;
+    text-align: center;
+}
+
+.admin-profile-text2 {
+    margin-top: 50px;
+}
+
+.admin-profile-text2 .h2 {
+    text-align: left;
+    margin-left: 90px;
+    font-size: 26px;
+}
+
+.admin-profile-text2 .h3 {
+    text-align: left;
+    margin-left: 90px;
+    font-size: 18px;
+}
+
+.admin-profile-heavy {
+    font-weight: 700;
+}
+
+.admin-profile-light {
+    font-weight: 450;
+}
+
+.admin-profile-text .h1 {
+    text-align: center;
+    margin-top: 40px;
+}

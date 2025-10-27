@@ -1,0 +1,58 @@
+.admin-promote-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 15px;
+  padding: 40px;
+  width: 50%;
+  height: 600px;
+  margin: 30px auto;
+}
+
+.admin-promote-form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.admin-promote-label {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+input[type="admin-promote-text"] {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.admin-promote-upgrade-btn {
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  background-color: #626262;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.admin-promote-upgrade-btn:hover {
+  background-color: #444;
+}
+
+.admin-promote-text .h1 {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.admin-promote-label {
+  display: block;
+  margin-top: 15px;
+  font-weight: bold;
+}
