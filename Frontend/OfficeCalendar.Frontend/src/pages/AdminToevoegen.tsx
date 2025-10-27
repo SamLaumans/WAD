@@ -16,7 +16,7 @@ const AdminToevoegen: React.FC = () => {
   };
 
   return (
-  <div>
+    <>
     <div className="topbar">
       <a className="active" href="#home">Home</a>
       <a href="#agenda">Agenda</a>
@@ -36,7 +36,8 @@ const AdminToevoegen: React.FC = () => {
             <p style={{ marginTop: "10px", color: "green" }}>{resultMessage}</p>
         </div>
     </div>
-    </div>
+    </>
+
   );
 };
 

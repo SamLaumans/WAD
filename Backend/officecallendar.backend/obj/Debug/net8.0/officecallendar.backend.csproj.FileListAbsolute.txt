@@ -31,3 +31,4 @@ C:\Users\samla\OneDrive\Bureaublad\HR-1048748\WAD\office calendar\Backend\office
 C:\Users\samla\OneDrive\Bureaublad\HR-1048748\WAD\office calendar\Backend\officecallendar.backend\obj\Debug\net8.0\officecallendar.backend.pdb
 C:\Users\samla\OneDrive\Bureaublad\HR-1048748\WAD\office calendar\Backend\officecallendar.backend\obj\Debug\net8.0\officecallendar.backend.genruntimeconfig.cache
 C:\Users\samla\OneDrive\Bureaublad\HR-1048748\WAD\office calendar\Backend\officecallendar.backend\obj\Debug\net8.0\ref\officecallendar.backend.dll
+C:\Users\samla\OneDrive\Bureaublad\HR-1048748\WAD\office calendar\Backend\officecallendar.backend\obj\Debug\net8.0\officecallendar.backend.sourcelink.json

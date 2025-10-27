@@ -1,3 +1,4 @@
+/* 
 
 .container {
   display: flex;
@@ -7,7 +8,7 @@
   border-radius: 15px;
   padding: 40px;
   width: 50%;
-  height: 400px;
+  height: 600px;
   margin: 30px auto;
 }
 
@@ -92,13 +93,6 @@ h3 {
   font-weight: 450;
 }
 
-body {
-    font-family: Arial, sans-serif;
-    background-color: white;
-    margin: 0;
-    padding: 0;
-}
-
 h1 {
     text-align: center;
     margin-top: 40px;
@@ -113,6 +107,7 @@ label {
 .topbar {
     background-color: #8bb0ff;
     overflow: hidden;
+    width: 100%;
 }
 
 .topbar a {
@@ -134,4 +129,6 @@ label {
     color: white;
 }
 
-
+div {
+    margin: 0
+} */

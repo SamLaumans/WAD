@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("officecallendar.backend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+054796a28c8db6a9c8c2cebc2c33056f75b03221")]
 [assembly: System.Reflection.AssemblyProductAttribute("officecallendar.backend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("officecallendar.backend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
