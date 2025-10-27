@@ -8,7 +8,6 @@ import Contact from './components/Contact';
 import FAQ from './components/FAQ';
 import Footer from './components/Footer';
 import Toolbar from './pages/toolbar/Toolbar';
-import Login from './components/Login';
 import Registreer from './pages/register/Registreer';
 import Login from './pages/login/Login';
 import Forgot_Password from './pages/forgot-password/Forgot-Password';
