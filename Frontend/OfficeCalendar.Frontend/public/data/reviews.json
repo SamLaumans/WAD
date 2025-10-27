@@ -1,0 +1,86 @@
+[
+  {
+    "user": "Bommel",
+    "dateEvent": "20-07-2025",
+    "datePlaced": "20-07-2025",
+    "stars": "3",
+    "review": "Event was pretty good."
+  },
+  {
+    "user": "Bramsko",
+    "dateEvent": "20-07-2025",
+    "datePlaced": "25-07-2025",
+    "stars": "4",
+    "review": "I really liked the event! Great atmosphere and people."
+  },
+  {
+    "user": "Jerome",
+    "dateEvent": "20-07-2025",
+    "datePlaced": "26-07-2025",
+    "stars": "2",
+    "review": "Wat een chaos. Geluid was slecht en alles was in het Engels."
+  },
+  {
+    "user": "Achilles",
+    "dateEvent": "20-07-2025",
+    "datePlaced": "26-07-2025",
+    "stars": "5",
+    "review": "Best event I’ve been to so far! Amazing energy and staff."
+  },
+  {
+    "user": "IllusiveAnt",
+    "dateEvent": "20-07-2025",
+    "datePlaced": "27-07-2025",
+    "stars": "3",
+    "review": "It was okay, nothing too special but well organized."
+  },
+  {
+    "user": "Draw_Lok",
+    "dateEvent": "20-07-2025",
+    "datePlaced": "27-07-2025",
+    "stars": "4",
+    "review": "Loved the React workshop part! Very well explained."
+  },
+  {
+    "user": "Ryuma",
+    "dateEvent": "20-07-2025",
+    "datePlaced": "28-07-2025",
+    "stars": "5",
+    "review": "Would definitely go again. Great speakers and topics."
+  },
+  {
+    "user": "Milan",
+    "dateEvent": "20-07-2025",
+    "datePlaced": "28-07-2025",
+    "stars": "4",
+    "review": "Now I can actually do some stuff in React! Great learning experience."
+  },
+  {
+    "user": "DrFeelGood",
+    "dateEvent": "20-07-2025",
+    "datePlaced": "27-07-2025",
+    "stars": "3",
+    "review": "Decent event, but could use more interactivity."
+  },
+  {
+    "user": "Jesus",
+    "dateEvent": "20-07-2025",
+    "datePlaced": "27-07-2025",
+    "stars": "4",
+    "review": "Loved the vibe! Food trucks were a nice bonus."
+  },
+  {
+    "user": "Michiel de Ruijter",
+    "dateEvent": "20-07-2025",
+    "datePlaced": "28-07-2025",
+    "stars": "5",
+    "review": "Fantastic experience, well worth the trip!"
+  },
+  {
+    "user": "Gargamel",
+    "dateEvent": "20-07-2025",
+    "datePlaced": "28-07-2025",
+    "stars": "4",
+    "review": "Impressive organization and structure — almost magical."
+  }
+]

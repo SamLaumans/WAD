@@ -1,0 +1,44 @@
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: "Arial Rounded MT", "Arial Rounded MT Bold", Arial, sans-serif;
+    font-weight: bold;
+    background-image: url('../../assets/blue_gradient.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.singlemessage-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 24px;
+    width: 80%;
+    height: 100vh;
+    padding: 2%;
+    box-sizing: border-box;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.15);
+    overflow-y: auto;
+}
+
+.singlemessages-title {
+    padding: 2%;
+    width: 80%;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 3rem;
+}
+
+.singlemessages-message {
+    padding: 2%;
+    width: 80%;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 1rem;
+}
