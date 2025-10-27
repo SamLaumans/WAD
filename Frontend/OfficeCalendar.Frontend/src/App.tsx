@@ -16,6 +16,9 @@ import Messages from './pages/messages/Messages';
 import SingleMessage from './pages/singlemessage/SingleMessage';
 import CreateEvent from './pages/create-event/Event';
 import AdminPanel from './pages/admin-panel/AdminPanel';
+import Profiel from "./pages/profile-page/profiel";
+import AdminToevoegen from "./pages/admin-promote/admin-promote";
+import AdminVerwijderen from "./pages/admin-demote/admin-demote";
 //import EventModal from "./pages/create-event/EventModal";
 
 const App: React.FC = () => {
@@ -49,6 +52,9 @@ const App: React.FC = () => {
             <Route path="/messages/:messageID" element={<SingleMessage />} />
             <Route path="/create-event" element={<CreateEvent />} />
             <Route path="/admin-panel" element={<AdminPanel />} />
+            <Route path="/admin-demote" element={<AdminVerwijderen />} />
+            <Route path="/admin-promote" element={<AdminToevoegen />} />
+            <Route path="/admin-profile" element={<Profiel />} />
           </Routes>
         </div>
 

@@ -17,25 +17,18 @@ const AdminToevoegen: React.FC = () => {
 
   return (
     <>
-    <div className="topbar">
-      <a className="active" href="#home">Home</a>
-      <a href="#agenda">Agenda</a>
-      <a href="#contact">Contact</a>
-      <a href="#about">About</a>
-    </div>
-    
-    <div className="text">
+      <div className="admin-promote-text">
         <h1>Rol wijzigen naar admin</h1>
-    </div>
+      </div>
 
-    <div className="container">
-        <div className="form-container">
-            <label htmlFor="username" className="label">UserID:</label>
-            <input type="text" id="username" placeholder="Vul userID in" value={userId} onChange={(e) => setUserId(e.target.value)}/>
-            <button className="upgrade-btn" onClick={handleUpgrade}>Rol wijzigen naar Admin</button>
-            <p style={{ marginTop: "10px", color: "green" }}>{resultMessage}</p>
+      <div className="admin-promote-container">
+        <div className="admin-promote-form-container">
+          <label htmlFor="username" className="admin-promote-label">UserID:</label>
+          <input type="admin-promote-text" id="admin-promote-username" placeholder="Vul userID in" value={userId} onChange={(e) => setUserId(e.target.value)} />
+          <button className="admin-promote-upgrade-btn" onClick={handleUpgrade}>Rol wijzigen naar Admin</button>
+          <p style={{ marginTop: "10px", color: "green" }}>{resultMessage}</p>
         </div>
-    </div>
+      </div>
     </>
 
   );

@@ -16,26 +16,19 @@ const AdminVerwijderen: React.FC = () => {
   };
 
   return (
-  <div>
-    <div className="topbar">
-      <a className="active" href="#home">Home</a>
-      <a href="#agenda">Agenda</a>
-      <a href="#contact">Contact</a>
-      <a href="#about">About</a>
-    </div>
-    
-    <div className="text">
+    <div>
+      <div className="admin-demote-text">
         <h1>Rol wijzigen naar gebruiker</h1>
-    </div>
+      </div>
 
-    <div className="container">
-        <div className="form-container">
-            <label htmlFor="username" className="label">UserID:</label>
-            <input type="text" id="username" placeholder="Vul userID in" value={userId} onChange={(e) => setUserId(e.target.value)}/>
-            <button className="upgrade-btn" onClick={handleDegrade}>Rol wijzigen van Admin naar gewone gebruiker</button>
-            <p style={{ marginTop: "10px", color: "green" }}>{resultMessage}</p>
+      <div className="admin-demote-container">
+        <div className="admin-demote-form-container">
+          <label htmlFor="username" className="admin-demote-label">UserID:</label>
+          <input type="admin-demote-text" id="admin-demote-username" placeholder="Vul userID in" value={userId} onChange={(e) => setUserId(e.target.value)} />
+          <button className="admin-demote-upgrade-btn" onClick={handleDegrade}>Rol wijzigen van Admin naar gewone gebruiker</button>
+          <p style={{ marginTop: "10px", color: "green" }}>{resultMessage}</p>
         </div>
-    </div>
+      </div>
     </div>
   );
 };
