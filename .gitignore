@@ -47,3 +47,9 @@ coverage/
 # Optional: local test/output data
 *.pid
 *.pid.lock
+
+
+# Backend
+**/bin/
+**/obj/
+
