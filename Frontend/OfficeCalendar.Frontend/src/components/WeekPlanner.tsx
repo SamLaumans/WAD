@@ -28,15 +28,15 @@ export default function WeekPlanner() {
                 <h2 className="planner-title">Weekplanner</h2>
 
                 {/* Navigation links to other planner views */}
-                <div>
+                <div className='week-planner-navlink'>
                     <Link to="/DayPlanner" className={location.pathname === '/DayPlanner' ? 'active' : ''}>Dag Planner</Link>
                 </div>
-                <div>
+                <div className='week-planner-navlink'>
                     <Link to="/MonthPlanner" className={location.pathname === '/MonthPlanner' ? 'active' : ''}>Maand Planner</Link>
                 </div>
 
                 {/* Right side: user account options */}
-                <div className="planner-header-right">
+                <div className='week-planner-navlink'>
                     <Link to="/create-event" className={location.pathname === '/create-event' ? 'active' : ''}>Create Event</Link>
 
                 </div>

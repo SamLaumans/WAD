@@ -1,8 +1,8 @@
 /* GENERAL LAYOUT */
 body {
     margin: 0;
+    height: 100%;
     font-family: 'Inter', 'Segoe UI', sans-serif;
-    background-color: #121212;
     color: #eaeaea;
 }
 
@@ -16,12 +16,21 @@ body {
 /* HEADER */
 .planner-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
+    gap: 24px;
     padding: 1.2rem 2rem;
-    background-color: #1e1e1e;
     border-bottom: 1px solid #2a2a2a;
     color: #eaeaea;
+}
+
+.planner-header a {
+    color: aliceblue;
+}
+
+.planner-header .planner-title {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: aliceblue;
 }
 
 .planner-header-left h1 {
@@ -39,22 +48,10 @@ body {
 .planner-title {
     font-size: 1.6rem;
     font-weight: 600;
-    color: #6666ff;
 }
 
-.planner-header-right {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.planner-header-right span {
-    color: #eaeaea;
-}
-
-.planner-header-right button {
-    background-color: #6666ff;
-    color: #ffffff;
+.week-planner-navlink {
+    color: aliceblue;
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 8px;
@@ -62,17 +59,16 @@ body {
     transition: background-color 0.2s ease;
 }
 
-.planner-header-right button:hover {
-    background-color: #4d4dfd;
+.week-planner-navlink:hover {
+    text-decoration: underline;
 }
 
 /* TABLE CONTAINER */
 .planner-table-container {
     flex: 1;
-    overflow-x: auto;
-    overflow-y: auto;
+    overflow: auto;
+    min-height: 0;
     padding: 1rem 2rem;
-    background-color: #181818;
 }
 
 /* TABLE */
@@ -80,6 +76,10 @@ body {
     width: 100%;
     border-collapse: collapse;
     border-spacing: 0;
+}
+
+.planner-table tr:hover {
+    background-color: rgba(255, 255, 255, 0.005);
 }
 
 .planner-table th,
@@ -91,20 +91,20 @@ body {
 }
 
 .planner-table th {
-    background-color: #222222;
-    color: #bbbbff;
+    background-color: #b1b1b1;
+    color: #000000;
     position: sticky;
     top: 0;
     z-index: 2;
 }
 
 .planner-table td {
-    background-color: #1b1b1b;
+    background-color: rgba(255, 255, 255, 0.15);
     color: #eaeaea;
 }
 
 .planner-table td:hover {
-    background-color: #292929;
+    background: rgba(255, 255, 255, 0.005);
     cursor: pointer;
 }
 
@@ -112,7 +112,7 @@ body {
 .time-col {
     font-weight: 500;
     color: #9999ff;
-    background-color: #202020;
+    background-color: rgba(255, 255, 255, 0.15);
     position: sticky;
     left: 0;
     z-index: 1;
@@ -124,18 +124,18 @@ body {
     justify-content: center;
     gap: 1rem;
     padding: 1rem;
-    background-color: #1e1e1e;
+    background-color: rgba(255, 255, 255, 0.15);
     border-top: 1px solid #2a2a2a;
 }
 
 .planner-footer a {
     margin: 0 10px;
-    color: #6666ff;
+    color: #ffffff;
     text-decoration: none;
     font-weight: 500;
     transition: color 0.2s ease;
 }
 
 .planner-footer a:hover {
-    color: #8c8cff;
+    text-decoration: underline;
 }
