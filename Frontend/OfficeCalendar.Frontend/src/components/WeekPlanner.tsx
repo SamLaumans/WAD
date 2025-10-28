@@ -22,8 +22,6 @@ export default function WeekPlanner() {
             <header className="planner-header">
                 {/* Left side: company or project information */}
                 <div className="planner-header-left">
-                    <h1>Langer dan 3m</h1>
-                    <p>voorbeeld bedrijf naam</p>
                 </div>
 
                 {/* Title for the planner */}
@@ -40,8 +38,7 @@ export default function WeekPlanner() {
                 {/* Right side: user account options */}
                 <div className="planner-header-right">
                     <Link to="/create-event" className={location.pathname === '/create-event' ? 'active' : ''}>Create Event</Link>
-                    <span>Gebruikersnaam</span>
-                    <button>Loguit</button>
+
                 </div>
             </header>
 
