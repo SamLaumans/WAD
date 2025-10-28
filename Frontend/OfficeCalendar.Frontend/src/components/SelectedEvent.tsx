@@ -5,7 +5,7 @@ import React from 'react';
 // but could later receive event data as props or from context/state.
 const SelectedEvent: React.FC = () => {
     // Temporary hardcoded event data — in the future, this could come from
-    // an API call, a global state (e.g. Redux, Context), or route parameters.
+    // an API call
     const event = {
         title: 'WebDev React les 10',
         place: 'Hogeschool Rotterdam',

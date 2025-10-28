@@ -59,8 +59,8 @@ const Reviews: React.FC = () => {
     };
 
     // Handle form submission to add a new review
-    const handleAddReview = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleAddReview = async (element: React.FormEvent) => {
+        element.preventDefault();
 
         // Create new review object
         const reviewToAdd: Review = {
@@ -151,7 +151,6 @@ const Reviews: React.FC = () => {
                                     <td>{review.user}</td>
                                     <td>{review.dateEvent}</td>
                                     <td>{review.datePlaced}</td>
-                                    {/* Show numeric rating as X/5 instead of emoji */}
                                     <td>{`${review.stars}/5`}</td>
                                     <td>{review.review}</td>
                                 </tr>

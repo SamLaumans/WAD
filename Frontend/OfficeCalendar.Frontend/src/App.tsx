@@ -62,6 +62,8 @@ const AppContent: React.FC = () => {
           <Route path="/admin-profile" element={<Profiel />} />
           <Route path="/MonthPlanner" element={<MonthPlanner />} />
           <Route path="/DayPlanner" element={<DayPlanner />} />
+          <Route path="/Reviews" element={<Reviews />} />
+          <Route path="/SelectedEvent" element={<SelectedEvent />} />
 
         </Routes>
       </main>

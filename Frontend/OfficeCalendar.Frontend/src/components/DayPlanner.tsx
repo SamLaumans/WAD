@@ -11,7 +11,7 @@ const DayPlanner: React.FC = () => {
     // Store the currently selected date in component state
     const [selectedDate, setSelectedDate] = useState(today);
 
-    // Array of day names for easy lookup (0 = Sunday, 6 = Saturday)
+    // Array of day names
     const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
     // Array of month names for displaying readable month text
