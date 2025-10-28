@@ -30,7 +30,8 @@ body {
     box-sizing: border-box;
     min-height: 0;
     overflow: auto;
-    height: 90vh;
+    height: calc(100vh - 57.5px);
+    /*Minus the header*/
 }
 
 .weekplanner,
@@ -59,14 +60,12 @@ body {
     gap: 24px;
     justify-content: space-evenly;
     align-items: stretch;
-    height: 100%;
     box-sizing: border-box;
 }
 
-
-.clock,
-.bulletin,
-.events {
+.infoboard .clock,
+.infoboard .bulletin,
+.infoboard .events {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -76,47 +75,64 @@ body {
     border-radius: 10px;
     height: auto;
     width: auto;
-    font-size: 1.5rem;
+    font-size: 1.5em;
     padding: 24px;
 }
 
-.bulletin,
-.events {
+.infoboard .bulletin,
+.infoboard .events {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
     text-align: left;
+    overflow-y: auto;
+}
+
+.infoboard .bulletin::-webkit-scrollbar,
+.infoboard .events::-webkit-scrollbar {
+    width: 12px;
+}
+
+.infoboard .bulletin::-webkit-scrollbar-track,
+.infoboard .events::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.infoboard .bulletin::-webkit-scrollbar-thumb,
+.infoboard .events::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
 }
 
 .weekplanner:hover,
-.bulletin:hover,
-.events:hover {
+.infoboard .bulletin:hover,
+.infoboard .events:hover {
     background: rgba(255, 255, 255, 0.082);
     cursor: pointer;
 }
 
-.clock {
-    font-size: 5rem;
+.infoboard .clock {
+    font-size: 5em;
     padding: 20px;
 }
 
-.bulletin h2,
-.events h2 {
+.infoboard .bulletin h2,
+.infoboard .events h2 {
     margin: 0;
     align-self: flex-start;
     font-size: 2rem;
 }
 
-.event,
-.message {
+.infoboard .event,
+.infoboard .message {
     font-size: 1.4rem;
     color: aliceblue;
     padding: 6px;
     text-align: left;
 }
 
-.event:hover,
-.message:hover {
+.infoboard .event:hover,
+.infoboard .message:hover {
     text-decoration: underline;
 }
