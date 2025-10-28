@@ -7,7 +7,6 @@ import WeekPlanner from './components/WeekPlanner';
 import MonthPlanner from "./components/MonthPlanner";
 import Contact from './components/Contact';
 import FAQ from './components/FAQ';
-import Footer from './components/Footer';
 import Toolbar from './pages/toolbar/Toolbar';
 import Registreer from './pages/register/Registreer';
 import Login from './pages/login/Login';
@@ -39,34 +38,30 @@ const AppContent: React.FC = () => {
     <div className="app-container">
       {showHeaderFooter && <Toolbar />}
 
-      <main className="main-content" style={{ height: '80px' }}>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/registreer" element={<Registreer />} />
-          <Route path="/forgot-pw" element={<Forgot_Password />} />
-          <Route path="/main-page" element={<Main_Page />} />
-          <Route path="/messages" element={<Messages />} />
-          <Route path="/messages/:messageID" element={<SingleMessage />} />
-          <Route path="/events" element={<Events />} />
-          <Route path="/events/:eventID" element={<SingleEvent />} />
-          <Route path="/weekplanner" element={<WeekPlanner />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/faq" element={<FAQ />} />
-          <Route path="/event" element={<div><SelectedEvent /><Reviews /></div>} />
-          <Route path="/send-message" element={<Send_Message />} />
-          <Route path="/create-event" element={<CreateEvent />} />
-          <Route path="/admin-panel" element={<AdminPanel />} />
-          <Route path="/admin-promote" element={<AdminToevoegen />} />
-          <Route path="/admin-demote" element={<AdminVerwijderen />} />
-          <Route path="/admin-profile" element={<Profiel />} />
-          <Route path="/MonthPlanner" element={<MonthPlanner />} />
-          <Route path="/DayPlanner" element={<DayPlanner />} />
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/registreer" element={<Registreer />} />
+        <Route path="/forgot-pw" element={<Forgot_Password />} />
+        <Route path="/main-page" element={<Main_Page />} />
+        <Route path="/messages" element={<Messages />} />
+        <Route path="/messages/:messageID" element={<SingleMessage />} />
+        <Route path="/events" element={<Events />} />
+        <Route path="/events/:eventID" element={<SingleEvent />} />
+        <Route path="/weekplanner" element={<WeekPlanner />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/faq" element={<FAQ />} />
+        <Route path="/event" element={<div><SelectedEvent /><Reviews /></div>} />
+        <Route path="/send-message" element={<Send_Message />} />
+        <Route path="/create-event" element={<CreateEvent />} />
+        <Route path="/admin-panel" element={<AdminPanel />} />
+        <Route path="/admin-promote" element={<AdminToevoegen />} />
+        <Route path="/admin-demote" element={<AdminVerwijderen />} />
+        <Route path="/admin-profile" element={<Profiel />} />
+        <Route path="/MonthPlanner" element={<MonthPlanner />} />
+        <Route path="/DayPlanner" element={<DayPlanner />} />
 
-        </Routes>
-      </main>
-
-      {showHeaderFooter && <Footer />}
+      </Routes>
     </div>
   );
 };
