@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../Styling/DayPlanner.css";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 // The DayPlanner component displays a daily view where users can navigate
 // between days and potentially see tasks or events for the selected date.
@@ -8,8 +8,21 @@ const DayPlanner: React.FC = () => {
     // Get the current date when the component first renders
     const today = new Date();
 
+    // Extract the date parameter from the URL (e.g. "2025-11-11")
+    const { date } = useParams<{ date?: string }>();
+
     // Store the currently selected date in component state
     const [selectedDate, setSelectedDate] = useState(today);
+
+    // Update selected date if a valid date param is provided
+    useEffect(() => {
+        if (date) {
+            const parsedDate = new Date(date);
+            if (!isNaN(parsedDate.getTime())) {
+                setSelectedDate(parsedDate);
+            }
+        }
+    }, [date]);
 
     // Array of day names
     const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];

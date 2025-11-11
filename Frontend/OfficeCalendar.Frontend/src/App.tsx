@@ -62,6 +62,7 @@ const AppContent: React.FC = () => {
         <Route path="/DayPlanner" element={<DayPlanner />} />
         <Route path="/Reviews" element={<Reviews />} />
         <Route path="/SelectedEvent" element={<SelectedEvent />} />
+        <Route path="/DayPlanner/:date" element={<DayPlanner />} />
 
       </Routes>
     </div>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../Styling/MonthPlanner.css'
 
 // The MonthPlanner component displays a calendar view for the selected month and year.
@@ -12,6 +12,9 @@ const MonthPlanner: React.FC = () => {
     const [currentMonth, setCurrentMonth] = useState(today.getMonth());
     // Store the current visible year
     const [currentYear, setCurrentYear] = useState(today.getFullYear());
+
+    // React Router navigation hook
+    const navigate = useNavigate();
 
     // Array of month names for display purposes
     const monthNames = [
@@ -64,6 +67,15 @@ const MonthPlanner: React.FC = () => {
     // Create "empty" slots to align the first day of the month correctly in the calendar grid
     const emptySlots = Array.from({ length: firstDayOfMonth }, () => null);
 
+    // Function to navigate to the DayPlanner for the clicked day
+    const handleDayClick = (day: number) => {
+        // Create a proper date string (e.g. 2025-11-11)
+        const dateString = `${currentYear}-${(currentMonth + 1)
+            .toString()
+            .padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
+        navigate(`/DayPlanner/${dateString}`);
+    };
+
     return (
         <div className="month-planner">
             {/* Header with month navigation and title */}
@@ -82,10 +94,10 @@ const MonthPlanner: React.FC = () => {
 
             {/* Navigation links to other planner views */}
             <div>
-                <Link to="/DayPlanner" >Dag Planner</Link>
+                <Link to="/DayPlanner">Dag Planner</Link>
             </div>
             <div>
-                <Link to="/WeekPlanner" >Week Planner</Link>
+                <Link to="/WeekPlanner">Week Planner</Link>
             </div>
 
             {/* Buttons to navigate between years */}
@@ -106,6 +118,7 @@ const MonthPlanner: React.FC = () => {
                     <div
                         key={index}
                         className={`calendar-cell ${day ? "day-cell" : "empty-cell"}`}
+                        onClick={() => day && handleDayClick(day)} // Navigate on click
                     >
                         {/* Only show number if it's a valid day */}
                         {day && <span>{day}</span>}
