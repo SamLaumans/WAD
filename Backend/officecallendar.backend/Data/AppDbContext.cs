@@ -48,6 +48,12 @@ namespace WADapi.Data
                 .WithMany(g => g.MessageReceivers)
                 .HasForeignKey(mr => mr.message_id);
 
+            // Messages
+            modelBuilder.Entity<Message>()
+                .HasOne(m => m.Event)
+                .WithMany(e => e.Messages)
+                .HasForeignKey(m => m.referenced_event_id);
+
             // Events subscribed
             modelBuilder.Entity<EventSubscription>()
                 .HasOne(es => es.User)
@@ -59,6 +65,18 @@ namespace WADapi.Data
                 .HasOne(es => es.Event)
                 .WithMany(e => e.EventSubscriptions)
                 .HasForeignKey(es => es.event_id);
+
+            // Events
+            modelBuilder.Entity<Event>()
+                .HasOne(e => e.User)
+                .WithMany(u => u.Events)
+                .HasForeignKey(e => e.creator_username)
+                .HasPrincipalKey(u => u.username);
+
+            modelBuilder.Entity<Event>()
+                .HasOne(e => e.RoomBooking)
+                .WithMany(rb => rb.Events)
+                .HasForeignKey(e => e.booking_id);
 
             // Room bookings
             modelBuilder.Entity<RoomBooking>()
@@ -76,6 +94,18 @@ namespace WADapi.Data
                 .HasOne(rb => rb.Event)
                 .WithMany(e => e.RoomBookings)
                 .HasForeignKey(rb => rb.event_id);
+
+            // Reviews
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.User)
+                .WithMany(u => u.Reviews)
+                .HasForeignKey(r => r.username)
+                .HasPrincipalKey(u => u.username);
+
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.Event)
+                .WithMany(e => e.Reviews)
+                .HasForeignKey(r => r.event_id);
         }
     }
 }

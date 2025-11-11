@@ -14,5 +14,7 @@ namespace Officecalendar.Backend.Models
         public Room Room { get; set; } = null!;
         public User User { get; set; } = null!;
         public Event Event { get; set; } = null!;
+
+        public ICollection<Event> Events { get; set; } = new List<Event>();
     }
 }
