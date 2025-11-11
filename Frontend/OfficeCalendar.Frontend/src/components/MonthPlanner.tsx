@@ -82,10 +82,10 @@ const MonthPlanner: React.FC = () => {
 
             {/* Navigation links to other planner views */}
             <div>
-                <Link to="/DayPlanner" className={location.pathname === '/DayPlanner' ? 'active' : ''}>Dag Planner</Link>
+                <Link to="/DayPlanner" >Dag Planner</Link>
             </div>
             <div>
-                <Link to="/WeekPlanner" className={location.pathname === '/WeekPlanner' ? 'active' : ''}>Week Planner</Link>
+                <Link to="/WeekPlanner" >Week Planner</Link>
             </div>
 
             {/* Buttons to navigate between years */}
