@@ -28,11 +28,8 @@ export default function WeekPlanner() {
                 <h2 className="planner-title">Weekplanner</h2>
 
                 {/* Navigation links to other planner views */}
-                <div>
-                    <Link to="/DayPlanner">Dag Planner</Link>
-                </div>
-                <div>
-                    <Link to="/MonthPlanner">Maand Planner</Link>
+                <div className= "planner-title">
+                    <Link to="/MonthDayView">Maand Planner</Link>
                 </div>
 
                 {/* Right side: user account options */}

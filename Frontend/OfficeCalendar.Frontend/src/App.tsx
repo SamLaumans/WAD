@@ -24,6 +24,7 @@ import Events from './pages/events/Events';
 import SingleEvent from './pages/singleevent/SingleEvent';
 import Send_Message from './pages/send-message/send-message';
 import DayPlanner from "./components/DayPlanner";
+import MonthDayView from "./components/MonthDayView";
 
 const AppContent: React.FC = () => {
   const location = useLocation();
@@ -63,6 +64,7 @@ const AppContent: React.FC = () => {
         <Route path="/Reviews" element={<Reviews />} />
         <Route path="/SelectedEvent" element={<SelectedEvent />} />
         <Route path="/DayPlanner/:date" element={<DayPlanner />} />
+        <Route path="/MonthDayView" element={<MonthDayView />} />
 
       </Routes>
     </div>

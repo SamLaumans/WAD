@@ -95,3 +95,17 @@
   background-color: transparent;
   border: none;
 }
+
+/* Highlight the selected day */
+.day-cell.selected {
+    background-color: #4f73a2; /* Light blue highlight */
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 120, 255, 0.4);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Add hover effect for better UX */
+.day-cell:hover {
+    background-color: #324661;
+    cursor: pointer;
+}
