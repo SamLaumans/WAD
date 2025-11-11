@@ -25,7 +25,6 @@ const Reviews: React.FC = () => {
     // Form input state for adding a new review
     const [newReview, setNewReview] = useState({
         user: '',
-        dateEvent: '',
         stars: 5,
         review: '',
     });
@@ -50,7 +49,7 @@ const Reviews: React.FC = () => {
         setCurrentPage(event.selected);
     };
 
-    //FORM HANDLERS
+    // FORM HANDLERS
 
     // Update input values in the review form
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -62,10 +61,14 @@ const Reviews: React.FC = () => {
     const handleAddReview = async (element: React.FormEvent) => {
         element.preventDefault();
 
+        // Automatically set both the event date and placement date to today
+        const today = new Date().toISOString().split('T')[0];
+
         // Create new review object
         const reviewToAdd: Review = {
             ...newReview,
-            datePlaced: new Date().toISOString().split('T')[0], // Automatically set today's date
+            dateEvent: today, // Automatically set today's date for the event
+            datePlaced: today, // Automatically set today's date for placement
             stars: Number(newReview.stars), // Ensure stars is stored as a number
         };
 
@@ -74,7 +77,7 @@ const Reviews: React.FC = () => {
         setReviews(updatedReviews);
 
         // Reset form fields
-        setNewReview({ user: '', dateEvent: '', stars: 5, review: '' });
+        setNewReview({ user: '', stars: 5, review: '' });
 
         // Attempt to send the new review to backend API (if available)
         try {
@@ -93,7 +96,7 @@ const Reviews: React.FC = () => {
         <div>
             <h2>Reviews</h2>
 
-            {/*ADD REVIEW FORM*/}
+            {/* ADD REVIEW FORM */}
             <form className="review-form" onSubmit={handleAddReview}>
                 <input
                     type="text"
@@ -103,13 +106,7 @@ const Reviews: React.FC = () => {
                     onChange={handleInputChange}
                     required
                 />
-                <input
-                    type="date"
-                    name="dateEvent"
-                    value={newReview.dateEvent}
-                    onChange={handleInputChange}
-                    required
-                />
+                {/* The date is now automatically set, so we remove the manual input */}
                 <input
                     type="number"
                     name="stars"
@@ -129,12 +126,12 @@ const Reviews: React.FC = () => {
                 <button type="submit">Add Review</button>
             </form>
 
-            {/*REVIEWS TABLE OR LOADING TEXT*/}
+            {/* REVIEWS TABLE OR LOADING TEXT */}
             {reviews.length === 0 ? (
                 <p>Loading reviews...</p>
             ) : (
                 <>
-                    {/*EVIEWS TABLE*/}
+                    {/* REVIEWS TABLE */}
                     <table>
                         <thead>
                             <tr>
@@ -158,7 +155,7 @@ const Reviews: React.FC = () => {
                         </tbody>
                     </table>
 
-                    {/*PAGINATION CONTROL*/}
+                    {/* PAGINATION CONTROL */}
                     <ReactPaginate
                         previousLabel={"← Previous"}
                         nextLabel={"Next →"}
