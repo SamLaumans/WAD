@@ -84,7 +84,7 @@ const MonthPlanner: React.FC<MonthPlannerProps> = ({ onDaySelect }) => {
             </div>
 
             {/* Navigation links to other planner views */}
-            <div>
+            <div className= "weekPlanner-text">
                 <Link to="/WeekPlanner">Week Planner</Link>
             </div>
 
