@@ -24,6 +24,9 @@ namespace WADapi.Data
             modelBuilder.Entity<MessageReceiver>()
                 .HasKey(mr => new { mr.message_id, mr.username });
 
+            modelBuilder.Entity<EventSubscription>()
+                .HasKey(es => new { es.username, es.event_id });
+
             // Group membership
             modelBuilder.Entity<GroupMembership>()
                 .HasOne(gm => gm.User)
