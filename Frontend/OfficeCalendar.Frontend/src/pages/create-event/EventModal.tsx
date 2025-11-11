@@ -1,6 +1,6 @@
 import React from "react";
 import Event from "./Event";
-import "./Modal.css";
+import "./EventModal.css";
 
 type Props = {
   show: boolean;

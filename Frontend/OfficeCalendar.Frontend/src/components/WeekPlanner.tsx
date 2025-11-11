@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../Styling/WeekPlanner.css'
+import EventModal from '../pages/create-event/EventModal';
 
 // The WeekPlanner component displays a weekly schedule grid
 // with time slots along the left and days of the week across the top.
 // It's designed to later display events or appointments in each cell.
 export default function WeekPlanner() {
+    const [showEventModal, setShowEventModal] = useState(false);
     // Array representing days of the week (Sunday → Saturday)
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -37,9 +39,14 @@ export default function WeekPlanner() {
 
                 {/* Right side: user account options */}
                 <div className="planner-header-right">
-                    <Link to="/create-event" >Create Event</Link>
-
+                    <button onClick={() => setShowEventModal(true)} style={{ cursor: 'pointer' }}>
+                        Nieuw Event Aanmaken
+                    </button>
                 </div>
+                <EventModal
+                    show={showEventModal}
+                    onClose={() => setShowEventModal(false)}
+                />
             </header>
 
             {/*MAIN WEEK GRID SECTION*/}
