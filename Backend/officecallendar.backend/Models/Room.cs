@@ -11,6 +11,7 @@ namespace Officecalendar.Backend.Models
         public int capacity { get; set; }
 
         public ICollection<RoomBooking> RoomBookings { get; set; } = new List<RoomBooking>();
+        public ICollection<RoomBookingRoom> RoomBookingRooms { get; set; } = new List<RoomBookingRoom>();
 
     }
 }

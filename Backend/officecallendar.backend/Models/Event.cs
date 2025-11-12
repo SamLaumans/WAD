@@ -15,6 +15,7 @@ namespace Officecalendar.Backend.Models
         public Guid booking_id { get; set; }
 
         public User User { get; set; } = null!;
+        public User Creator { get; set; } = null!;
         public RoomBooking RoomBooking { get; set; } = null!;
 
         public ICollection<EventSubscription> EventSubscriptions { get; set; } = new List<EventSubscription>();

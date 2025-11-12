@@ -16,5 +16,7 @@ namespace Officecalendar.Backend.Models
         public Event Event { get; set; } = null!;
 
         public ICollection<Event> Events { get; set; } = new List<Event>();
+        public ICollection<RoomBookingRoom> RoomBookingRooms { get; set; } = new List<RoomBookingRoom>();
+
     }
 }
