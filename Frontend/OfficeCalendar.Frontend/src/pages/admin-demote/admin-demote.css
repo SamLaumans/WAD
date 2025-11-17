@@ -93,3 +93,19 @@ input[type="admin-demote-text"] {
   margin-top: 15px;
   font-weight: bold;
 }
+
+.card {
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 6px;
+  margin-top: 15px;
+}
+#suggestions div {
+  padding: 8px;
+  cursor: pointer;
+  background: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+}
+#suggestions div:hover {
+  background: #e2e2e2;
+}
