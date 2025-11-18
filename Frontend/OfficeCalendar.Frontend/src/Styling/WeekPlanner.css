@@ -23,18 +23,6 @@ body {
     color: #eaeaea;
 }
 
-.planner-header-left h1 {
-    font-size: 1.4rem;
-    margin: 0;
-    color: #ffffff;
-}
-
-.planner-header-left p {
-    margin: 0;
-    font-size: 0.9rem;
-    color: #bbbbbb;
-}
-
 .planner-title {
     font-size: 1.6rem;
     font-weight: 600;
@@ -45,24 +33,6 @@ body {
     display: flex;
     align-items: center;
     gap: 1rem;
-}
-
-.planner-header-right span {
-    color: #eaeaea;
-}
-
-.planner-header-right button {
-    background-color: #6666ff;
-    color: #ffffff;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.planner-header-right button:hover {
-    background-color: #4d4dfd;
 }
 
 /* TABLE CONTAINER */
@@ -88,8 +58,9 @@ body {
     transition: background-color 0.2s ease;
 }
 
+/* SOLID COLORS TO FIX BLACK-BAR BUG */
 .planner-table th {
-    background-color: #222222;
+    background-color: #2f3e55;   /* solid dark bluish header */
     color: #bbbbff;
     position: sticky;
     top: 0;
@@ -97,12 +68,12 @@ body {
 }
 
 .planner-table td {
-    background-color: #1b1b1b;
+    background-color: #2d3f58;   /* solid cell color */
     color: #eaeaea;
 }
 
 .planner-table td:hover {
-    background-color: #292929;
+    background-color: #3a4e6d;   /* slightly lighter on hover */
     cursor: pointer;
 }
 
@@ -110,30 +81,17 @@ body {
 .time-col {
     font-weight: 500;
     color: #9999ff;
-    background-color: #202020;
+    background-color: #2f3e55;   /* solid color to match header */
     position: sticky;
     left: 0;
     z-index: 1;
 }
-
-/* FOOTER */
-.planner-footer {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    padding: 1rem;
-    background-color: #1e1e1e;
-    border-top: 1px solid #2a2a2a;
+/* FIX BLACK ROW HIGHLIGHT */
+.planner-table {
+    user-select: none;
 }
 
-.planner-footer a {
-    margin: 0 10px;
-    color: #6666ff;
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.2s ease;
-}
-
-.planner-footer a:hover {
-    color: #8c8cff;
+.planner-table td::selection,
+.planner-table th::selection {
+    background: transparent;
 }
