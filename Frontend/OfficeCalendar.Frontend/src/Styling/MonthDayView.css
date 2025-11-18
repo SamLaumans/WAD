@@ -1,0 +1,27 @@
+.month-day-container {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+}
+
+.month-side {
+    flex: 1;
+    max-width: 70%
+}
+
+.day-side {
+    flex: 1;
+    max-width: 30%;
+    border-left: 2px solid #ddd;
+    padding-left: 1rem;
+}
+
+.day-placeholder {
+    color: #130d0d;
+    font-style: italic;
+    margin-top: 2rem;
+}

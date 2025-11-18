@@ -32,7 +32,7 @@
 }
 
 .nav-button {
-  background-color: #1f1f1f;
+  background: rgba(255, 255, 255, 0.15);
   color: #fff;
   border: none;
   padding: 8px 14px;
@@ -42,13 +42,13 @@
 }
 
 .nav-button:hover {
-  background-color: #333;
+  background: rgba(255, 255, 255, 0.082);
 }
 
 .day-content {
   width: 90%;
   max-width: 800px;
-  background-color: #1a1a1a;
+  background: rgba(255, 255, 255, 0.15);
   border: 1px solid #222;
   border-radius: 8px;
   padding: 20px;
@@ -59,6 +59,6 @@
 }
 
 .placeholder-text {
-  color: #888;
+  color: #faf4f4;
   font-style: italic;
 }
