@@ -27,10 +27,6 @@ export default function WeekPlanner() {
                 {/* Title for the planner */}
                 <h2 className="planner-title">Weekplanner</h2>
 
-                {/* Navigation links to other planner views */}
-                <div className= "planner-title">
-                    <Link to="/MonthDayView">Maand Planner</Link>
-                </div>
 
                 {/* Right side: user account options */}
                 <div className="planner-header-right">

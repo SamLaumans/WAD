@@ -83,10 +83,6 @@ const MonthPlanner: React.FC<MonthPlannerProps> = ({ onDaySelect }) => {
                 <button onClick={() => handleMonthChange("next")} className="nav-button">▶</button>
             </div>
 
-            {/* Navigation links to other planner views */}
-            <div className= "weekPlanner-text">
-                <Link to="/WeekPlanner">Week Planner</Link>
-            </div>
 
             {/* Buttons to navigate between years */}
             <div className="year-controls">
