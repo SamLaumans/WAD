@@ -17,8 +17,7 @@ import SingleMessage from './pages/singlemessage/SingleMessage';
 import CreateEvent from './pages/create-event/Event';
 import AdminPanel from './pages/admin-panel/AdminPanel';
 import Profiel from "./pages/profile-page/profiel";
-import AdminToevoegen from "./pages/admin-promote/admin-promote";
-import AdminVerwijderen from "./pages/admin-demote/admin-demote";
+import AdminRolBeheer from "./pages/admin-role-adjustment/admin-role-adjustment";
 //import EventModal from "./pages/create-event/EventModal";
 import Events from './pages/events/Events';
 import SingleEvent from './pages/singleevent/SingleEvent';
@@ -55,8 +54,7 @@ const AppContent: React.FC = () => {
           <Route path="/send-message" element={<Send_Message />} />
           <Route path="/create-event" element={<CreateEvent />} />
           <Route path="/admin-panel" element={<AdminPanel />} />
-          <Route path="/admin-promote" element={<AdminToevoegen />} />
-          <Route path="/admin-demote" element={<AdminVerwijderen />} />
+          <Route path="/admin-role-adjustment" element={<AdminRolBeheer />} />
           <Route path="/admin-profile" element={<Profiel />} />
 
         </Routes>
