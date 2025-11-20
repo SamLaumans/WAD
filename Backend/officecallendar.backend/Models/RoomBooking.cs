@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Officecalendar.Backend.Models
 {
@@ -12,7 +13,14 @@ namespace Officecalendar.Backend.Models
         public Guid event_id { get; set; }
 
         public Room Room { get; set; } = null!;
+
+        [ForeignKey(nameof(booked_by))]
         public User User { get; set; } = null!;
+
+        [ForeignKey(nameof(event_id))]
         public Event Event { get; set; } = null!;
+
+        public ICollection<RoomBookingRoom> RoomBookingRooms { get; set; } = new List<RoomBookingRoom>();
+
     }
 }
