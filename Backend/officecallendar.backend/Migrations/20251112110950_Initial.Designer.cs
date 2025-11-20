@@ -12,8 +12,8 @@ using WADapi.Data;
 namespace officecallendar.backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251112085543_FixDeletionIssues")]
-    partial class FixDeletionIssues
+    [Migration("20251112110950_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -55,10 +55,7 @@ namespace officecallendar.backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("RoomBookingid")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("booking_id")
+                    b.Property<Guid?>("booking_id")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("creator_username")
@@ -72,7 +69,7 @@ namespace officecallendar.backend.Migrations
                     b.Property<DateTime>("end_time")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("last_edited_date")
+                    b.Property<DateTime?>("last_edited_date")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("start_time")
@@ -83,12 +80,9 @@ namespace officecallendar.backend.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("username")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("id");
-
-                    b.HasIndex("RoomBookingid");
 
                     b.HasIndex("creator_username");
 
@@ -105,7 +99,7 @@ namespace officecallendar.backend.Migrations
                     b.Property<Guid>("event_id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("participated")
+                    b.Property<bool?>("participated")
                         .HasColumnType("bit");
 
                     b.HasKey("username", "event_id");
@@ -165,7 +159,7 @@ namespace officecallendar.backend.Migrations
                     b.Property<DateTime>("last_edited_date")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("referenced_event_id")
+                    b.Property<Guid?>("referenced_event_id")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("sender_username")
@@ -236,7 +230,7 @@ namespace officecallendar.backend.Migrations
                     b.Property<bool>("available")
                         .HasColumnType("bit");
 
-                    b.Property<int>("capacity")
+                    b.Property<int?>("capacity")
                         .HasColumnType("int");
 
                     b.Property<string>("room_location")
@@ -340,29 +334,17 @@ namespace officecallendar.backend.Migrations
 
             modelBuilder.Entity("Officecalendar.Backend.Models.Event", b =>
                 {
-                    b.HasOne("Officecalendar.Backend.Models.RoomBooking", "RoomBooking")
-                        .WithMany("Events")
-                        .HasForeignKey("RoomBookingid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Officecalendar.Backend.Models.User", "Creator")
                         .WithMany("CreatedEvents")
                         .HasForeignKey("creator_username")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Officecalendar.Backend.Models.User", "User")
+                    b.HasOne("Officecalendar.Backend.Models.User", null)
                         .WithMany("Events")
-                        .HasForeignKey("username")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("username");
 
                     b.Navigation("Creator");
-
-                    b.Navigation("RoomBooking");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Officecalendar.Backend.Models.EventSubscription", b =>
@@ -408,8 +390,7 @@ namespace officecallendar.backend.Migrations
                     b.HasOne("Officecalendar.Backend.Models.Event", "Event")
                         .WithMany("Messages")
                         .HasForeignKey("referenced_event_id")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Event");
                 });
@@ -528,8 +509,6 @@ namespace officecallendar.backend.Migrations
 
             modelBuilder.Entity("Officecalendar.Backend.Models.RoomBooking", b =>
                 {
-                    b.Navigation("Events");
-
                     b.Navigation("RoomBookingRooms");
                 });
 
