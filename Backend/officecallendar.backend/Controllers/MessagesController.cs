@@ -9,17 +9,17 @@ namespace OfficeCalendar.Backend.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class MessageController : ControllerBase
+public class MessagesController : ControllerBase
 {
     private readonly MessageService _messageService;
 
-    public MessageController(MessageService messageService)
+    public MessagesController(MessageService messageService)
     {
         _messageService = messageService;
     }
 
-    [HttpGet("{messageid}")]
-    public ActionResult<Message> GetByGuid(Guid messageid)
+    [HttpGet]
+    public ActionResult<Message> GetMessage([FromQuery] Guid messageid)
     {
         var message = _messageService.GetByGuid(messageid);
         if (message == null)
@@ -44,11 +44,11 @@ public class MessageController : ControllerBase
                 });
 
         var message = _messageService.PostMessage(dto, User.Identity.Name);
-        return CreatedAtAction(nameof(GetByGuid), new { messageid = message.id }, message);
+        return CreatedAtAction(nameof(GetMessage), new { messageid = message.id }, message);
     }
 
-    [HttpDelete("{messageid}")]
-    public ActionResult<Message> DeleteMessage(Guid messageid)
+    [HttpDelete]
+    public ActionResult<Message> DeleteMessage([FromQuery] Guid messageid)
     {
         var message = _messageService.GetByGuid(messageid);
         if (message == null)
@@ -63,8 +63,8 @@ public class MessageController : ControllerBase
         return NoContent();
     }
 
-    [HttpPut("{reservationid}")]
-    public ActionResult<Message> UpdateMessage(Guid messageid, MessagePostDto dto)
+    [HttpPut]
+    public ActionResult<Message> UpdateMessage([FromQuery] Guid messageid, MessagePutDto dto)
     {
         var message = _messageService.GetByGuid(messageid);
         if (message == null)
@@ -75,7 +75,6 @@ public class MessageController : ControllerBase
             });
 
         _messageService.UpdateMessage(message, dto);
-        return CreatedAtAction(nameof(GetByGuid), new { messageid = message.id }, message);
-
+        return Ok(message);
     }
 }

@@ -7,6 +7,13 @@ namespace OfficeCalendar.Backend.DTOs
         public Guid? referenced_event_id { get; set; }
     }
 
+    public class MessagePutDto
+    {
+        public string? title { get; set; }
+        public string? desc { get; set; } = string.Empty;
+        public Guid? referenced_event_id { get; set; }
+    }
+
     public class MessageGetDto
     {
         public required string sender_username { get; set; }

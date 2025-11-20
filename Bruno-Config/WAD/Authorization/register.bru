@@ -1,0 +1,29 @@
+meta {
+  name: register
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{url}}/auth/register
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+      "username": "Mex",
+      "password": "MexPunt!1234",
+      "email": "MexPunt2005@outlook.com"
+  }
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

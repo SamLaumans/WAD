@@ -41,11 +41,17 @@ namespace OfficeCalendar.Backend.Services
             _context.SaveChanges();
         }
 
-        public void UpdateMessage(Message message, MessagePostDto dto)
+        public void UpdateMessage(Message message, MessagePutDto dto)
         {
-            message.title = dto.title;
-            message.desc = dto.desc;
-            message.referenced_event_id = dto.referenced_event_id;
+            if (!string.IsNullOrEmpty(dto.title))
+                message.title = dto.title;
+
+            if (!string.IsNullOrEmpty(dto.desc))
+                message.desc = dto.desc;
+
+            if (dto.referenced_event_id.HasValue)
+                message.referenced_event_id = dto.referenced_event_id.Value;
+
             message.last_edited_date = DateTime.UtcNow;
 
             _context.SaveChanges();

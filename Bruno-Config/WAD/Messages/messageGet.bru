@@ -1,0 +1,24 @@
+meta {
+  name: messageGet
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{url}}/messages/?messageid=ad9e5bb6-f198-4c0d-1caf-08de2884f110
+  body: none
+  auth: inherit
+}
+
+params:query {
+  messageid: ad9e5bb6-f198-4c0d-1caf-08de2884f110
+}
+
+headers {
+  Authorization: {{token}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

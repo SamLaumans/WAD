@@ -1,0 +1,32 @@
+meta {
+  name: messageDelete
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{url}}/messages?messageid=ad9e5bb6-f198-4c0d-1caf-08de2884f110
+  body: json
+  auth: inherit
+}
+
+params:query {
+  messageid: ad9e5bb6-f198-4c0d-1caf-08de2884f110
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: {{token}}
+}
+
+body:json {
+  {
+      "title": "Titel 2 jaman"
+  }
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

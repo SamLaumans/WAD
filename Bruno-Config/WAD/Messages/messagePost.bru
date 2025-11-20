@@ -1,0 +1,30 @@
+meta {
+  name: messagePost
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{url}}/messages
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: {{token}}
+}
+
+body:json {
+  {
+      "title": "Hallo wereld",
+      "desc": "Programmeren x Kinderen voor Kinderen",
+      "referenced_event_id": null
+  }
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
