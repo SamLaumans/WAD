@@ -8,7 +8,7 @@
   padding: 40px;
   width: 50%;
   height: 600px;
-  margin: 30px auto;
+  margin: 0px;
 }
 
 .admin-demote-form-container {
@@ -91,5 +91,58 @@ input[type="admin-demote-text"] {
 .admin-demote-label {
   display: block;
   margin-top: 15px;
-  font-weight: bold;
 }
+
+.card {
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 6px;
+  margin-top: 15px;
+}
+#suggestions div {
+  padding: 8px;
+  cursor: pointer;
+  background: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+  color: black;
+  padding: 30 px;
+  text-align: left;
+}
+#suggestions div:hover {
+  background: #e2e2e2;
+}
+
+#selected-user {
+  margin-top: 10px;
+  padding: 20px;
+  color: black;
+  text-align: left;
+}
+
+.role-select {
+  width: 100%;
+  padding: 6px;
+  margin-top: 5px;
+}
+
+.update-role-btn {
+  margin-top: 10px;
+  padding: 10px;
+  width: 100%;
+}
+
+#selected-user p {
+  text-align: left;
+  font-size: 13px;
+  margin-bottom: 4px;
+  margin-top: 0px;
+}
+
+#selected-user h3 {
+  margin-top: 0; 
+  margin-bottom: 10px;  
+  font-weight: bold; 
+  text-align: left;    
+}
+
+

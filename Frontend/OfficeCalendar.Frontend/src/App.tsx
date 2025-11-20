@@ -17,8 +17,7 @@ import SingleMessage from './pages/singlemessage/SingleMessage';
 import CreateEvent from './pages/create-event/Event';
 import AdminPanel from './pages/admin-panel/AdminPanel';
 import Profiel from "./pages/profile-page/profiel";
-import AdminToevoegen from "./pages/admin-promote/admin-promote";
-import AdminVerwijderen from "./pages/admin-demote/admin-demote";
+import AdminRolBeheer from "./pages/admin-role-adjustment/admin-role-adjustment";
 //import EventModal from "./pages/create-event/EventModal";
 import Events from './pages/events/Events';
 import SingleEvent from './pages/singleevent/SingleEvent';
@@ -40,34 +39,35 @@ const AppContent: React.FC = () => {
     <div className="app-container">
       {showHeaderFooter && <Toolbar />}
 
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/registreer" element={<Registreer />} />
-        <Route path="/forgot-pw" element={<Forgot_Password />} />
-        <Route path="/main-page" element={<Main_Page />} />
-        <Route path="/messages" element={<Messages />} />
-        <Route path="/messages/:messageID" element={<SingleMessage />} />
-        <Route path="/events" element={<Events />} />
-        <Route path="/events/:eventID" element={<SingleEvent />} />
-        <Route path="/weekplanner" element={<WeekPlanner />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/faq" element={<FAQ />} />
-        <Route path="/event" element={<div><SelectedEvent /><Reviews /></div>} />
-        <Route path="/send-message" element={<Send_Message />} />
-        <Route path="/create-event" element={<CreateEvent />} />
-        <Route path="/admin-panel" element={<AdminPanel />} />
-        <Route path="/admin-promote" element={<AdminToevoegen />} />
-        <Route path="/admin-demote" element={<AdminVerwijderen />} />
-        <Route path="/admin-profile" element={<Profiel />} />
-        <Route path="/MonthPlanner" element={<MonthPlanner />} />
-        <Route path="/DayPlanner" element={<DayPlanner />} />
-        <Route path="/Reviews" element={<Reviews />} />
-        <Route path="/SelectedEvent" element={<SelectedEvent />} />
-        <Route path="/DayPlanner/:date" element={<DayPlanner />} />
-        <Route path="/MonthDayView" element={<MonthDayView />} />
-        <Route path="/About" element={<About />} />
-        
+
+      <main className="main-content" style={{ height: '80px' }}>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/registreer" element={<Registreer />} />
+          <Route path="/forgot-pw" element={<Forgot_Password />} />
+          <Route path="/main-page" element={<Main_Page />} />
+          <Route path="/messages" element={<Messages />} />
+          <Route path="/messages/:messageID" element={<SingleMessage />} />
+          <Route path="/events" element={<Events />} />
+          <Route path="/events/:eventID" element={<SingleEvent />} />
+          <Route path="/weekplanner" element={<WeekPlanner />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/event" element={<div><SelectedEvent /><Reviews /></div>} />
+          <Route path="/send-message" element={<Send_Message />} />
+          <Route path="/create-event" element={<CreateEvent />} />
+          <Route path="/admin-panel" element={<AdminPanel />} />
+          <Route path="/admin-role-adjustment" element={<AdminRolBeheer />} />
+          <Route path="/admin-profile" element={<Profiel />} />
+          <Route path="/MonthPlanner" element={<MonthPlanner />} />
+          <Route path="/DayPlanner" element={<DayPlanner />} />
+          <Route path="/Reviews" element={<Reviews />} />
+          <Route path="/SelectedEvent" element={<SelectedEvent />} />
+          <Route path="/DayPlanner/:date" element={<DayPlanner />} />
+          <Route path="/MonthDayView" element={<MonthDayView />} />
+          <Route path="/About" element={<About />} />
+
 
       </Routes>
     </div>
