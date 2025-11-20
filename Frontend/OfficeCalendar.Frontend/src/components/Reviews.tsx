@@ -25,12 +25,11 @@ const Reviews: React.FC = () => {
     // Form input state for adding a new review
     const [newReview, setNewReview] = useState({
         user: '',
-        dateEvent: '',
         stars: 5,
         review: '',
     });
 
-    // === FETCH REVIEWS FROM JSON ===
+    // FETCH REVIEWS FROM JSON
     useEffect(() => {
         fetch('/data/reviews.json')
             .then((response) => {
@@ -41,7 +40,7 @@ const Reviews: React.FC = () => {
             .catch((error) => console.error('Error fetching reviews:', error));
     }, []); // Empty dependency array ensures this runs only once on component mount
 
-    // === PAGINATION LOGIC ===
+    // PAGINATION LOGIC
     const offset = currentPage * itemsPerPage; // Starting index for current page
     const currentReviews = reviews.slice(offset, offset + itemsPerPage); // Reviews to display on current page
 
@@ -50,7 +49,7 @@ const Reviews: React.FC = () => {
         setCurrentPage(event.selected);
     };
 
-    // === FORM HANDLERS ===
+    // FORM HANDLERS
 
     // Update input values in the review form
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -59,13 +58,17 @@ const Reviews: React.FC = () => {
     };
 
     // Handle form submission to add a new review
-    const handleAddReview = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleAddReview = async (element: React.FormEvent) => {
+        element.preventDefault();
+
+        // Automatically set both the event date and placement date to today
+        const today = new Date().toISOString().split('T')[0];
 
         // Create new review object
         const reviewToAdd: Review = {
             ...newReview,
-            datePlaced: new Date().toISOString().split('T')[0], // Automatically set today's date
+            dateEvent: today, // Automatically set today's date for the event
+            datePlaced: today, // Automatically set today's date for placement
             stars: Number(newReview.stars), // Ensure stars is stored as a number
         };
 
@@ -74,7 +77,7 @@ const Reviews: React.FC = () => {
         setReviews(updatedReviews);
 
         // Reset form fields
-        setNewReview({ user: '', dateEvent: '', stars: 5, review: '' });
+        setNewReview({ user: '', stars: 5, review: '' });
 
         // Attempt to send the new review to backend API (if available)
         try {
@@ -88,12 +91,12 @@ const Reviews: React.FC = () => {
         }
     };
 
-    // === RENDER COMPONENT ===
+    // RENDER COMPONENT
     return (
         <div>
             <h2>Reviews</h2>
 
-            {/* --- ADD REVIEW FORM --- */}
+            {/* ADD REVIEW FORM */}
             <form className="review-form" onSubmit={handleAddReview}>
                 <input
                     type="text"
@@ -103,13 +106,7 @@ const Reviews: React.FC = () => {
                     onChange={handleInputChange}
                     required
                 />
-                <input
-                    type="date"
-                    name="dateEvent"
-                    value={newReview.dateEvent}
-                    onChange={handleInputChange}
-                    required
-                />
+                {/* The date is now automatically set, so we remove the manual input */}
                 <input
                     type="number"
                     name="stars"
@@ -129,12 +126,12 @@ const Reviews: React.FC = () => {
                 <button type="submit">Add Review</button>
             </form>
 
-            {/* --- REVIEWS TABLE OR LOADING TEXT --- */}
+            {/* REVIEWS TABLE OR LOADING TEXT */}
             {reviews.length === 0 ? (
                 <p>Loading reviews...</p>
             ) : (
                 <>
-                    {/* === REVIEWS TABLE === */}
+                    {/* REVIEWS TABLE */}
                     <table>
                         <thead>
                             <tr>
@@ -151,7 +148,6 @@ const Reviews: React.FC = () => {
                                     <td>{review.user}</td>
                                     <td>{review.dateEvent}</td>
                                     <td>{review.datePlaced}</td>
-                                    {/* Show numeric rating as X/5 instead of emoji */}
                                     <td>{`${review.stars}/5`}</td>
                                     <td>{review.review}</td>
                                 </tr>
@@ -159,7 +155,7 @@ const Reviews: React.FC = () => {
                         </tbody>
                     </table>
 
-                    {/* === PAGINATION CONTROL === */}
+                    {/* PAGINATION CONTROL */}
                     <ReactPaginate
                         previousLabel={"← Previous"}
                         nextLabel={"Next →"}

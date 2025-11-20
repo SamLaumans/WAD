@@ -4,9 +4,9 @@ import Dashboard from './components/Dashboard';
 import SelectedEvent from './components/SelectedEvent';
 import Reviews from './components/Reviews';
 import WeekPlanner from './components/WeekPlanner';
+import MonthPlanner from "./components/MonthPlanner";
 import Contact from './components/Contact';
 import FAQ from './components/FAQ';
-import Footer from './components/Footer';
 import Toolbar from './pages/toolbar/Toolbar';
 import Registreer from './pages/register/Registreer';
 import Login from './pages/login/Login';
@@ -22,6 +22,9 @@ import AdminRolBeheer from "./pages/admin-role-adjustment/admin-role-adjustment"
 import Events from './pages/events/Events';
 import SingleEvent from './pages/singleevent/SingleEvent';
 import Send_Message from './pages/send-message/send-message';
+import DayPlanner from "./components/DayPlanner";
+import MonthDayView from "./components/MonthDayView";
+import About from "./components/About"
 
 const AppContent: React.FC = () => {
   const location = useLocation();
@@ -35,6 +38,7 @@ const AppContent: React.FC = () => {
   return (
     <div className="app-container">
       {showHeaderFooter && <Toolbar />}
+
 
       <main className="main-content" style={{ height: '80px' }}>
         <Routes>
@@ -56,11 +60,16 @@ const AppContent: React.FC = () => {
           <Route path="/admin-panel" element={<AdminPanel />} />
           <Route path="/admin-role-adjustment" element={<AdminRolBeheer />} />
           <Route path="/admin-profile" element={<Profiel />} />
+          <Route path="/MonthPlanner" element={<MonthPlanner />} />
+          <Route path="/DayPlanner" element={<DayPlanner />} />
+          <Route path="/Reviews" element={<Reviews />} />
+          <Route path="/SelectedEvent" element={<SelectedEvent />} />
+          <Route path="/DayPlanner/:date" element={<DayPlanner />} />
+          <Route path="/MonthDayView" element={<MonthDayView />} />
+          <Route path="/About" element={<About />} />
 
-        </Routes>
-      </main>
 
-      {showHeaderFooter && <Footer />}
+      </Routes>
     </div>
   );
 };

@@ -7,20 +7,20 @@ public class AuthService
 {
     private readonly List<User> _users = new()
     {
-        new User { id = 1, name = "admin", password = "password123"},
-        new User { id = 2, name = "employee", password = "password123" }
+        new User { username = "admin", email = "hoi@hotmail.com", nickname = "Mex", creation_date = DateTime.Now, role = 1, password = "password123"},
+        new User { username = "user1", email = "hoi2@hotmail.com", nickname = "Job", creation_date = DateTime.Now, role = 0, password = "password456"},
     };
 
     public LoginResponse Login(LoginRequest request)
     {
-        var user = _users.FirstOrDefault(u => u.name == request.Username);
+        var user = _users.FirstOrDefault(u => u.username == request.Username);
 
         if (user == null || user.password != request.Password)
         {
             return new LoginResponse { Success = false, Message = "Invalid username or password" };
         }
 
-        var role = user.name == "admin" ? "Admin" : "Employee";
+        var role = user.username == "admin" ? "Admin" : "Employee";
 
         return new LoginResponse
         {
