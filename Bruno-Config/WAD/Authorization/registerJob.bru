@@ -1,0 +1,35 @@
+meta {
+  name: registerJob
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{url}}/auth/register
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+      "username": "Job",
+      "password": "Welkom787",
+      "email": "job@hotmail.net"
+  }
+  
+}
+
+script:post-response {
+  const data = res.getBody();  
+  bru.setVar("token", "Bearer " + data.token);
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

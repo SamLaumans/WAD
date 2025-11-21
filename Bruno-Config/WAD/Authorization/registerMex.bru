@@ -1,7 +1,7 @@
 meta {
-  name: register
+  name: registerMex
   type: http
-  seq: 4
+  seq: 2
 }
 
 post {
@@ -17,9 +17,15 @@ headers {
 body:json {
   {
       "username": "Mex",
-      "password": "MexPunt!1234",
-      "email": "MexPunt2005@outlook.com"
+      "password": "Wachtwoord123",
+      "email": "mexpunt2005@outlook.com"
   }
+  
+}
+
+script:post-response {
+  const data = res.getBody();  
+  bru.setVar("token", "Bearer " + data.token);
   
 }
 
