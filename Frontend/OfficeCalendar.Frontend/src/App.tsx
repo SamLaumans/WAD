@@ -68,9 +68,11 @@ const AppContent: React.FC = () => {
           <Route path="/MonthDayView" element={<MonthDayView />} />
           <Route path="/About" element={<About />} />
 
-
+      
       </Routes>
+      </main>
     </div>
+    
   );
 };
 

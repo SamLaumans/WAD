@@ -1,11 +1,13 @@
 import './Main-Page.css';
 import { useState, type JSX } from 'react';
+import { useNavigate } from 'react-router-dom';
 import messageData from "../../assets/messages.json";
 import eventData from "../../assets/events.json";
 import Clock from '../../components/Clock';
 import DayPlanner from '../../components/DayPlanner';
 
 function Main_Page() {
+    const navigate = useNavigate();
     const [today] = useState(new Date()); // voor DayPlanner preview
 
     interface Message {
@@ -34,6 +36,10 @@ function Main_Page() {
                         <div
                             key={messages[i].messageID}
                             className='message'
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/messages/${messages[i].messageID}`);
+                            }}
                         >
                             - {messages[i].title}
                         </div>
@@ -51,6 +57,10 @@ function Main_Page() {
                     <div
                         key={events[i].eventID}
                         className='event'
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/events/${events[i].eventID}`);
+                        }}
                     >
                         - {events[i].title}
                     </div>
@@ -76,12 +86,12 @@ function Main_Page() {
                     <Clock />
                 </div>
 
-                <div className='bulletin'>
+                <div className='bulletin' onClick={() => navigate("/messages")}>
                     <h2>Berichten ({getMessageTitles("1").length})</h2>
                     {getMessageTitles("1")}
                 </div>
 
-                <div className='events'>
+                <div className='events' onClick={() => navigate("/events")}>
                     <h2>Evenementen ({events.length})</h2>
                     {getEventTitles()}
                 </div>
