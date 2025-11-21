@@ -1,0 +1,20 @@
+meta {
+  name: attendanceUserGet
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{url}}/attendances/me
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: {{token}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
