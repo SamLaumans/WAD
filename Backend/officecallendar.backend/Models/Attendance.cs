@@ -7,9 +7,12 @@ namespace Officecalendar.Backend.Models
         [Key]
         public required Guid id { get; set; }
         public required string username { get; set; }
+        public required string creator_username { get; set; }
         public required DateTime date { get; set; }
         public required string status { get; set; }
+        public bool visible { get; set; } = true;
 
+        public User CreatorUser { get; set; } = null!;
         public User User { get; set; } = null!;
 
     }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WADapi.Data;
 
@@ -11,9 +12,11 @@ using WADapi.Data;
 namespace officecallendar.backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251121112341_UpdateAttendancesWithCreator")]
+    partial class UpdateAttendancesWithCreator
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -332,7 +335,7 @@ namespace officecallendar.backend.Migrations
 
             modelBuilder.Entity("Officecalendar.Backend.Models.Attendance", b =>
                 {
-                    b.HasOne("Officecalendar.Backend.Models.User", "CreatorUser")
+                    b.HasOne("Officecalendar.Backend.Models.User", null)
                         .WithMany()
                         .HasForeignKey("creator_username")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -343,8 +346,6 @@ namespace officecallendar.backend.Migrations
                         .HasForeignKey("username")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("CreatorUser");
 
                     b.Navigation("User");
                 });

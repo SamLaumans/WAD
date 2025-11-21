@@ -1,0 +1,24 @@
+meta {
+  name: attendanceGet
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{url}}/attendances/?attendanceid=26404282-c26d-456c-a8f3-8b9b950838cb
+  body: none
+  auth: inherit
+}
+
+params:query {
+  attendanceid: 26404282-c26d-456c-a8f3-8b9b950838cb
+}
+
+headers {
+  Authorization: {{token}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

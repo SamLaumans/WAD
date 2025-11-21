@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WADapi.Data;
 
@@ -11,9 +12,11 @@ using WADapi.Data;
 namespace officecallendar.backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251121111322_UpdateAttendancesWithVisible")]
+    partial class UpdateAttendancesWithVisible
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,10 +30,6 @@ namespace officecallendar.backend.Migrations
                     b.Property<Guid>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("creator_username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("date")
                         .HasColumnType("datetime2");
@@ -47,8 +46,6 @@ namespace officecallendar.backend.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("id");
-
-                    b.HasIndex("creator_username");
 
                     b.HasIndex("username");
 
@@ -332,19 +329,11 @@ namespace officecallendar.backend.Migrations
 
             modelBuilder.Entity("Officecalendar.Backend.Models.Attendance", b =>
                 {
-                    b.HasOne("Officecalendar.Backend.Models.User", "CreatorUser")
-                        .WithMany()
-                        .HasForeignKey("creator_username")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("Officecalendar.Backend.Models.User", "User")
                         .WithMany("Attendances")
                         .HasForeignKey("username")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("CreatorUser");
 
                     b.Navigation("User");
                 });

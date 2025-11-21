@@ -140,6 +140,12 @@ namespace WADapi.Data
             .HasForeignKey(a => a.username)
             .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Attendance>()
+            .HasOne(a => a.CreatorUser)
+            .WithMany()
+            .HasForeignKey(a => a.creator_username)
+            .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }

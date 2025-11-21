@@ -13,7 +13,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // do not forget to add services please
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<MessageService>();
-
+builder.Services.AddScoped<AttendanceService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

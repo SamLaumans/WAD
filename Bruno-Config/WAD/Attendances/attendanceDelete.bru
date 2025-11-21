@@ -1,0 +1,32 @@
+meta {
+  name: attendanceDelete
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{url}}/attendances?attendanceid=26404282-c26d-456c-a8f3-8b9b950838cb
+  body: json
+  auth: inherit
+}
+
+params:query {
+  attendanceid: 26404282-c26d-456c-a8f3-8b9b950838cb
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: {{token}}
+}
+
+body:json {
+  {
+      "title": "Titel 2 jaman"
+  }
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
