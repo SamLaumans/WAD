@@ -1,0 +1,20 @@
+meta {
+  name: Reviews
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{url}}/reviews
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: {{token}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
