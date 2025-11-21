@@ -1,0 +1,35 @@
+meta {
+  name: registerMilan
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{url}}/auth/register
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+      "username": "Milan",
+      "password": "Testing456",
+      "email": "milan@gmail.com"
+  }
+  
+}
+
+script:post-response {
+  const data = res.getBody();  
+  bru.setVar("token", "Bearer " + data.token);
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

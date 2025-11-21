@@ -1,32 +1,54 @@
-using Officecalendar.Backend.Models;
 using OfficeCalendar.Backend.DTOs;
+using WADapi.Data;
+using Microsoft.EntityFrameworkCore;
+using Officecalendar.Backend.Models;
+using BCrypt.Net;
 
 namespace OfficeCalendar.Backend.Services;
 
 public class AuthService
 {
-    private readonly List<User> _users = new()
+    private readonly AppDbContext _context;
+
+    public AuthService(AppDbContext context)
     {
-        new User { username = "admin", email = "hoi@hotmail.com", nickname = "Mex", creation_date = DateTime.Now, role = 1, password = "password123"},
-        new User { username = "user1", email = "hoi2@hotmail.com", nickname = "Job", creation_date = DateTime.Now, role = 0, password = "password456"},
-    };
+        _context = context;
+    }
 
-    public LoginResponse Login(LoginRequest request)
+    public async Task<LoginResponseDto> Login(LoginPostDto request)
     {
-        var user = _users.FirstOrDefault(u => u.username == request.Username);
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.username == request.username);
 
-        if (user == null || user.password != request.Password)
+        if (user == null)
+            return new LoginResponseDto { success = false, message = "Invalid username or password" };
+
+        bool isPasswordCorrect = BCrypt.Net.BCrypt.Verify(request.password, user.password);
+
+        if (!isPasswordCorrect)
+            return new LoginResponseDto { success = false, message = "Invalid username or password" };
+
+        return new LoginResponseDto { success = true, username = user.username };
+    }
+
+    public async Task<RegisterResponseDto> Register(RegisterPostDto request)
+    {
+        if (await _context.Users.AnyAsync(u => u.username == request.username))
+            return new RegisterResponseDto { success = false, message = "Username taken" };
+
+        var user = new User
         {
-            return new LoginResponse { Success = false, Message = "Invalid username or password" };
-        }
-
-        var role = user.username == "admin" ? "Admin" : "Employee";
-
-        return new LoginResponse
-        {
-            Success = true,
-            Message = "Login successful",
-            Role = role
+            username = request.username,
+            email = request.email,
+            password = BCrypt.Net.BCrypt.HashPassword(request.password),
+            nickname = request.nickname ?? request.username,
+            creation_date = DateTime.UtcNow,
+            role = 0
         };
+
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync();
+
+        return new RegisterResponseDto { success = true, username = user.username };
     }
 }
