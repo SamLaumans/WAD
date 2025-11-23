@@ -22,7 +22,7 @@ public class MessagesController : ControllerBase
     [HttpGet]
     public ActionResult<MessageGetDto> GetMessage([FromQuery] Guid messageid)
     {
-        var message = _messageService.GetByGuid(messageid);
+        var message = _messageService.GetMessageDtoByGuid(messageid);
         if (message == null)
             return NotFound(new
             {
@@ -30,23 +30,12 @@ public class MessagesController : ControllerBase
                 message = $"Message with id {messageid} not found"
             });
 
-        if (message.sender_username != User.Identity.Name && !message.MessageReceivers.Any(u => u.username == User.Identity.Name))
+        if (message.sender_username != User.Identity.Name && !message.receivers.Contains(User.Identity.Name))
         {
             return Forbid();
         }
 
-        var dto = new MessageGetDto
-        {
-            sender_username = message.sender_username,
-            title = message.title,
-            desc = message.desc,
-            receivers = message.MessageReceivers.Select(r => r.username).ToList(),
-            referenced_event_id = message.referenced_event_id,
-            creation_date = message.creation_date,
-            last_edited_date = message.last_edited_date
-        };
-
-        return Ok(dto);
+        return Ok(message);
     }
 
     [HttpGet("me")]
@@ -85,18 +74,7 @@ public class MessagesController : ControllerBase
             });
         }
 
-        var createdDto = new MessageGetDto
-        {
-            sender_username = response.message.sender_username,
-            title = response.message.title,
-            desc = response.message.desc,
-            receivers = response.message.MessageReceivers.Select(r => r.username).ToList(),
-            referenced_event_id = response.message.referenced_event_id,
-            creation_date = response.message.creation_date,
-            last_edited_date = response.message.last_edited_date
-        };
-
-        return CreatedAtAction(nameof(GetMessage), new { messageid = response.message.id }, createdDto);
+        return CreatedAtAction(nameof(GetMessage), new { messageid = response.message.id }, response);
     }
 
     [HttpDelete]
@@ -136,18 +114,7 @@ public class MessagesController : ControllerBase
             return Forbid();
         }
 
-        _messageService.UpdateMessage(message, dto);
-
-        var updatedDto = new MessageGetDto
-        {
-            sender_username = message.sender_username,
-            title = message.title,
-            desc = message.desc,
-            receivers = message.MessageReceivers.Select(r => r.username).ToList(),
-            referenced_event_id = message.referenced_event_id,
-            creation_date = message.creation_date,
-            last_edited_date = message.last_edited_date
-        };
+        MessageGetDto updatedDto = _messageService.UpdateMessage(message, dto);
 
         return Ok(updatedDto);
     }

@@ -17,20 +17,22 @@ namespace OfficeCalendar.Backend.Services
         public Attendance? GetAttendanceByGuid(Guid attendanceId)
         {
             return _context.Attendances
+            .Where(a => a.visible == true)
             .Include(a => a.User)
             .Include(a => a.CreatorUser)
             .FirstOrDefault(a => a.id == attendanceId);
         }
 
-        public AttendanceGetDto? GetAttendanceDtoByGuid(Guid attendanceId, string creator_username)
+        public AttendanceGetDto? GetAttendanceDtoByGuid(Guid attendanceId)
         {
             return _context.Attendances
             .Where(a => a.id == attendanceId)
+            .Where(a => a.visible == true)
             .Select(a => new AttendanceGetDto
             {
                 id = a.id,
                 username = a.username,
-                creator_username = creator_username,
+                creator_username = a.creator_username,
                 date = a.date,
                 status = a.status
             })
@@ -41,7 +43,7 @@ namespace OfficeCalendar.Backend.Services
         {
             return _context.Attendances
                 .Where(a => a.username == username)
-                // .Where(a => a.visible == true)
+                .Where(a => a.visible == true)
                 .Select(a => new AttendanceGetDto
                 {
                     id = a.id,
@@ -88,7 +90,7 @@ namespace OfficeCalendar.Backend.Services
             _context.SaveChanges();
         }
 
-        public AttendanceGetDto UpdateAttendance(Attendance attendance, AttendancePutDto dto, string creator_username)
+        public AttendanceGetDto UpdateAttendance(Attendance attendance, AttendancePutDto dto)
         {
             if (!string.IsNullOrEmpty(dto.username))
                 attendance.username = dto.username;

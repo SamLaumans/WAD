@@ -21,6 +21,25 @@ namespace OfficeCalendar.Backend.Services
             .FirstOrDefault(m => m.id == messageId);
         }
 
+        public MessageGetDto? GetMessageDtoByGuid(Guid messageId)
+        {
+            return _context.Messages
+            .Where(m => m.id == messageId)
+            .Select(m => new MessageGetDto
+            {
+                id = m.id,
+                sender_username = m.sender_username,
+                title = m.title,
+                desc = m.desc,
+                receivers = m.MessageReceivers.Select(r => r.username).ToList(),
+                referenced_event_id = m.referenced_event_id,
+                creation_date = m.creation_date,
+                last_edited_date = m.last_edited_date,
+                visible = m.visible
+            })
+            .FirstOrDefault();
+        }
+
         public MessageGetDto[] GetMessagesForUser(string username)
         {
             return _context.Messages
@@ -28,19 +47,21 @@ namespace OfficeCalendar.Backend.Services
                 .Where(m => m.visible == true)
                 .Select(m => new MessageGetDto
                 {
+                    id = m.id,
                     sender_username = m.sender_username,
                     title = m.title,
                     desc = m.desc,
                     receivers = m.MessageReceivers.Select(r => r.username).ToList(),
                     referenced_event_id = m.referenced_event_id,
                     creation_date = m.creation_date,
-                    last_edited_date = m.last_edited_date
+                    last_edited_date = m.last_edited_date,
+                    visible = m.visible
                 })
                 .AsNoTracking()
                 .ToArray();
         }
 
-        public (bool success, string? error, Message? message) PostMessage(MessagePostDto dto, string username)
+        public (bool success, string? error, MessageGetDto? message) PostMessage(MessagePostDto dto, string username)
         {
             var message = new Message
             {
@@ -82,7 +103,20 @@ namespace OfficeCalendar.Backend.Services
 
             _context.SaveChanges();
 
-            return (true, null, message);
+            var messageDto = new MessageGetDto
+            {
+                id = message.id,
+                sender_username = message.sender_username,
+                title = message.title,
+                desc = message.desc,
+                receivers = uniqueReceivers,
+                referenced_event_id = message.referenced_event_id,
+                creation_date = message.creation_date,
+                last_edited_date = message.last_edited_date,
+                visible = message.visible
+            };
+
+            return (true, null, messageDto);
         }
 
         public void DeleteMessage(Message message)
@@ -91,7 +125,7 @@ namespace OfficeCalendar.Backend.Services
             _context.SaveChanges();
         }
 
-        public void UpdateMessage(Message message, MessagePutDto dto)
+        public MessageGetDto UpdateMessage(Message message, MessagePutDto dto)
         {
             if (!string.IsNullOrEmpty(dto.title))
                 message.title = dto.title;
@@ -108,6 +142,21 @@ namespace OfficeCalendar.Backend.Services
             message.last_edited_date = DateTime.UtcNow;
 
             _context.SaveChanges();
+
+            var uniqueReceivers = dto.receivers.Distinct().ToList();
+
+            return new MessageGetDto
+            {
+                id = message.id,
+                sender_username = message.sender_username,
+                title = message.title,
+                desc = message.desc,
+                receivers = uniqueReceivers,
+                referenced_event_id = message.referenced_event_id,
+                creation_date = message.creation_date,
+                last_edited_date = message.last_edited_date,
+                visible = message.visible
+            };
         }
     }
 }
