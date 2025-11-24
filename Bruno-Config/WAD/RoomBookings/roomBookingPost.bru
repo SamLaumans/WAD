@@ -1,11 +1,11 @@
 meta {
-  name: messagePost
+  name: roomBookingPost
   type: http
   seq: 1
 }
 
 post {
-  url: {{url}}/messages
+  url: {{url}}/roombookings
   body: json
   auth: inherit
 }
@@ -17,10 +17,9 @@ headers {
 
 body:json {
   {
-      "title": "Hallo",
-      "desc": "Hoi mex",
-      "referenced_event_id": null,
-      "receivers": ["Mex"]
+      "room_id": "97aaa018-eabf-4c3d-9cbb-077c36bc936a",
+      "start_time": "2025-11-11T11:12:28+00:00",
+      "end_time": "2025-11-11T12:12:28+00:00"
   }
   
 }

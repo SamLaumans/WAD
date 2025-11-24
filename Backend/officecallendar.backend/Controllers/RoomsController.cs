@@ -19,7 +19,7 @@ public class RoomsController : ControllerBase
         _roomService = roomService;
     }
 
-    [HttpGet]
+    [HttpGet("by-id")]
     public ActionResult<RoomGetDto> GetRoom([FromQuery] Guid roomId)
     {
         var room = _roomService.GetRoomDtoByGuid(roomId);
@@ -40,7 +40,7 @@ public class RoomsController : ControllerBase
         return Ok(room);
     }
 
-    [HttpGet]
+    [HttpGet("by-location")]
     public ActionResult<RoomGetDto> GetRoomByLocation([FromQuery] string location)
     {
         var room = _roomService.GetRoomDtoByLocation(location);

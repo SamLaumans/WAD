@@ -19,9 +19,7 @@ namespace Officecalendar.Backend.Models
         public User User { get; set; } = null!;
 
         [ForeignKey(nameof(event_id))]
-        public Event Event { get; set; } = null!;
-
-        public ICollection<RoomBookingRoom> RoomBookingRooms { get; set; } = new List<RoomBookingRoom>();
+        public Event? Event { get; set; }
 
     }
 }

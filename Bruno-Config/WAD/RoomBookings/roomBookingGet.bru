@@ -1,0 +1,25 @@
+meta {
+  name: roomBookingGet
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{url}}/roombookings/?roombookingid=d7a73364-483a-4f18-9d85-8657a9a5d1db
+  body: none
+  auth: inherit
+}
+
+params:query {
+  roombookingid: d7a73364-483a-4f18-9d85-8657a9a5d1db
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: {{token}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
