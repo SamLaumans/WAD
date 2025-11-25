@@ -16,15 +16,16 @@ public class RolBeheerController : ControllerBase
         _userService = userService;
     }
 
-    // GET: api/ListUsers
-    [HttpGet("ListUsers")]
-    public async Task<ActionResult<List<UserSearchDto>>> GetListOfUsersRealTime()
+    [HttpGet("SearchUsers")]
+    public async Task<ActionResult<List<UserSearchDto>>> SearchUsers([FromQuery] string query)
     {
-        var users = await _userService.GetAllUsersAsync();
+        if (string.IsNullOrWhiteSpace(query))
+            return Ok(new List<UserSearchDto>());
+
+        var users = await _userService.SearchUsersByUsernameAsync(query);
         return Ok(users);
     }
 
-    // POST: api/AdjustRole
     [HttpPost("AdjustRole")]
     public async Task<ActionResult<UserSearchDto>> AdjustUserRole([FromBody] AdjustRoleDto dto)
     {

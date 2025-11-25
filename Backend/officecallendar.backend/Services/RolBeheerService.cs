@@ -12,9 +12,10 @@ public class UserService : IUserService
         _db = db;
     }
 
-    public async Task<List<UserSearchDto>> GetAllUsersAsync()
+    public async Task<List<UserSearchDto>> SearchUsersByUsernameAsync(string query)
     {
         return await _db.Users
+            .Where(u => u.username.Contains(query))
             .Select(u => new UserSearchDto
             {
                 Username = u.username,
@@ -23,6 +24,7 @@ public class UserService : IUserService
             })
             .ToListAsync();
     }
+
 
     public async Task<UserSearchDto?> ChangeUserRoleAsync(string username, int newRole)
     {
