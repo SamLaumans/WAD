@@ -65,6 +65,14 @@ public class RoomBookingsController : ControllerBase
                     message = ModelState
                 });
 
+        if (!_roomBookingService.IsTimeSlotAvailable(dto.start_time, dto.end_time, dto.room_id))
+        {
+            return Conflict(new
+            {
+                statuscode = 409,
+                message = "Time slot overlaps with an existing room booking."
+            });
+        }
         var response = _roomBookingService.PostRoomBooking(dto, User.Identity.Name);
 
         return CreatedAtAction(nameof(GetRoomBooking), new { roomBookingid = response.id }, response);
@@ -103,6 +111,19 @@ public class RoomBookingsController : ControllerBase
                 statuscode = 404,
                 message = $"RoomBooking not found"
             });
+
+        var newStart = dto.start_time ?? roomBooking.start_time;
+        var newEnd = dto.end_time ?? roomBooking.end_time;
+        var roomId = dto.room_id ?? roomBooking.room_id;
+
+        if (!_roomBookingService.IsTimeSlotAvailable(newStart, newEnd, roomId, roomBooking.id))
+        {
+            return Conflict(new
+            {
+                statuscode = 409,
+                message = "Time slot overlaps with an existing room booking."
+            });
+        }
 
         // if (roomBooking.username != User.Identity.Name)
         // {

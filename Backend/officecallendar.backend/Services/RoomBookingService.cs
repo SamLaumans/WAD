@@ -160,6 +160,11 @@ namespace OfficeCalendar.Backend.Services
             };
         }
 
+        public bool IsTimeSlotAvailable(DateTime start, DateTime end, Guid roomId, Guid? ignoreId = null)
+        {
+            return !_context.RoomBookings.Any(b => b.room_id == roomId && (ignoreId == null || b.id != ignoreId.Value) &&
+            start < b.end_time && end > b.start_time);
+        }
 
     }
 }
