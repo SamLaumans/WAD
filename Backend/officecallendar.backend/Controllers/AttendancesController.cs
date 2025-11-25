@@ -10,11 +10,11 @@ namespace OfficeCalendar.Backend.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class AttendancesController : ControllerBase
+public class AttendanceController : ControllerBase
 {
     private readonly AttendanceService _attendanceService;
 
-    public AttendancesController(AttendanceService attendanceService)
+    public AttendanceController(AttendanceService attendanceService)
     {
         _attendanceService = attendanceService;
     }

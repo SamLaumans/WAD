@@ -5,7 +5,6 @@ namespace OfficeCalendar.Backend.DTOs
         public required string username { get; set; }
         public required DateTime date { get; set; }
         public string status { get; set; } = string.Empty;
-        public bool visible { get; set; } = true;
     }
 
     public class AttendancePutDto

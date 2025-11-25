@@ -4,7 +4,7 @@ namespace OfficeCalendar.Backend.DTOs
     {
         public required string title { get; set; }
         public string desc { get; set; } = string.Empty;
-        public Guid? referenced_event_id { get; set; }
+        public Guid? referenced_event_id { get; set; } = null;
         public required List<string> receivers { get; set; }
     }
 
@@ -13,7 +13,7 @@ namespace OfficeCalendar.Backend.DTOs
         public string? title { get; set; }
         public string? desc { get; set; } = string.Empty;
         public Guid? referenced_event_id { get; set; }
-        public required List<string> receivers { get; set; }
+        public List<string>? receivers { get; set; }
         public bool? visible { get; set; }
     }
 

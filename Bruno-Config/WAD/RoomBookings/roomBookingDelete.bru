@@ -1,17 +1,17 @@
 meta {
-  name: attendanceDelete
+  name: roomBookingDelete
   type: http
   seq: 5
 }
 
 delete {
-  url: {{url}}/attendances?attendanceid=26404282-c26d-456c-a8f3-8b9b950838cb
+  url: {{url}}/roombookings?roombookingid=d7a73364-483a-4f18-9d85-8657a9a5d1db
   body: json
   auth: inherit
 }
 
 params:query {
-  attendanceid: 26404282-c26d-456c-a8f3-8b9b950838cb
+  roombookingid: d7a73364-483a-4f18-9d85-8657a9a5d1db
 }
 
 headers {

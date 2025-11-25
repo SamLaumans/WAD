@@ -14,6 +14,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<MessageService>();
 builder.Services.AddScoped<AttendanceService>();
+builder.Services.AddScoped<RoomService>();
+builder.Services.AddScoped<RoomBookingService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
