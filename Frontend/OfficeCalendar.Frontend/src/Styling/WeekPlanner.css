@@ -10,7 +10,7 @@ body {
 .planner-container {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    height: calc(100vh - 90px);
 }
 
 /* HEADER */
@@ -68,9 +68,11 @@ body {
 /* TABLE CONTAINER */
 .planner-table-container {
     flex: 1;
-    overflow-x: auto;
     overflow-y: auto;
+    overflow-x: auto;
     padding: 1rem 2rem;
+    max-height: calc(100vh - 90px);
+    /* 90px = header hoogte */
 }
 
 /* TABLE */

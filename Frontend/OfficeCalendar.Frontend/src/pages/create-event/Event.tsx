@@ -7,8 +7,8 @@ function Event() {
     naam: string;
     info: string;
     leden: string;
-    datum: string;
-    tijd: string;
+    starttijd: string;
+    eindtijd: string;
   };
 
   //zorgt ervoor dat formdata een state krijgt, hieronder wordt ook de basisstate gegeven
@@ -16,8 +16,8 @@ function Event() {
     naam: '',
     info: '',
     leden: '',
-    datum: '',
-    tijd: ''
+    starttijd: '',
+    eindtijd: ''
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -38,8 +38,8 @@ function Event() {
       naam: '',
       info: '',
       leden: '',
-      datum: '',
-      tijd: ''
+      starttijd: '',
+      eindtijd: ''
     });
   };
 
@@ -49,7 +49,7 @@ function Event() {
 
       <div id="form-wrapper">
         <form onSubmit={handleSubmit} className="event-form">
-          <div id="form1">
+          <div id="form">
             <label htmlFor="eventName">Naam van het event</label>
             <input
               type="text"
@@ -80,30 +80,28 @@ function Event() {
               onChange={handleChange}
               required
             />
-          </div>
 
-          <div id="form2">
-            <label htmlFor="eventDate">Datum van het event</label>
+            <label htmlFor="eventStartTime">Start tijd van het event</label>
             <input
-              type="date"
-              id="eventDate"
-              name="datum"
+              type="time"
+              id="eventStartTime"
+              name="start tijd"
               value={formData.datum}
               onChange={handleChange}
               required
             />
 
-            <label htmlFor="eventTime">Tijd van het event</label>
+            <label htmlFor="eventEndTime">Eind tijd van het event</label>
             <input
               type="time"
-              id="eventTime"
-              name="tijd"
+              id="eventEndTime"
+              name="eind tijd"
               value={formData.tijd}
               onChange={handleChange}
               required
             />
 
-            <button type="submit">Event Aanmaken</button>
+            <button className="event-button" type="submit">Event Aanmaken</button>
           </div>
         </form>
       </div>
