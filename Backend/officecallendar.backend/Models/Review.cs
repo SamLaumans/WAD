@@ -4,6 +4,8 @@ namespace Officecalendar.Backend.Models
 {
     public class Review
     {
+        internal Guid referenced_event_id;
+
         [Key]
         public required Guid id { get; set; }
         public required Guid event_id { get; set; }

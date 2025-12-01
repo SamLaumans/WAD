@@ -23,5 +23,7 @@ namespace OfficeCalendar.Backend.DTOs
         public string? username { get; set; }
         public int? stars { get; set; }
         public string? desc { get; set; } = string.Empty;
+        public bool? visible { get; set; }
+        public Guid? referenced_event_id { get; set; }
     }
 }

@@ -79,8 +79,8 @@ namespace OfficeCalendar.Backend.Services
 
         public void UpdateReview(Review review, ReviewsPutDto dto)
         {
-            if (!string.IsNullOrEmpty(dto.title))
-                review.title = dto.title;
+            if (dto.stars.HasValue)
+                review.stars = (int)dto.stars;
 
             if (!string.IsNullOrEmpty(dto.desc))
                 review.desc = dto.desc;

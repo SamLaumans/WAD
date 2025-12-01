@@ -116,11 +116,11 @@ public class ReviewsController : ControllerBase
 
         var updatedDto = new ReviewsGetDto
         {
-            sender_username = review.sender_username,
-            title = review.title,
+            id = review.id,
+            event_id = review.event_id,
+            username = review.username,
+            stars = review.stars,
             desc = review.desc,
-            receivers = review.ReviewReceivers.Select(r => r.username).ToList(),
-            referenced_event_id = review.referenced_event_id,
             creation_date = review.creation_date,
             last_edited_date = review.last_edited_date
         };
