@@ -1,46 +1,104 @@
-import React, { useState } from 'react';
-import './Event.css';
+import React, { useEffect, useState } from "react";
 
-function Event() {
-  //zorgt dat alle types string zijn
+type Slot = {
+  day: string;
+  time: string;
+};
+
+type Props = {
+  slot?: Slot | null;
+  onClose: () => void;
+};
+
+function Event({ slot, onClose }: Props) {
   type FormData = {
     naam: string;
     info: string;
     leden: string;
-    datum: string;
-    tijd: string;
+    starttijd: string;
+    eindtijd: string;
   };
 
-  //zorgt ervoor dat formdata een state krijgt, hieronder wordt ook de basisstate gegeven
   const [formData, setFormData] = useState<FormData>({
-    naam: '',
-    info: '',
-    leden: '',
-    datum: '',
-    tijd: ''
+    naam: "",
+    info: "",
+    leden: "",
+    starttijd: "",
+    eindtijd: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    //de name van de field en de value die wordt ingevoerd door de gebruiker
-    const { name, value } = e.target;
+  // vul start/eind tijd als er een slot is (bv. "09:30" -> eind +1 uur)
+  useEffect(() => {
+    if (!slot) return;
+    const start = slot.time;
+    // Probeer tijd + 1 uur
+    const [hh, mm] = start.split(":").map((s) => parseInt(s, 10));
+    if (!isNaN(hh)) {
+      const endDate = new Date();
+      endDate.setHours(hh + 1, isNaN(mm) ? 0 : mm, 0, 0);
+      const endStr = `${endDate.getHours().toString().padStart(2, "0")}:${endDate
+        .getMinutes()
+        .toString()
+        .padStart(2, "0")}`;
+      setFormData((prev) => ({ ...prev, starttijd: start, eindtijd: endStr }));
+    } else {
+      setFormData((prev) => ({ ...prev, starttijd: start }));
+    }
+  }, [slot]);
 
-    //Hij maakt een kopie waarin hij de waarde voor specifieke velden veranderd waar de gebruiker data heeft ingevuld
-    setFormData(prev => ({ ...prev, [name]: value }));
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('Event aangemaakt:', formData);
-    alert('Event succesvol aangemaakt!');
 
-    //reset de form data
-    setFormData({
-      naam: '',
-      info: '',
-      leden: '',
-      datum: '',
-      tijd: ''
-    });
+    // optional: read username from localStorage if available
+    const creator_username = localStorage.getItem("username") ?? undefined;
+
+    const payload: any = {
+      naam: formData.naam,
+      info: formData.info,
+      leden: formData.leden,
+      starttijd: formData.starttijd,
+      eindtijd: formData.eindtijd,
+    };
+    if (creator_username) payload.creator_username = creator_username;
+
+    try {
+      const res = await fetch("http://localhost:5267/api/events/event-form", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.status === 201 || res.ok) {
+        const data = await res.json();
+        alert("Event succesvol aangemaakt!");
+        // optioneel: gebruik returned data (data.id) voor iets
+        // reset form
+        setFormData({
+          naam: "",
+          info: "",
+          leden: "",
+          starttijd: "",
+          eindtijd: "",
+        });
+        onClose();
+      } else {
+        const err = await res.json().catch(() => null);
+        const msg = err?.error ?? (await res.text());
+        alert("Fout bij aanmaken event: " + msg);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Netwerkfout bij aanmaken event");
+    }
   };
 
   return (
@@ -49,66 +107,56 @@ function Event() {
 
       <div id="form-wrapper">
         <form onSubmit={handleSubmit} className="event-form">
-          <div id="form1">
-            <label htmlFor="eventName">Naam van het event</label>
+          <div id="form">
+            <label>Naam</label>
             <input
-              type="text"
-              id="eventName"
               name="naam"
               value={formData.naam}
               onChange={handleChange}
               required
             />
 
-            <label htmlFor="eventInfo">Informatie over het event</label>
+            <label>Info</label>
             <textarea
-              id="eventInfo"
               name="info"
-              rows={4}
               value={formData.info}
               onChange={handleChange}
-              required
             />
 
-            <label htmlFor="eventMembers">Leden van het event</label>
+            <label>Leden (komma-gescheiden)</label>
             <input
-              type="text"
-              id="eventMembers"
               name="leden"
-              placeholder="Bijv. Jan, Petra, Mohammed"
               value={formData.leden}
               onChange={handleChange}
-              required
+              placeholder="jan,piet"
             />
-          </div>
 
-          <div id="form2">
-            <label htmlFor="eventDate">Datum van het event</label>
+            <label>Starttijd (ISO of HH:mm)</label>
             <input
-              type="date"
-              id="eventDate"
-              name="datum"
-              value={formData.datum}
+              name="starttijd"
+              value={formData.starttijd}
               onChange={handleChange}
               required
+              placeholder="09:30 of 2025-12-01T09:30:00"
             />
 
-            <label htmlFor="eventTime">Tijd van het event</label>
+            <label>Eindtijd (ISO of HH:mm)</label>
             <input
-              type="time"
-              id="eventTime"
-              name="tijd"
-              value={formData.tijd}
+              name="eindtijd"
+              value={formData.eindtijd}
               onChange={handleChange}
               required
+              placeholder="10:30 of 2025-12-01T10:30:00"
             />
 
-            <button type="submit">Event Aanmaken</button>
+            <button className="event-button" type="submit">
+              Aanmaken
+            </button>
           </div>
         </form>
       </div>
     </div>
   );
-};
+}
 
 export default Event;

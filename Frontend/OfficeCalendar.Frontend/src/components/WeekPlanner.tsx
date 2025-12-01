@@ -1,12 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../Styling/WeekPlanner.css'
+import EventModal from '../pages/create-event/EventModal';
 
 // The WeekPlanner component displays a weekly schedule grid
 // with time slots along the left and days of the week across the top.
 // It's designed to later display events or appointments in each cell.
 export default function WeekPlanner() {
     // Array representing days of the week (Sunday → Saturday)
+    const [showEventModal, setShowEventModal] = React.useState(false);
+    const [selectedSlot, setSelectedSlot] = React.useState<{ day: string; time: string } | null>(null);
+    const [modalPosition, setModalPosition] = React.useState<{ top: number; left: number } | null>(null);
+
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
     // Array of time slots for each day, used to build the table rows
@@ -16,6 +21,40 @@ export default function WeekPlanner() {
         '17:00', '17:30', '18:00', '18:30', '19:00'
     ];
 
+    const POPUP_WIDTH = 350;
+    const POPUP_HEIGHT = 620;
+
+    const handleCellClick = (
+        day: string,
+        time: string,
+        e: React.MouseEvent<HTMLTableCellElement>
+    ) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+
+        // 1. RECHTS of LINKS?
+        const enoughSpaceRight = rect.right + POPUP_WIDTH < window.innerWidth;
+        const left = enoughSpaceRight ? rect.right : rect.left - POPUP_WIDTH;
+
+        // 2. POPUP verticaal centreren tov cel
+        let top = rect.top + rect.height / 2 - POPUP_HEIGHT / 2;
+
+        // 3. Prevent overflowing TOP
+        if (top < 0) {
+            top = 10; // kleine margin
+        }
+
+        // 4. Prevent overflowing BOTTOM
+        if (top + POPUP_HEIGHT > window.innerHeight) {
+            top = window.innerHeight - POPUP_HEIGHT - 10;
+        }
+
+        // Set final popup position
+        setModalPosition({ top, left });
+
+        setSelectedSlot({ day, time });
+        setShowEventModal(true);
+    };
+    
     return (
         <div className="planner-container">
             {/* HEADER SECTION */}
@@ -30,12 +69,23 @@ export default function WeekPlanner() {
 
                 {/* Right side: user account options */}
                 <div className="planner-header-right">
-                    <Link to="/create-event" >Create Event</Link>
-
+                    <button
+                        onClick={() => setShowEventModal(true)}
+                        style={{ cursor: 'pointer' }}
+                    >
+                        Nieuw Event Aanmaken
+                    </button>
                 </div>
             </header>
 
             {/*MAIN WEEK GRID SECTION*/}
+            {/* EVENT POPUP */}
+            <EventModal
+                show={showEventModal}
+                onClose={() => setShowEventModal(false)}
+                position={modalPosition}
+            />
+
             <div className="planner-table-container">
                 <table className="planner-table">
                     <thead>
@@ -59,7 +109,11 @@ export default function WeekPlanner() {
 
                                 {/* Create a cell for each day at that time slot */}
                                 {days.map((day) => (
-                                    <td key={day + time}></td> // Each empty cell could later hold an event
+                                    <td
+                                        key={day + time}
+                                        className="planner-cell"
+                                        onClick={(e) => handleCellClick(day, time, e)}
+                                    ></td>
                                 ))}
                             </tr>
                         ))}
