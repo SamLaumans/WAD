@@ -17,6 +17,7 @@ namespace OfficeCalendar.Backend.Services
         public Review? GetByGuid(Guid reviewId)
         {
             return _context.Reviews
+            .Where(r => r.visible)
             .Include(m => m.User)
             .Include(r => r.Event)
             .FirstOrDefault(r => r.id == reviewId);

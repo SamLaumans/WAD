@@ -1,17 +1,17 @@
 meta {
   name: EventDelete
   type: http
-  seq: 6
+  seq: 5
 }
 
 delete {
-  url: {{url}}/messages?messageid=49021fb0-3de1-42e6-8e18-08de28d49b7e
+  url: {{url}}/events?eventid=5666882e-e6b0-4ef6-ae87-46fecf29a2dc
   body: json
   auth: inherit
 }
 
 params:query {
-  messageid: 49021fb0-3de1-42e6-8e18-08de28d49b7e
+  eventid: 5666882e-e6b0-4ef6-ae87-46fecf29a2dc
 }
 
 headers {

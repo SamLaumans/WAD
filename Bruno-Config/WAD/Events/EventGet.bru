@@ -1,17 +1,17 @@
 meta {
   name: EventGet
   type: http
-  seq: 5
+  seq: 1
 }
 
 get {
-  url: {{url}}/attendances/?attendanceid=26404282-c26d-456c-a8f3-8b9b950838cb
+  url: {{url}}/events/get-one/?eventid=5666882e-e6b0-4ef6-ae87-46fecf29a2dc
   body: none
   auth: inherit
 }
 
 params:query {
-  attendanceid: 26404282-c26d-456c-a8f3-8b9b950838cb
+  eventid: 5666882e-e6b0-4ef6-ae87-46fecf29a2dc
 }
 
 headers {
