@@ -19,7 +19,6 @@ const AdminRolBeheer: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<any | null>(null);
   const [newRole, setNewRole] = useState("user");
 
-  // 🔍 Fetch server-side search results
   useEffect(() => {
     if (search.trim().length === 0) {
       setSuggestions([]);
@@ -43,7 +42,7 @@ const AdminRolBeheer: React.FC = () => {
   const handleSelectUser = (u: any) => {
     setSelectedUser(u);
     setNewRole(ROLE_MAP[u.role]);
-    setSearch("");  // close suggestions
+    setSearch(""); 
     setSuggestions([]);
   };
 
@@ -90,8 +89,6 @@ const AdminRolBeheer: React.FC = () => {
             onChange={(e) => setSearch(e.target.value)}
             style={{ width: "400px", padding: "8px" }}
           />
-
-          {/* 🔽 Suggestions dropdown */}
           {suggestions.length > 0 && (
             <div id="suggestions" className="card">
               {suggestions.map((u) => (
@@ -106,7 +103,6 @@ const AdminRolBeheer: React.FC = () => {
             </div>
           )}
 
-          {/* 👤 Selected user card */}
           {selectedUser && (
             <div id="selected-user" className="card">
               <h3>Geselecteerde gebruiker</h3>
