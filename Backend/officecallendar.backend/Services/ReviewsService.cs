@@ -47,7 +47,7 @@ namespace OfficeCalendar.Backend.Services
             {
                 id = Guid.NewGuid(),
                 event_id = dto.event_id,
-                username = dto.username,
+                username = username,
                 stars = dto.stars,
                 desc = dto.desc,
                 creation_date = DateTime.UtcNow,

@@ -3,7 +3,6 @@ namespace OfficeCalendar.Backend.DTOs
     public class ReviewsPostDto
     {
         public required Guid event_id { get; set; }
-        public required string username { get; set; }
         public required int stars { get; set; }
         public string desc { get; set; } = string.Empty;
     }
