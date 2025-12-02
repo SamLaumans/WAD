@@ -40,7 +40,7 @@ const AppContent: React.FC = () => {
       {showHeaderFooter && <Toolbar />}
 
 
-      <main className="main-content" style={{ height: '80px' }}/>
+      <main className="main-content" style={{ height: '80px' }}>
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
@@ -68,8 +68,7 @@ const AppContent: React.FC = () => {
           <Route path="/MonthDayView" element={<MonthDayView />} />
           <Route path="/About" element={<About />} />
 
-      
-      </Routes>
+        </Routes>
       </main>
     </div>
     
