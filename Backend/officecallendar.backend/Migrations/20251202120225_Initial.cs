@@ -31,7 +31,8 @@ namespace officecallendar.backend.Migrations
                     id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     room_location = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     available = table.Column<bool>(type: "bit", nullable: false),
-                    capacity = table.Column<int>(type: "int", nullable: true)
+                    capacity = table.Column<int>(type: "int", nullable: true),
+                    visible = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -94,6 +95,7 @@ namespace officecallendar.backend.Migrations
                     end_time = table.Column<DateTime>(type: "datetime2", nullable: false),
                     last_edited_date = table.Column<DateTime>(type: "datetime2", nullable: true),
                     booking_id = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    visible = table.Column<bool>(type: "bit", nullable: false),
                     username = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -224,8 +226,8 @@ namespace officecallendar.backend.Migrations
                     start_time = table.Column<DateTime>(type: "datetime2", nullable: false),
                     end_time = table.Column<DateTime>(type: "datetime2", nullable: false),
                     booked_by = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    event_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Roomid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    event_id = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    visible = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -237,11 +239,11 @@ namespace officecallendar.backend.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_RoomBookings_Rooms_Roomid",
-                        column: x => x.Roomid,
+                        name: "FK_RoomBookings_Rooms_room_id",
+                        column: x => x.room_id,
                         principalTable: "Rooms",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_RoomBookings_Users_booked_by",
                         column: x => x.booked_by,
@@ -272,30 +274,6 @@ namespace officecallendar.backend.Migrations
                         principalTable: "Users",
                         principalColumn: "username",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RoomBookingRoom",
-                columns: table => new
-                {
-                    booking_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    room_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RoomBookingRoom", x => new { x.booking_id, x.room_id });
-                    table.ForeignKey(
-                        name: "FK_RoomBookingRoom_RoomBookings_booking_id",
-                        column: x => x.booking_id,
-                        principalTable: "RoomBookings",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_RoomBookingRoom_Rooms_room_id",
-                        column: x => x.room_id,
-                        principalTable: "Rooms",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -349,11 +327,6 @@ namespace officecallendar.backend.Migrations
                 column: "username");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RoomBookingRoom_room_id",
-                table: "RoomBookingRoom",
-                column: "room_id");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_RoomBookings_booked_by",
                 table: "RoomBookings",
                 column: "booked_by");
@@ -364,9 +337,9 @@ namespace officecallendar.backend.Migrations
                 column: "event_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RoomBookings_Roomid",
+                name: "IX_RoomBookings_room_id",
                 table: "RoomBookings",
-                column: "Roomid");
+                column: "room_id");
         }
 
         /// <inheritdoc />
@@ -388,7 +361,7 @@ namespace officecallendar.backend.Migrations
                 name: "Reviews");
 
             migrationBuilder.DropTable(
-                name: "RoomBookingRoom");
+                name: "RoomBookings");
 
             migrationBuilder.DropTable(
                 name: "Groups");
@@ -397,13 +370,10 @@ namespace officecallendar.backend.Migrations
                 name: "Messages");
 
             migrationBuilder.DropTable(
-                name: "RoomBookings");
+                name: "Rooms");
 
             migrationBuilder.DropTable(
                 name: "Events");
-
-            migrationBuilder.DropTable(
-                name: "Rooms");
 
             migrationBuilder.DropTable(
                 name: "Users");
