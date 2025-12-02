@@ -12,8 +12,8 @@ using WADapi.Data;
 namespace officecallendar.backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251121093431_UpdateMessagesWithVisible")]
-    partial class UpdateMessagesWithVisible
+    [Migration("20251202113856_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,6 +31,10 @@ namespace officecallendar.backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("creator_username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime>("date")
                         .HasColumnType("datetime2");
 
@@ -42,7 +46,12 @@ namespace officecallendar.backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<bool>("visible")
+                        .HasColumnType("bit");
+
                     b.HasKey("id");
+
+                    b.HasIndex("creator_username");
 
                     b.HasIndex("username");
 
@@ -201,6 +210,9 @@ namespace officecallendar.backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("creation_date")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("desc")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -208,12 +220,18 @@ namespace officecallendar.backend.Migrations
                     b.Property<Guid>("event_id")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("last_edited_date")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("stars")
                         .HasColumnType("int");
 
                     b.Property<string>("username")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("visible")
+                        .HasColumnType("bit");
 
                     b.HasKey("id");
 
@@ -326,11 +344,19 @@ namespace officecallendar.backend.Migrations
 
             modelBuilder.Entity("Officecalendar.Backend.Models.Attendance", b =>
                 {
+                    b.HasOne("Officecalendar.Backend.Models.User", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("creator_username")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("Officecalendar.Backend.Models.User", "User")
                         .WithMany("Attendances")
                         .HasForeignKey("username")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("CreatorUser");
 
                     b.Navigation("User");
                 });

@@ -1,20 +1,15 @@
 meta {
-  name: Reviews
+  name: ReviewsDelete
   type: http
-  seq: 1
+  seq: 5
 }
 
-get {
+delete {
   url: {{url}}/reviews
   body: none
   auth: inherit
 }
 
-headers {
-  Authorization: {{token}}
-}
-
 settings {
   encodeUrl: true
-  timeout: 0
 }
