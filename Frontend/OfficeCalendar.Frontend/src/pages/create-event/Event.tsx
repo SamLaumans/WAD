@@ -1,6 +1,17 @@
 import React, { useState } from "react";
+import "./Event.css";
 
-function Event() {
+type Slot = {
+  day: string;
+  time: string;
+};
+
+type Props = {
+  slot?: Slot;
+  onClose: () => void;
+};
+
+function Event({ slot, onClose }: Props) {
   type FormData = {
     title: string;
     desc: string;
@@ -11,8 +22,8 @@ function Event() {
   const [formData, setFormData] = useState<FormData>({
     title: "",
     desc: "",
-    start_time: "",
-    end_time: ""
+    start_time: slot?.time ?? "",
+    end_time: "",
   });
 
   const handleChange = (
@@ -33,41 +44,60 @@ function Event() {
       booking_id: null
     };
 
-    const res = await fetch("http://localhost:5000/api/event", {
+    const res = await fetch("http://localhost:5267/api/event", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
     });
 
-    if (res.ok) alert("Event aangemaakt!");
-    else alert("Fout bij opslaan!");
+    if (res.ok) {
+      alert("Event succesvol aangemaakt!");
+      onClose();
+    } else {
+      alert("Er ging iets mis bij het opslaan van het event.");
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="event-form">
+
       <label>Titel</label>
-      <input name="title" value={formData.title} onChange={handleChange} />
+      <input
+        name="title"
+        value={formData.title}
+        onChange={handleChange}
+        required
+      />
 
       <label>Beschrijving</label>
-      <textarea name="desc" value={formData.desc} onChange={handleChange} />
+      <textarea
+        name="desc"
+        rows={3}
+        value={formData.desc}
+        onChange={handleChange}
+      />
 
-      <label>Starttijd</label>
+      <label>Start tijd</label>
       <input
         type="time"
         name="start_time"
         value={formData.start_time}
         onChange={handleChange}
+        required
       />
 
-      <label>Eindtijd</label>
+      <label>Eind tijd</label>
       <input
         type="time"
         name="end_time"
         value={formData.end_time}
         onChange={handleChange}
+        required
       />
 
-      <button type="submit">Event Aanmaken</button>
+      <button className="event-button" type="submit">
+        Event aanmaken
+      </button>
     </form>
   );
 }

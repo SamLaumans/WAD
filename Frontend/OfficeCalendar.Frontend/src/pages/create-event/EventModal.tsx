@@ -10,7 +10,7 @@ type Slot = {
 type Props = {
   show: boolean;
   onClose: () => void;
-  slot?: { day: string; time: string };
+  slot?: Slot;
   position?: { top: number; left: number } | null;
 };
 
@@ -28,10 +28,7 @@ const EventModal: React.FC<Props> = ({ show, onClose, slot, position }) => {
         }}
       >
         <div className="event-modal-content">
-          <button
-            className="event-modal-close-button"
-            onClick={onClose}
-          >
+          <button className="event-modal-close-button" onClick={onClose}>
             ×
           </button>
 
@@ -41,8 +38,7 @@ const EventModal: React.FC<Props> = ({ show, onClose, slot, position }) => {
             </p>
           )}
 
-          {/* doorgeef slot en onClose */}
-          <Event slot={slot ?? undefined} onClose={onClose} />
+          <Event slot={slot} onClose={onClose} />
         </div>
       </div>
     </div>
