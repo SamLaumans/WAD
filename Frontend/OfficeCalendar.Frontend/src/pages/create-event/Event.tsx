@@ -1,114 +1,105 @@
-import React, { useState } from 'react';
-import './Event.css';
+import React, { useState } from "react";
+import "./Event.css";
 
-function Event() {
-  //zorgt dat alle types string zijn
+type Slot = {
+  day: string;
+  time: string;
+};
+
+type Props = {
+  slot?: Slot;
+  onClose: () => void;
+};
+
+function Event({ slot, onClose }: Props) {
   type FormData = {
-    naam: string;
-    info: string;
-    leden: string;
-    datum: string;
-    tijd: string;
+    title: string;
+    desc: string;
+    start_time: string;
+    end_time: string;
   };
 
-  //zorgt ervoor dat formdata een state krijgt, hieronder wordt ook de basisstate gegeven
   const [formData, setFormData] = useState<FormData>({
-    naam: '',
-    info: '',
-    leden: '',
-    datum: '',
-    tijd: ''
+    title: "",
+    desc: "",
+    start_time: slot?.time ?? "",
+    end_time: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    //de name van de field en de value die wordt ingevoerd door de gebruiker
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-
-    //Hij maakt een kopie waarin hij de waarde voor specifieke velden veranderd waar de gebruiker data heeft ingevuld
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('Event aangemaakt:', formData);
-    alert('Event succesvol aangemaakt!');
 
-    //reset de form data
-    setFormData({
-      naam: '',
-      info: '',
-      leden: '',
-      datum: '',
-      tijd: ''
+    const body = {
+      title: formData.title,
+      desc: formData.desc,
+      start_time: new Date(`1970-01-01T${formData.start_time}:00`),
+      end_time: new Date(`1970-01-01T${formData.end_time}:00`),
+      booking_id: null
+    };
+
+    const res = await fetch("http://localhost:5267/api/event", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
     });
+
+    if (res.ok) {
+      alert("Event succesvol aangemaakt!");
+      onClose();
+    } else {
+      alert("Er ging iets mis bij het opslaan van het event.");
+    }
   };
 
   return (
-    <div>
-      <div id="Eventheader">Event Aanmaken</div>
+    <form onSubmit={handleSubmit} className="event-form">
 
-      <div id="form-wrapper">
-        <form onSubmit={handleSubmit} className="event-form">
-          <div id="form1">
-            <label htmlFor="eventName">Naam van het event</label>
-            <input
-              type="text"
-              id="eventName"
-              name="naam"
-              value={formData.naam}
-              onChange={handleChange}
-              required
-            />
+      <label>Titel</label>
+      <input
+        name="title"
+        value={formData.title}
+        onChange={handleChange}
+        required
+      />
 
-            <label htmlFor="eventInfo">Informatie over het event</label>
-            <textarea
-              id="eventInfo"
-              name="info"
-              rows={4}
-              value={formData.info}
-              onChange={handleChange}
-              required
-            />
+      <label>Beschrijving</label>
+      <textarea
+        name="desc"
+        rows={3}
+        value={formData.desc}
+        onChange={handleChange}
+      />
 
-            <label htmlFor="eventMembers">Leden van het event</label>
-            <input
-              type="text"
-              id="eventMembers"
-              name="leden"
-              placeholder="Bijv. Jan, Petra, Mohammed"
-              value={formData.leden}
-              onChange={handleChange}
-              required
-            />
-          </div>
+      <label>Start tijd</label>
+      <input
+        type="time"
+        name="start_time"
+        value={formData.start_time}
+        onChange={handleChange}
+        required
+      />
 
-          <div id="form2">
-            <label htmlFor="eventDate">Datum van het event</label>
-            <input
-              type="date"
-              id="eventDate"
-              name="datum"
-              value={formData.datum}
-              onChange={handleChange}
-              required
-            />
+      <label>Eind tijd</label>
+      <input
+        type="time"
+        name="end_time"
+        value={formData.end_time}
+        onChange={handleChange}
+        required
+      />
 
-            <label htmlFor="eventTime">Tijd van het event</label>
-            <input
-              type="time"
-              id="eventTime"
-              name="tijd"
-              value={formData.tijd}
-              onChange={handleChange}
-              required
-            />
-
-            <button type="submit">Event Aanmaken</button>
-          </div>
-        </form>
-      </div>
-    </div>
+      <button className="event-button" type="submit">
+        Event aanmaken
+      </button>
+    </form>
   );
-};
+}
 
 export default Event;

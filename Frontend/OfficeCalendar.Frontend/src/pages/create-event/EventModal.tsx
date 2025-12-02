@@ -1,22 +1,45 @@
 import React from "react";
 import Event from "./Event";
-import "./Modal.css";
+import "./EventModal.css";
+
+type Slot = {
+  day: string;
+  time: string;
+};
 
 type Props = {
   show: boolean;
   onClose: () => void;
+  slot?: Slot;
+  position?: { top: number; left: number } | null;
 };
 
-const EventModal: React.FC<Props> = ({ show, onClose }) => {
-  if (!show) return null; // verberg de modal als show = false
+const EventModal: React.FC<Props> = ({ show, onClose, slot, position }) => {
+  if (!show) return null;
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content">
-        <button className="close-button" onClick={onClose}>
-          close
-        </button>
-        <Event />
+      <div
+        className="modal-floating"
+        style={{
+          top: position?.top ?? 0,
+          left: position?.left ?? 0,
+          position: "fixed",
+        }}
+      >
+        <div className="event-modal-content">
+          <button className="event-modal-close-button" onClick={onClose}>
+            ×
+          </button>
+
+          {slot && (
+            <p>
+              Event voor <b>{slot.day}</b> om <b>{slot.time}</b>
+            </p>
+          )}
+
+          <Event slot={slot} onClose={onClose} />
+        </div>
       </div>
     </div>
   );

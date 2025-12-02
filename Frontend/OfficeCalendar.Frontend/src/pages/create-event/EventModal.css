@@ -1,0 +1,48 @@
+.modal-overlay {
+    position: fixed;
+    /* Zorgt dat hij boven alles zweeft */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    /* Hele scherm bedekken */
+    height: 100vh;
+    /* Donkere overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    /* Zorgt dat hij over de agenda heen gaat */
+}
+
+.event-modal-content {
+    background: #2a2a2a;
+    width: 350px;
+    height: 620px;
+    padding: 5px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.event-modal-close-button {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    font-size: 22px;
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+
+}
+
+.event-modal-close-button:hover {
+    opacity: 0.7;
+}
+
+.modal-floating {
+    position: fixed;
+    z-index: 9999;
+}

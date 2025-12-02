@@ -31,5 +31,4 @@ namespace OfficeCalendar.Backend.DTOs
         public required DateTime? last_edited_date { get; set; }
         public List<RoomBookingGetDto>? bookings { get; set; }
     }
-
 }
