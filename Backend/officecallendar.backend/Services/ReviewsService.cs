@@ -96,5 +96,23 @@ namespace OfficeCalendar.Backend.Services
 
             _context.SaveChanges();
         }
+        public ReviewsGetDto[] GetReviewsForEvent(Guid eventId)
+        {
+            return _context.Reviews
+                .Where(r => r.event_id == eventId)
+                .Where(r => r.visible)
+                .Select(r => new ReviewsGetDto
+                {
+                    id = r.id,
+                    event_id = r.event_id,
+                    username = r.username,
+                    stars = r.stars,
+                    desc = r.desc,
+                    creation_date = r.creation_date,
+                    last_edited_date = r.last_edited_date
+                })
+                .AsNoTracking()
+                .ToArray();
+        }
     }
 }
