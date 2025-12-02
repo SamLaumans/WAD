@@ -35,8 +35,6 @@ namespace WADapi.Data
             modelBuilder.Entity<EventSubscription>()
                 .HasKey(es => new { es.username, es.event_id });
 
-            modelBuilder.Entity<RoomBookingRoom>()
-                .HasKey(rbr => new { rbr.booking_id, rbr.room_id });
 
             // Group membership
             modelBuilder.Entity<GroupMembership>()
@@ -105,19 +103,11 @@ namespace WADapi.Data
                 .HasForeignKey(rb => rb.event_id)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Room booking room
-
-            modelBuilder.Entity<RoomBookingRoom>()
-                .HasOne(rbr => rbr.RoomBooking)
-                .WithMany(rb => rb.RoomBookingRooms)
-                .HasForeignKey(rbr => rbr.booking_id)
+            modelBuilder.Entity<RoomBooking>()
+                .HasOne(rb => rb.Room)
+                .WithMany(r => r.RoomBookings)
+                .HasForeignKey(rb => rb.room_id)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<RoomBookingRoom>()
-                .HasOne(rbr => rbr.Room)
-                .WithMany(r => r.RoomBookingRooms)
-                .HasForeignKey(rbr => rbr.room_id)
-                .OnDelete(DeleteBehavior.Cascade);
 
             // Reviews
             modelBuilder.Entity<Review>()

@@ -1,16 +1,17 @@
 meta {
-  name: attendanceUserGet
+  name: roomBookingGetUser
   type: http
   seq: 3
 }
 
 get {
-  url: {{url}}/attendances/me
+  url: {{url}}/roombookings/me
   body: none
   auth: inherit
 }
 
 headers {
+  Content-Type: application/json
   Authorization: {{token}}
 }
 

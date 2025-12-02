@@ -1,0 +1,25 @@
+meta {
+  name: roomGetById
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{url}}/rooms/by-id/?roomid=56aa954b-e5e6-4037-a7bf-d8476ffcd944
+  body: none
+  auth: inherit
+}
+
+params:query {
+  roomid: 56aa954b-e5e6-4037-a7bf-d8476ffcd944
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: {{token}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

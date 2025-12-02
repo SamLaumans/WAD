@@ -10,11 +10,11 @@ namespace OfficeCalendar.Backend.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class AttendancesController : ControllerBase
+public class AttendanceController : ControllerBase
 {
     private readonly AttendanceService _attendanceService;
 
-    public AttendancesController(AttendanceService attendanceService)
+    public AttendanceController(AttendanceService attendanceService)
     {
         _attendanceService = attendanceService;
     }
@@ -22,7 +22,7 @@ public class AttendancesController : ControllerBase
     [HttpGet]
     public ActionResult<AttendanceGetDto> GetAttendance([FromQuery] Guid attendanceId)
     {
-        var attendance = _attendanceService.GetAttendanceDtoByGuid(attendanceId, User.Identity.Name);
+        var attendance = _attendanceService.GetAttendanceDtoByGuid(attendanceId);
         if (attendance == null)
             return NotFound(new
             {
@@ -106,7 +106,7 @@ public class AttendancesController : ControllerBase
             return Forbid();
         }
 
-        AttendanceGetDto updatedDto = _attendanceService.UpdateAttendance(attendance, dto, User.Identity.Name);
+        AttendanceGetDto updatedDto = _attendanceService.UpdateAttendance(attendance, dto);
 
         return Ok(updatedDto);
     }

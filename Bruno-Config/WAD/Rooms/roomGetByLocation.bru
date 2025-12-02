@@ -1,16 +1,21 @@
 meta {
-  name: attendanceUserGet
+  name: roomGetByLocation
   type: http
   seq: 3
 }
 
 get {
-  url: {{url}}/attendances/me
+  url: {{url}}/rooms/by-location/?location=w
   body: none
   auth: inherit
 }
 
+params:query {
+  location: w
+}
+
 headers {
+  Content-Type: application/json
   Authorization: {{token}}
 }
 

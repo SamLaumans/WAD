@@ -10,7 +10,8 @@ namespace Officecalendar.Backend.Models
         public required DateTime start_time { get; set; }
         public required DateTime end_time { get; set; }
         public required string booked_by { get; set; }
-        public Guid event_id { get; set; }
+        public Guid? event_id { get; set; }
+        public bool visible { get; set; } = true;
 
         public Room Room { get; set; } = null!;
 
@@ -18,9 +19,7 @@ namespace Officecalendar.Backend.Models
         public User User { get; set; } = null!;
 
         [ForeignKey(nameof(event_id))]
-        public Event Event { get; set; } = null!;
-
-        public ICollection<RoomBookingRoom> RoomBookingRooms { get; set; } = new List<RoomBookingRoom>();
+        public Event? Event { get; set; }
 
     }
 }

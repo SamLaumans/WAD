@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WADapi.Data;
 
@@ -11,9 +12,11 @@ using WADapi.Data;
 namespace officecallendar.backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251124143218_RoomAndBookingsEdit")]
+    partial class RoomAndBookingsEdit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -207,9 +210,6 @@ namespace officecallendar.backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("creation_date")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("desc")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -217,18 +217,12 @@ namespace officecallendar.backend.Migrations
                     b.Property<Guid>("event_id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("last_edited_date")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("stars")
                         .HasColumnType("int");
 
                     b.Property<string>("username")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("visible")
-                        .HasColumnType("bit");
 
                     b.HasKey("id");
 
