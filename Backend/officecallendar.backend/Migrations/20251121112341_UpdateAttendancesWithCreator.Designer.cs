@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WADapi.Data;
 
@@ -11,9 +12,11 @@ using WADapi.Data;
 namespace officecallendar.backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251121112341_UpdateAttendancesWithCreator")]
+    partial class UpdateAttendancesWithCreator
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -246,9 +249,6 @@ namespace officecallendar.backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("visible")
-                        .HasColumnType("bit");
-
                     b.HasKey("id");
 
                     b.ToTable("Rooms");
@@ -260,6 +260,9 @@ namespace officecallendar.backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("Roomid")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("booked_by")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -267,7 +270,7 @@ namespace officecallendar.backend.Migrations
                     b.Property<DateTime>("end_time")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("event_id")
+                    b.Property<Guid>("event_id")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("room_id")
@@ -276,18 +279,30 @@ namespace officecallendar.backend.Migrations
                     b.Property<DateTime>("start_time")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("visible")
-                        .HasColumnType("bit");
-
                     b.HasKey("id");
+
+                    b.HasIndex("Roomid");
 
                     b.HasIndex("booked_by");
 
                     b.HasIndex("event_id");
 
+                    b.ToTable("RoomBookings");
+                });
+
+            modelBuilder.Entity("Officecalendar.Backend.Models.RoomBookingRoom", b =>
+                {
+                    b.Property<Guid>("booking_id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("room_id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("booking_id", "room_id");
+
                     b.HasIndex("room_id");
 
-                    b.ToTable("RoomBookings");
+                    b.ToTable("RoomBookingRoom");
                 });
 
             modelBuilder.Entity("Officecalendar.Backend.Models.User", b =>
@@ -320,7 +335,7 @@ namespace officecallendar.backend.Migrations
 
             modelBuilder.Entity("Officecalendar.Backend.Models.Attendance", b =>
                 {
-                    b.HasOne("Officecalendar.Backend.Models.User", "CreatorUser")
+                    b.HasOne("Officecalendar.Backend.Models.User", null)
                         .WithMany()
                         .HasForeignKey("creator_username")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -331,8 +346,6 @@ namespace officecallendar.backend.Migrations
                         .HasForeignKey("username")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("CreatorUser");
 
                     b.Navigation("User");
                 });
@@ -440,6 +453,12 @@ namespace officecallendar.backend.Migrations
 
             modelBuilder.Entity("Officecalendar.Backend.Models.RoomBooking", b =>
                 {
+                    b.HasOne("Officecalendar.Backend.Models.Room", "Room")
+                        .WithMany("RoomBookings")
+                        .HasForeignKey("Roomid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Officecalendar.Backend.Models.User", "User")
                         .WithMany("RoomBookings")
                         .HasForeignKey("booked_by")
@@ -449,11 +468,6 @@ namespace officecallendar.backend.Migrations
                     b.HasOne("Officecalendar.Backend.Models.Event", "Event")
                         .WithMany("RoomBookings")
                         .HasForeignKey("event_id")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Officecalendar.Backend.Models.Room", "Room")
-                        .WithMany("RoomBookings")
-                        .HasForeignKey("room_id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -462,6 +476,25 @@ namespace officecallendar.backend.Migrations
                     b.Navigation("Room");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Officecalendar.Backend.Models.RoomBookingRoom", b =>
+                {
+                    b.HasOne("Officecalendar.Backend.Models.RoomBooking", "RoomBooking")
+                        .WithMany("RoomBookingRooms")
+                        .HasForeignKey("booking_id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Officecalendar.Backend.Models.Room", "Room")
+                        .WithMany("RoomBookingRooms")
+                        .HasForeignKey("room_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Room");
+
+                    b.Navigation("RoomBooking");
                 });
 
             modelBuilder.Entity("Officecalendar.Backend.Models.Event", b =>
@@ -487,7 +520,14 @@ namespace officecallendar.backend.Migrations
 
             modelBuilder.Entity("Officecalendar.Backend.Models.Room", b =>
                 {
+                    b.Navigation("RoomBookingRooms");
+
                     b.Navigation("RoomBookings");
+                });
+
+            modelBuilder.Entity("Officecalendar.Backend.Models.RoomBooking", b =>
+                {
+                    b.Navigation("RoomBookingRooms");
                 });
 
             modelBuilder.Entity("Officecalendar.Backend.Models.User", b =>

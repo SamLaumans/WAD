@@ -1,0 +1,35 @@
+meta {
+  name: registerSam
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{url}}/auth/register
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+      "username": "Sam_030",
+      "password": "Hallo123",
+      "email": "Sam@hrnl"
+  }
+  
+}
+
+script:post-response {
+  const data = res.getBody();  
+  bru.setVar("token", "Bearer " + data.token);
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

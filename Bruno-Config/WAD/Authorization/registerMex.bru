@@ -1,0 +1,35 @@
+meta {
+  name: registerMex
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{url}}/auth/register
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+      "username": "Mex",
+      "password": "Wachtwoord123",
+      "email": "mexpunt2005@outlook.com"
+  }
+  
+}
+
+script:post-response {
+  const data = res.getBody();  
+  bru.setVar("token", "Bearer " + data.token);
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

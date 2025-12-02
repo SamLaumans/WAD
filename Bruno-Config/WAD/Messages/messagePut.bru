@@ -1,0 +1,33 @@
+meta {
+  name: messagePut
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{url}}/messages?messageid=8D9548DC-3037-49C2-88FC-B9B398FB2C5A
+  body: json
+  auth: inherit
+}
+
+params:query {
+  messageid: 8D9548DC-3037-49C2-88FC-B9B398FB2C5A
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: {{token}}
+}
+
+body:json {
+  {
+      "title": "Titel 2 jaman",
+      "visible": true
+  }
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -1,0 +1,21 @@
+meta {
+  name: roomBookingGetUser
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{url}}/roombookings/me
+  body: none
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: {{token}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

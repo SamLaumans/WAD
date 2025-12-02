@@ -1,0 +1,32 @@
+meta {
+  name: roomPut
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{url}}/rooms?roomid=97aaa018-eabf-4c3d-9cbb-077c36bc936a
+  body: json
+  auth: inherit
+}
+
+params:query {
+  roomid: 97aaa018-eabf-4c3d-9cbb-077c36bc936a
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: {{token}}
+}
+
+body:json {
+  {
+      "capacity": 64
+  }
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

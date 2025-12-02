@@ -1,0 +1,32 @@
+meta {
+  name: attendancePut
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{url}}/attendances?attendanceid=26404282-c26d-456c-a8f3-8b9b950838cb
+  body: json
+  auth: inherit
+}
+
+params:query {
+  attendanceid: 26404282-c26d-456c-a8f3-8b9b950838cb
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: {{token}}
+}
+
+body:json {
+  {
+      "username": "Job"
+  }
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

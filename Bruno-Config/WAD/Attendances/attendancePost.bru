@@ -1,0 +1,30 @@
+meta {
+  name: attendancePost
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{url}}/attendances
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: {{token}}
+}
+
+body:json {
+  {
+      "username": "Mex",
+      "date": "2025-11-21T11:12:28+00:00",
+      "status": "Aanwezig geweest"
+  }
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

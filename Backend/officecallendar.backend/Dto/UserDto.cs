@@ -1,16 +1,38 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace OfficeCalendar.Backend.DTOs
 {
-    public class LoginRequest
+    public class UserPostDto
     {
-        public string Username { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
+        [RegularExpression(@"^[a-zA-Z0-9_]+$", ErrorMessage = "Username can only contain letters, numbers, and underscores.")]
+        public required string username { get; set; }
+
+        [EmailAddress(ErrorMessage = "Invalid email address.")]
+        public required string email { get; set; }
+        public required string password { get; set; }
+
+        [RegularExpression(@"^[a-zA-Z ]+$", ErrorMessage = "Nickname can only contain letters and spaces")]
+        public required string nickname { get; set; }
+        public int role { get; set; } = 0;
     }
 
-    public class LoginResponse
+    public class UserPutDto
     {
-        public bool Success { get; set; }
-        public string Message { get; set; } = string.Empty;
-        public string Role { get; set; } = string.Empty;
+        [EmailAddress(ErrorMessage = "Invalid email address.")]
+        public string? email { get; set; }
+
+        [RegularExpression(@"^[a-zA-Z ]+$", ErrorMessage = "Nickname can only contain letters and spaces")]
+        public string? nickname { get; set; }
+        public int? role { get; set; }
+    }
+
+    public class UserGetDto
+    {
+        public required string username { get; set; }
+        public required string email { get; set; }
+        public required string nickname { get; set; }
+        public required DateTime creation_date { get; set; }
+        public required int role { get; set; }
     }
 
 }
