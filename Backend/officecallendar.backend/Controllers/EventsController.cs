@@ -7,11 +7,11 @@ namespace Officecalendar.Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EventController : ControllerBase
+    public class EventsController : ControllerBase
     {
         private readonly EventService _service;
 
-        public EventController(EventService service)
+        public EventsController(EventService service)
         {
             _service = service;
         }

@@ -70,7 +70,7 @@ namespace OfficeCalendar.Backend.Services
                 start_time = e.start_time,
                 end_time = e.end_time,
                 last_edited_date = e.last_edited_date,
-                bookings = e.RoomBookings.Select(rb => MapRoomBooking(rb)).ToList()
+                bookings = e.RoomBookings == null ? null : e.RoomBookings.Select(rb => MapRoomBooking(rb)).ToList()
             };
         }
 

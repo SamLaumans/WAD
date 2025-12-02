@@ -18,6 +18,7 @@ builder.Services.AddScoped<AttendanceService>();
 builder.Services.AddScoped<ReviewService>();
 builder.Services.AddScoped<RoomService>();
 builder.Services.AddScoped<RoomBookingService>();
+builder.Services.AddScoped<EventService>();
 
 builder.Services.AddControllers();
 builder.Services.AddScoped<IUserService, UserService>();
