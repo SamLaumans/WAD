@@ -17,7 +17,6 @@ namespace OfficeCalendar.Backend.DTOs
         public DateTime? end_time { get; set; }
         public Guid? booking_id { get; set; }
         public bool? visible { get; set; } = true;
-        public required DateTime last_edited_date { get; set; }
     }
 
     public class EventGetDto

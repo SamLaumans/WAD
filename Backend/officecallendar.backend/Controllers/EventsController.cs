@@ -16,16 +16,16 @@ namespace Officecalendar.Backend.Controllers
             _service = service;
         }
 
-        [HttpGet]
+        [HttpGet("get-all")]
         public ActionResult<IEnumerable<EventGetDto>> GetEvents()
         {
             return Ok(_service.GetAllEvents());
         }
 
-        [HttpGet("{id:guid}")]
-        public ActionResult<EventGetDto> GetEvent(Guid id)
+        [HttpGet("get-one")]
+        public ActionResult<EventGetDto> GetEvent([FromQuery] Guid eventid)
         {
-            var dto = _service.GetEventDto(id);
+            var dto = _service.GetEventDto(eventid);
             if (dto == null) return NotFound();
             return Ok(dto);
         }
@@ -39,20 +39,20 @@ namespace Officecalendar.Backend.Controllers
             return Ok(created);
         }
 
-        [HttpPut("{id:guid}")]
-        public ActionResult<EventGetDto> UpdateEvent(Guid id, EventPutDto dto)
+        [HttpPut]
+        public ActionResult<EventGetDto> UpdateEvent([FromQuery] Guid eventid, EventPutDto dto)
         {
-            var ev = _service.GetEvent(id);
+            var ev = _service.GetEvent(eventid);
             if (ev == null) return NotFound();
 
             var updated = _service.UpdateEvent(ev, dto);
             return Ok(updated);
         }
 
-        [HttpDelete("{id:guid}")]
-        public IActionResult DeleteEvent(Guid id)
+        [HttpDelete]
+        public IActionResult DeleteEvent([FromQuery] Guid eventid)
         {
-            var ev = _service.GetEvent(id);
+            var ev = _service.GetEvent(eventid);
             if (ev == null) return NotFound();
 
             _service.DeleteEvent(ev);

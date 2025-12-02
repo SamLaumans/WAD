@@ -1,17 +1,13 @@
 meta {
-  name: ReviewsGet
+  name: ReviewsGetUser
   type: http
-  seq: 1
+  seq: 2
 }
 
 get {
-  url: {{url}}/reviews?reviewid=985e28ad-9245-4791-aeb7-b2b0b997053e
+  url: {{url}}/reviews/me
   body: none
   auth: inherit
-}
-
-params:query {
-  reviewid: 985e28ad-9245-4791-aeb7-b2b0b997053e
 }
 
 headers {

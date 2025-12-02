@@ -78,6 +78,7 @@ namespace OfficeCalendar.Backend.Services
         public Event? GetEvent(Guid id)
         {
             return _context.Events
+                .Where(e => e.visible)
                 .Include(e => e.Creator)
                 .Include(e => e.RoomBookings).ThenInclude(rb => rb.Room)
                 .Include(e => e.RoomBookings).ThenInclude(rb => rb.User)
@@ -92,21 +93,26 @@ namespace OfficeCalendar.Backend.Services
 
         public EventGetDto[] GetAllEvents()
         {
-            return _context.Events
+            var events = _context.Events
+                .Where(e => e.visible)
                 .Include(e => e.Creator)
                 .Include(e => e.RoomBookings).ThenInclude(rb => rb.Room)
                 .Include(e => e.RoomBookings).ThenInclude(rb => rb.User)
                 .AsNoTracking()
-                .Select(e => MapEvent(e))
-                .ToArray();
+                .ToList();
+
+            return events.Select(e => MapEvent(e)).ToArray();
+
         }
 
         //CREATE
         public EventGetDto CreateEvent(EventPostDto dto, string creator_username)
         {
+            var id = Guid.NewGuid();
+
             var newEvent = new Event
             {
-                id = Guid.NewGuid(),
+                id = id,
                 creator_username = creator_username,
                 title = dto.title,
                 desc = dto.desc,
@@ -118,7 +124,9 @@ namespace OfficeCalendar.Backend.Services
             _context.Events.Add(newEvent);
             _context.SaveChanges();
 
-            return MapEvent(newEvent);
+            var savedEvent = GetEvent(id);
+
+            return MapEvent(savedEvent);
         }
 
         //UPDATE
@@ -139,7 +147,7 @@ namespace OfficeCalendar.Backend.Services
             if (dto.booking_id != null)
                 existing.booking_id = dto.booking_id;
 
-            existing.last_edited_date = dto.last_edited_date;
+            existing.last_edited_date = DateTime.UtcNow;
 
             _context.SaveChanges();
 
