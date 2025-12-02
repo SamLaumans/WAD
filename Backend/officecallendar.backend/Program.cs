@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using OfficeCalendar.Backend.Services;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -18,6 +19,7 @@ builder.Services.AddScoped<RoomService>();
 builder.Services.AddScoped<RoomBookingService>();
 
 builder.Services.AddControllers();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddCors(options =>
@@ -54,5 +56,12 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+    DbInitializer.Seed(db);
+}
 
 app.Run();
