@@ -1,0 +1,25 @@
+meta {
+  name: ReviewsGet
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{url}}/reviews?queryid=
+  body: none
+  auth: inherit
+}
+
+params:query {
+  queryid: 
+}
+
+headers {
+  Authorization: {{token}}
+  Content-Type: application/json
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

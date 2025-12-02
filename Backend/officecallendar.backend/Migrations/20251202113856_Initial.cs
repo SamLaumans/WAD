@@ -60,12 +60,20 @@ namespace officecallendar.backend.Migrations
                 {
                     id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     username = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    creator_username = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    status = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    visible = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Attendances", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_Attendances_Users_creator_username",
+                        column: x => x.creator_username,
+                        principalTable: "Users",
+                        principalColumn: "username",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Attendances_Users_username",
                         column: x => x.username,
@@ -163,7 +171,8 @@ namespace officecallendar.backend.Migrations
                     desc = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     referenced_event_id = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     creation_date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    last_edited_date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    last_edited_date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    visible = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -184,7 +193,10 @@ namespace officecallendar.backend.Migrations
                     event_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     username = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     stars = table.Column<int>(type: "int", nullable: false),
-                    desc = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    desc = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    creation_date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    last_edited_date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    visible = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -285,6 +297,11 @@ namespace officecallendar.backend.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Attendances_creator_username",
+                table: "Attendances",
+                column: "creator_username");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Attendances_username",

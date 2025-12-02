@@ -1,0 +1,29 @@
+meta {
+  name: ReviewsPost
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{url}}/reviews
+  body: json
+  auth: inherit
+}
+
+headers {
+  Authorization: {{token}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+      "event_id": "d49b3205-2791-423b-a20e-72f836d96075",
+      "stars": 5,
+      "desc": "Fucking leuk dit"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -1,0 +1,15 @@
+meta {
+  name: ReviewsDelete
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{url}}/reviews
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}
