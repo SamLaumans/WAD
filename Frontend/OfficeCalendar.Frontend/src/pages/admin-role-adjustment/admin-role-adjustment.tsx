@@ -14,26 +14,27 @@ const ROLE_REVERSE: Record<string, number> = {
 };
 
 const AdminRolBeheer: React.FC = () => {
+  const [users, setUsers] = useState<any[]>([]);
   const [search, setSearch] = useState("");
-  const [suggestions, setSuggestions] = useState<any[]>([]);
   const [selectedUser, setSelectedUser] = useState<any | null>(null);
   const [newRole, setNewRole] = useState("user");
 
+  //zoekt gebruikers op basis van username
   useEffect(() => {
-    if (search.trim().length === 0) {
-      setSuggestions([]);
+    if (!search) {
+      setUsers([]);
       return;
     }
 
     const controller = new AbortController();
 
-    fetch(`http://localhost:5267/api/SearchUsers?query=${encodeURIComponent(search)}`, {
+    fetch(`http://localhost:5267/api/SearchUsers?query=${search}`, {
       signal: controller.signal
     })
       .then(res => res.json())
-      .then(data => setSuggestions(data))
+      .then(data => setUsers(data))
       .catch(err => {
-        if (err.name !== "AbortError") console.error("Error fetching suggestions:", err);
+        if (err.name !== "AbortError") console.error("Error loading users:", err);
       });
 
     return () => controller.abort();
@@ -43,7 +44,6 @@ const AdminRolBeheer: React.FC = () => {
     setSelectedUser(u);
     setNewRole(ROLE_MAP[u.role]);
     setSearch(""); 
-    setSuggestions([]);
   };
 
   const handleUpdate = () => {
@@ -57,16 +57,17 @@ const AdminRolBeheer: React.FC = () => {
         newRole: ROLE_REVERSE[newRole]
       })
     })
-      .then(async res => {
-        if (!res.ok) {
-          const msg = await res.text();
-          throw new Error(msg);
-        }
-        return res.json();
-      })
-      .then(updatedUser => {
-        alert(`Rol van ${updatedUser.username} bijgewerkt naar: ${ROLE_MAP[updatedUser.role]}`);
-        setSelectedUser(updatedUser);
+      .then(res => res.json())
+      .then(data => {
+        alert(`Rol van ${data.username} bijgewerkt naar: ${ROLE_MAP[data.role]}`);
+
+        setUsers(prev =>
+          prev.map(u =>
+            u.username === data.username ? data : u
+          )
+        );
+
+        setSelectedUser(data);
       })
       .catch(err => console.error("Error updating role:", err));
   };
@@ -80,7 +81,6 @@ const AdminRolBeheer: React.FC = () => {
       <div className="admin-demote-container">
         <div className="admin-demote-form-container">
           <label>Zoek gebruiker:</label>
-
           <input
             type="text"
             placeholder="Username..."
@@ -89,9 +89,10 @@ const AdminRolBeheer: React.FC = () => {
             onChange={(e) => setSearch(e.target.value)}
             style={{ width: "400px", padding: "8px" }}
           />
-          {suggestions.length > 0 && (
+
+          {users.length > 0 && search && (  //suggesties voor gebruikers
             <div id="suggestions" className="card">
-              {suggestions.map((u) => (
+              {users.map((u) => (
                 <div
                   key={u.username}
                   onClick={() => handleSelectUser(u)}
@@ -103,7 +104,7 @@ const AdminRolBeheer: React.FC = () => {
             </div>
           )}
 
-          {selectedUser && (
+          {selectedUser && (   //user info laten zien
             <div id="selected-user" className="card">
               <h3>Geselecteerde gebruiker</h3>
               <p><b>Username:</b> {selectedUser.username}</p>
@@ -126,7 +127,6 @@ const AdminRolBeheer: React.FC = () => {
               </button>
             </div>
           )}
-
         </div>
       </div>
     </div>
