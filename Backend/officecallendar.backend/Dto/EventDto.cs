@@ -1,5 +1,6 @@
 namespace OfficeCalendar.Backend.DTOs
 {
+    //DTO for Post
     public class EventPostDto
     {
         public required string title { get; set; }
@@ -9,6 +10,7 @@ namespace OfficeCalendar.Backend.DTOs
         public Guid? booking_id { get; set; } = null;
     }
 
+    //DTO for Put
     public class EventPutDto
     {
         public string? title { get; set; }
@@ -19,6 +21,7 @@ namespace OfficeCalendar.Backend.DTOs
         public bool? visible { get; set; } = true;
     }
 
+    //DTO for Get
     public class EventGetDto
     {
         public required Guid id { get; set; }
