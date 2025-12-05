@@ -26,6 +26,7 @@ public class RolBeheerController : ControllerBase
         return Ok(users);
     }
 
+
     [HttpPost("AdjustRole")]
     public async Task<ActionResult<UserSearchDto>> AdjustUserRole([FromBody] AdjustRoleDto dto)
     {
