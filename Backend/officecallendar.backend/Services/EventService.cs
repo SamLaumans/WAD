@@ -71,6 +71,7 @@ namespace OfficeCalendar.Backend.Services
                 end_time = e.end_time,
                 last_edited_date = e.last_edited_date,
                 bookings = e.RoomBookings == null ? null : e.RoomBookings.Select(rb => MapRoomBooking(rb)).ToList()
+                //If there are no bookings, return null, else map each booking
             };
         }
 
@@ -98,7 +99,7 @@ namespace OfficeCalendar.Backend.Services
                 .Include(e => e.Creator)
                 .Include(e => e.RoomBookings).ThenInclude(rb => rb.Room)
                 .Include(e => e.RoomBookings).ThenInclude(rb => rb.User)
-                .AsNoTracking()
+                .AsNoTracking() // zodat EF de entities niet in de change tracker zet, wat performance verbetert bij read-only (GET)
                 .ToList();
 
             return events.Select(e => MapEvent(e)).ToArray();
