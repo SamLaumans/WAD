@@ -49,8 +49,20 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddAuthorization();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseStaticFiles();
+    app.UseSwaggerUI(c =>
+        c.InjectJavascript("/swagger-auth.js")
+    );
+}
+
 
 app.UseCors("AllowAll");
 
