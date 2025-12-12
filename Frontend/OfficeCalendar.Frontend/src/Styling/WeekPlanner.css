@@ -42,7 +42,6 @@ body {
     overflow-y: auto;
     padding: 1rem 2rem;
     max-height: calc(100vh - 90px);
-    /* 90px = header hoogte */
 }
 
 /* TABLE */
@@ -60,22 +59,23 @@ body {
     transition: background-color 0.2s ease;
 }
 
-/* SOLID COLORS TO FIX BLACK-BAR BUG */
+/* HEADER */
 .planner-table th {
-    background-color: #2f3e55;   /* solid dark bluish header */
+    background-color: #2f3e55;
     color: #bbbbff;
     position: sticky;
     top: 0;
     z-index: 2;
 }
 
+/* CELLS */
 .planner-table td {
-    background-color: #2d3f58;   /* solid cell color */
+    background-color: #2d3f58;
     color: #eaeaea;
 }
 
 .planner-table td:hover {
-    background-color: #3a4e6d;   /* slightly lighter on hover */
+    background-color: #3a4e6d;
     cursor: pointer;
 }
 
@@ -83,12 +83,13 @@ body {
 .time-col {
     font-weight: 500;
     color: #9999ff;
-    background-color: #2f3e55;   /* solid color to match header */
+    background-color: #2f3e55;
     position: sticky;
     left: 0;
     z-index: 1;
 }
-/* FIX BLACK ROW HIGHLIGHT */
+
+/* PREVENT SELECTION */
 .planner-table {
     user-select: none;
 }
@@ -96,4 +97,16 @@ body {
 .planner-table td::selection,
 .planner-table th::selection {
     background: transparent;
+}
+
+/* EVENT ITEMS */
+.event-item {
+    background-color: #6666ff;
+    color: white;
+    padding: 4px 6px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid #8888ff;
 }

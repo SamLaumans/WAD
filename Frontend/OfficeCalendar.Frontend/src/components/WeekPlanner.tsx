@@ -1,28 +1,85 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import '../Styling/WeekPlanner.css'
-import EventModal from '../pages/create-event/EventModal';
+import React from "react";
+import "../Styling/WeekPlanner.css";
+import EventModal from "../pages/create-event/EventModal";
 
-// The WeekPlanner component displays a weekly schedule grid
-// with time slots along the left and days of the week across the top.
-// It's designed to later display events or appointments in each cell.
 export default function WeekPlanner() {
-    // Array representing days of the week (Sunday → Saturday)
     const [showEventModal, setShowEventModal] = React.useState(false);
     const [selectedSlot, setSelectedSlot] = React.useState<{ day: string; time: string } | null>(null);
     const [modalPosition, setModalPosition] = React.useState<{ top: number; left: number } | null>(null);
 
-    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const [events, setEvents] = React.useState<any[]>([]);
+    const [currentWeekStart, setCurrentWeekStart] = React.useState<Date>(getSunday(new Date()));
 
-    // Array of time slots for each day, used to build the table rows
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
     const times = [
-        '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30',
-        '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30',
-        '17:00', '17:30', '18:00', '18:30', '19:00'
+        "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
+        "12:00", "12:30", "13:00", "13:30", "14:00", "14:30",
+        "15:00", "15:30", "16:00", "16:30", "17:00", "17:30",
+        "18:00", "18:30", "19:00"
     ];
 
     const POPUP_WIDTH = 350;
     const POPUP_HEIGHT = 620;
+
+    // --- Load events ---
+    React.useEffect(() => {
+        fetch("/eventweekplanner.json")
+            .then(res => res.json())
+            .then(data => setEvents(data))
+            .catch(err => console.error("Error loading events:", err));
+    }, []);
+
+    // --- Utils ---
+    function getSunday(date: Date) {
+        const d = new Date(date);
+        const day = d.getDay();            // 0 = Sun
+        const diff = d.getDate() - day;    // terug naar zondag
+        return new Date(d.setDate(diff));
+    }
+
+    const addDays = (date: Date, days: number) => {
+        const copy = new Date(date);
+        copy.setDate(copy.getDate() + days);
+        return copy;
+    };
+
+    const formatDate = (d: Date) =>
+        d.toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit" });
+
+    // --- NIEUW: check of event in deze week valt ---
+    const isEventInCurrentWeek = (ev: any) => {
+        const start = new Date(ev.start_time);
+
+        const weekStart = new Date(currentWeekStart);
+        weekStart.setHours(0, 0, 0, 0);
+
+        const weekEnd = new Date(currentWeekStart);
+        weekEnd.setDate(weekEnd.getDate() + 7);
+        weekEnd.setHours(23, 59, 59, 999);
+
+        return start >= weekStart && start <= weekEnd;
+    };
+
+    // Dagindex binnen geselecteerde week
+    const getDayIndexInWeek = (date: string) => {
+        const d = new Date(date);
+        const diff = (d.getTime() - currentWeekStart.getTime()) / (1000 * 60 * 60 * 24);
+        return Math.floor(diff);
+    };
+
+    const getTimeString = (date: string) => {
+        const d = new Date(date);
+        return d.toTimeString().slice(0, 5);
+    };
+
+    const handlePrevWeek = () => {
+        setCurrentWeekStart(prev => addDays(prev, -7));
+    };
+
+    const handleNextWeek = () => {
+        setCurrentWeekStart(prev => addDays(prev, 7));
+    };
 
     const handleCellClick = (
         day: string,
@@ -31,89 +88,104 @@ export default function WeekPlanner() {
     ) => {
         const rect = e.currentTarget.getBoundingClientRect();
 
-        // 1. RECHTS of LINKS?
         const enoughSpaceRight = rect.right + POPUP_WIDTH < window.innerWidth;
         const left = enoughSpaceRight ? rect.right : rect.left - POPUP_WIDTH;
 
-        // 2. POPUP verticaal centreren tov cel
         let top = rect.top + rect.height / 2 - POPUP_HEIGHT / 2;
 
-        // 3. Prevent overflowing TOP
-        if (top < 0) {
-            top = 10; // kleine margin
-        }
-
-        // 4. Prevent overflowing BOTTOM
+        if (top < 0) top = 10;
         if (top + POPUP_HEIGHT > window.innerHeight) {
             top = window.innerHeight - POPUP_HEIGHT - 10;
         }
 
-        // Set final popup position
         setModalPosition({ top, left });
 
         setSelectedSlot({ day, time });
         setShowEventModal(true);
     };
-    
+
+    const monday = currentWeekStart;
+    const sunday = addDays(currentWeekStart, 6);
+
     return (
         <div className="planner-container">
-            {/* HEADER SECTION */}
+
+            {/* Header */}
             <header className="planner-header">
-                {/* Left side: company or project information */}
-                <div className="planner-header-left">
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <button onClick={handlePrevWeek}>←</button>
+                    <button onClick={handleNextWeek}>→</button>
+
+                    <span style={{ fontSize: "1.2rem", marginLeft: "10px", color: "#bbbbff" }}>
+                        Week: {formatDate(monday)} - {formatDate(sunday)}
+                    </span>
                 </div>
 
-                {/* Title for the planner */}
                 <h2 className="planner-title">Weekplanner</h2>
 
-
-                {/* Right side: user account options */}
                 <div className="planner-header-right">
                     <button
                         onClick={() => setShowEventModal(true)}
-                        style={{ cursor: 'pointer' }}
+                        style={{ cursor: "pointer" }}
                     >
                         Nieuw Event Aanmaken
                     </button>
                 </div>
             </header>
 
-            {/*MAIN WEEK GRID SECTION*/}
-            {/* EVENT POPUP */}
+            {/* Modal */}
             <EventModal
                 show={showEventModal}
                 onClose={() => setShowEventModal(false)}
                 position={modalPosition}
             />
 
+            {/* Main grid */}
             <div className="planner-table-container">
                 <table className="planner-table">
                     <thead>
                         <tr>
-                            {/* First column header for time labels */}
                             <th>Time</th>
+                            {days.map((day, index) => {
+                                const date = addDays(monday, index);
+                                const label = date.toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit" });
 
-                            {/* Column headers for each day of the week */}
-                            {days.map((day) => (
-                                <th key={day}>{day}</th>
-                            ))}
+                                return (
+                                    <th key={day}>
+                                        {day}
+                                        <br />
+                                        <span style={{ fontSize: "0.8rem", color: "#ccccff" }}>
+                                            {label}
+                                        </span>
+                                    </th>
+                                );
+                            })}
                         </tr>
                     </thead>
 
                     <tbody>
-                        {/* Create a row for each time slot */}
                         {times.map((time) => (
                             <tr key={time}>
-                                {/* Leftmost cell shows the time */}
                                 <td className="time-col">{time}</td>
 
-                                {/* Create a cell for each day at that time slot */}
-                                {days.map((day) => (
+                                {days.map((day, index) => (
                                     <td
                                         key={day + time}
                                         className="planner-cell"
                                         onClick={(e) => handleCellClick(day, time, e)}
-                                    ></td>
+                                    >
+                                        {events
+                                            .filter(ev =>
+                                                isEventInCurrentWeek(ev) && // <--- NIEUW
+                                                getDayIndexInWeek(ev.start_time) === index &&
+                                                getTimeString(ev.start_time) === time
+                                            )
+                                            .map(ev => (
+                                                <div key={ev.id} className="event-item">
+                                                    {ev.title}
+                                                </div>
+                                            ))}
+                                    </td>
                                 ))}
                             </tr>
                         ))}
