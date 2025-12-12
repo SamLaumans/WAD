@@ -7,7 +7,7 @@ using OfficeCalendar.Backend.Services;
 
 namespace OfficeCalendar.Backend.Controllers;
 
-[Authorize]
+[Authorize] // Require authentication for all endpoints unless overridden
 [ApiController]
 [Route("api/[controller]")]
 public class ReviewsController : ControllerBase
@@ -22,6 +22,7 @@ public class ReviewsController : ControllerBase
     [HttpGet]
     public ActionResult<ReviewsGetDto> GetReview([FromQuery] Guid reviewid)
     {
+        // Fetch review by GUID
         var review = _reviewService.GetByGuid(reviewid);
         if (review == null)
             return NotFound(new
@@ -30,6 +31,7 @@ public class ReviewsController : ControllerBase
                 review = $"Review with id {reviewid} not found"
             });
 
+        // Map entity to DTO
         var dto = new ReviewsGetDto
         {
             id = review.id,
@@ -47,6 +49,7 @@ public class ReviewsController : ControllerBase
     [HttpGet("me")]
     public ActionResult<ReviewsGetDto[]> GetReviewForUser()
     {
+        // Get reviews belonging to the logged-in user
         var reviews = _reviewService.GetReviewsForUser(User.Identity.Name);
 
         if (reviews.Length == 0)
@@ -62,6 +65,7 @@ public class ReviewsController : ControllerBase
     [HttpPost]
     public ActionResult<ReviewsGetDto> CreateReview(ReviewsPostDto dto)
     {
+        // Validate model state
         if (!ModelState.IsValid)
             return BadRequest(
                 new
@@ -70,14 +74,17 @@ public class ReviewsController : ControllerBase
                     review = ModelState
                 });
 
+        // Create new review via service
         var response = _reviewService.PostReview(dto, User.Identity.Name);
 
+        // Return 201 Created with location header
         return CreatedAtAction(nameof(GetReview), new { reviewid = response.id }, response);
     }
 
     [HttpDelete]
     public ActionResult<Review> DeleteReview([FromQuery] Guid reviewid)
     {
+        // Fetch the review
         var review = _reviewService.GetByGuid(reviewid);
         if (review == null)
             return NotFound(new
@@ -86,19 +93,22 @@ public class ReviewsController : ControllerBase
                 review = $"Review not found"
             });
 
+        // Only owner can delete review
         if (review.username != User.Identity.Name)
         {
             return Forbid();
         }
 
+        // Soft delete (set visible = false)
         _reviewService.DeleteReview(review);
 
-        return NoContent();
+        return NoContent(); // 204
     }
 
     [HttpPut]
     public ActionResult<ReviewsGetDto> UpdateReview([FromQuery] Guid reviewid, ReviewsPutDto dto)
     {
+        // Fetch review to update
         var review = _reviewService.GetByGuid(reviewid);
         if (review == null)
             return NotFound(new
@@ -107,13 +117,16 @@ public class ReviewsController : ControllerBase
                 review = $"Review with id {reviewid} not found"
             });
 
+        // Only owner can update
         if (review.username != User.Identity.Name)
         {
             return Forbid();
         }
 
+        // Perform update
         _reviewService.UpdateReview(review, dto);
 
+        // Map to DTO
         var updatedDto = new ReviewsGetDto
         {
             id = review.id,
@@ -127,9 +140,11 @@ public class ReviewsController : ControllerBase
 
         return Ok(updatedDto);
     }
+
     [HttpGet("get-all")]
-    public ActionResult<ReviewsGetDto[]> GetReviewsForEvent([FromQuery]Guid eventId)
+    public ActionResult<ReviewsGetDto[]> GetReviewsForEvent([FromQuery] Guid eventId)
     {
+        // Fetch all visible reviews for event
         var reviews = _reviewService.GetReviewsForEvent(eventId);
 
         if (reviews.Length == 0)
