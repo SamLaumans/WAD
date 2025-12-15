@@ -23,12 +23,35 @@ export default function WeekPlanner() {
     const POPUP_HEIGHT = 620;
 
     // --- Load events ---
+    // --- Load events from backend ---
     React.useEffect(() => {
-        fetch("/eventweekplanner.json")
-            .then(res => res.json())
-            .then(data => setEvents(data))
-            .catch(err => console.error("Error loading events:", err));
+        const fetchEvents = async () => {
+            try {
+                const token = localStorage.getItem("token"); // pas aan waar je token staat
+                const res = await fetch("http://localhost:5267/api/events/get-all", {
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                });
+
+                if (!res.ok) {
+                    throw new Error(`Error fetching events: ${res.status}`);
+                }
+
+                const data = await res.json();
+
+                // Je backend geeft nu één object terug. Als je meerdere events wilt, moet het een array zijn.
+                // Als je backend een array terugstuurt, kun je dit direct gebruiken:
+                setEvents(Array.isArray(data) ? data : [data]);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        fetchEvents();
     }, []);
+
 
     // --- Utils ---
     function getSunday(date: Date) {
@@ -176,7 +199,7 @@ export default function WeekPlanner() {
                                     >
                                         {events
                                             .filter(ev =>
-                                                isEventInCurrentWeek(ev) && // <--- NIEUW
+                                                isEventInCurrentWeek(ev) &&
                                                 getDayIndexInWeek(ev.start_time) === index &&
                                                 getTimeString(ev.start_time) === time
                                             )
