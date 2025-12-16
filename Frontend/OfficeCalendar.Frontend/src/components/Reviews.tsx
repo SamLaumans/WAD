@@ -4,16 +4,22 @@ import '../Styling/Reviews.css';
 
 // Define the structure of a Review object
 interface Review {
-    user: string;
-    dateEvent: string;
-    datePlaced: string;
+    id: string;
+    event_id: string;
+    username: string;
     stars: number;
-    review: string;
+    desc: string;
+    creation_date: string;
 }
 
-const Reviews: React.FC = () => {
+// Define the props Reviews can receive
+interface ReviewsProps {
+    eventId: string;
+}
+
+const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
     // === STATE VARIABLES ===
-    // Holds all reviews (fetched from JSON or added manually)
+    // Holds all reviews (fetched from backend)
     const [reviews, setReviews] = useState<Review[]>([]);
 
     // Keeps track of the current pagination page
@@ -24,25 +30,37 @@ const Reviews: React.FC = () => {
 
     // Form input state for adding a new review
     const [newReview, setNewReview] = useState({
-        user: '',
         stars: 5,
-        review: '',
+        desc: '',
     });
 
-    // FETCH REVIEWS FROM JSON
+    // FETCH REVIEWS FROM BACKEND
     useEffect(() => {
-        fetch('/data/reviews.json')
-            .then((response) => {
+        const fetchReviews = async () => {
+            try {
+                const response = await fetch('http://localhost:5267/api/reviews/get-all');
                 if (!response.ok) throw new Error('Failed to load reviews');
-                return response.json();
-            })
-            .then((data) => setReviews(data))
-            .catch((error) => console.error('Error fetching reviews:', error));
-    }, []); // Empty dependency array ensures this runs only once on component mount
+
+                const data: Review[] = await response.json();
+
+                // Filter reviews so only reviews for this event are shown
+                const eventReviews = data.filter(
+                    (review) => review.event_id === eventId
+                );
+
+                setReviews(eventReviews);
+                setCurrentPage(0); // Reset pagination when event changes
+            } catch (error) {
+                console.error('Error fetching reviews:', error);
+            }
+        };
+
+        fetchReviews();
+    }, [eventId]); // Re-run when navigating to another event
 
     // PAGINATION LOGIC
-    const offset = currentPage * itemsPerPage; // Starting index for current page
-    const currentReviews = reviews.slice(offset, offset + itemsPerPage); // Reviews to display on current page
+    const offset = currentPage * itemsPerPage;
+    const currentReviews = reviews.slice(offset, offset + itemsPerPage);
 
     // Handle page change from ReactPaginate
     const handlePageClick = (event: { selected: number }) => {
@@ -52,7 +70,9 @@ const Reviews: React.FC = () => {
     // FORM HANDLERS
 
     // Update input values in the review form
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleInputChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
         const { name, value } = e.target;
         setNewReview((prev) => ({ ...prev, [name]: value }));
     };
@@ -61,33 +81,35 @@ const Reviews: React.FC = () => {
     const handleAddReview = async (element: React.FormEvent) => {
         element.preventDefault();
 
-        // Automatically set both the event date and placement date to today
-        const today = new Date().toISOString().split('T')[0];
-
-        // Create new review object
-        const reviewToAdd: Review = {
-            ...newReview,
-            dateEvent: today, // Automatically set today's date for the event
-            datePlaced: today, // Automatically set today's date for placement
-            stars: Number(newReview.stars), // Ensure stars is stored as a number
+        // Create new review object for backend
+        const reviewToAdd = {
+            event_id: eventId,
+            stars: Number(newReview.stars),
+            desc: newReview.desc,
         };
 
-        // Add new review to local state (so it displays immediately)
-        const updatedReviews = [reviewToAdd, ...reviews];
-        setReviews(updatedReviews);
-
-        // Reset form fields
-        setNewReview({ user: '', stars: 5, review: '' });
-
-        // Attempt to send the new review to backend API (if available)
         try {
-            await fetch('/api/reviews', {
+            await fetch('http://localhost:5267/api/reviews', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(reviewToAdd),
             });
+
+            // Optimistically add review to UI
+            setReviews((prev) => [
+                {
+                    id: crypto.randomUUID(),
+                    username: 'You',
+                    creation_date: new Date().toISOString(),
+                    ...reviewToAdd,
+                },
+                ...prev,
+            ]);
+
+            // Reset form
+            setNewReview({ stars: 5, desc: '' });
         } catch (err) {
-            console.warn('No backend available. Review only saved locally.');
+            console.error('Failed to add review:', err);
         }
     };
 
@@ -99,15 +121,6 @@ const Reviews: React.FC = () => {
             {/* ADD REVIEW FORM */}
             <form className="review-form" onSubmit={handleAddReview}>
                 <input
-                    type="text"
-                    name="user"
-                    placeholder="Your name"
-                    value={newReview.user}
-                    onChange={handleInputChange}
-                    required
-                />
-                {/* The date is now automatically set, so we remove the manual input */}
-                <input
                     type="number"
                     name="stars"
                     min="1"
@@ -117,9 +130,9 @@ const Reviews: React.FC = () => {
                     required
                 />
                 <textarea
-                    name="review"
+                    name="desc"
                     placeholder="Write your review..."
-                    value={newReview.review}
+                    value={newReview.desc}
                     onChange={handleInputChange}
                     required
                 />
@@ -128,7 +141,7 @@ const Reviews: React.FC = () => {
 
             {/* REVIEWS TABLE OR LOADING TEXT */}
             {reviews.length === 0 ? (
-                <p>Loading reviews...</p>
+                <p>No reviews for this event yet.</p>
             ) : (
                 <>
                     {/* REVIEWS TABLE */}
@@ -136,20 +149,20 @@ const Reviews: React.FC = () => {
                         <thead>
                             <tr>
                                 <th>User</th>
-                                <th>Date event</th>
                                 <th>Date placed</th>
                                 <th>Stars</th>
                                 <th>Review</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {currentReviews.map((review, index) => (
-                                <tr key={index}>
-                                    <td>{review.user}</td>
-                                    <td>{review.dateEvent}</td>
-                                    <td>{review.datePlaced}</td>
+                            {currentReviews.map((review) => (
+                                <tr key={review.id}>
+                                    <td>{review.username}</td>
+                                    <td>
+                                        {new Date(review.creation_date).toLocaleDateString()}
+                                    </td>
                                     <td>{`${review.stars}/5`}</td>
-                                    <td>{review.review}</td>
+                                    <td>{review.desc}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -159,14 +172,14 @@ const Reviews: React.FC = () => {
                     <ReactPaginate
                         previousLabel={"← Previous"}
                         nextLabel={"Next →"}
-                        pageCount={Math.ceil(reviews.length / itemsPerPage)} // Total number of pages
+                        pageCount={Math.ceil(reviews.length / itemsPerPage)}
                         onPageChange={handlePageClick}
-                        containerClassName={"pagination"} // Wrapper class for pagination controls
-                        activeClassName={"active"} // Active page styling
-                        pageClassName={"page"} // Each page number styling
-                        previousClassName={"prev"} // "Previous" button styling
-                        nextClassName={"next"} // "Next" button styling
-                        disabledClassName={"disabled"} // Disabled state styling
+                        containerClassName={"pagination"}
+                        activeClassName={"active"}
+                        pageClassName={"page"}
+                        previousClassName={"prev"}
+                        nextClassName={"next"}
+                        disabledClassName={"disabled"}
                     />
                 </>
             )}

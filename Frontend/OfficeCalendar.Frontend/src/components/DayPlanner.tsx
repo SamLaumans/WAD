@@ -8,6 +8,15 @@ export interface DayPlannerProps {
     initialDate?: Date; // Optional prop to display a specific date when the component loads
 }
 
+// ✅ NEW: Interface describing an Event from the backend
+interface Event {
+    id: string;
+    title: string;
+    desc: string;
+    start_time: string;
+    end_time: string;
+}
+
 // The DayPlanner component displays a daily view where users can navigate
 // between days and potentially see tasks or events for the selected date.
 const DayPlanner: React.FC<DayPlannerProps> = ({ initialDate }) => {
@@ -20,6 +29,12 @@ const DayPlanner: React.FC<DayPlannerProps> = ({ initialDate }) => {
     // Store the currently selected date in the component state.
     // Use the initialDate prop if provided, otherwise fall back to today's date.
     const [selectedDate, setSelectedDate] = useState(initialDate || today);
+
+    // ✅ NEW: State to store fetched events
+    const [events, setEvents] = useState<Event[]>([]);
+
+    // ✅ NEW: Loading state for UX feedback
+    const [isLoading, setIsLoading] = useState(true);
 
     // Whenever the 'date' URL parameter changes, update the selected date.
     // This ensures the displayed date matches the one in the URL.
@@ -41,6 +56,23 @@ const DayPlanner: React.FC<DayPlannerProps> = ({ initialDate }) => {
         }
     }, [initialDate]);
 
+    // ✅ NEW: Fetch all events from the backend once
+    useEffect(() => {
+        const fetchEvents = async () => {
+            try {
+                const response = await fetch("http://localhost:5267/api/events/get-all");
+                const data: Event[] = await response.json();
+                setEvents(data);
+            } catch (error) {
+                console.error("Failed to fetch events:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchEvents();
+    }, []);
+
     // Array of day names for displaying readable day titles
     const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -57,6 +89,16 @@ const DayPlanner: React.FC<DayPlannerProps> = ({ initialDate }) => {
         newDate.setDate(selectedDate.getDate() + (direction === "next" ? 1 : -1));
         setSelectedDate(newDate); // Update the state with the new date
     };
+
+    // ✅ NEW: Filter events that belong to the selected date
+    const eventsForSelectedDay = events.filter(event => {
+        const eventDate = new Date(event.start_time);
+        return (
+            eventDate.getFullYear() === selectedDate.getFullYear() &&
+            eventDate.getMonth() === selectedDate.getMonth() &&
+            eventDate.getDate() === selectedDate.getDate()
+        );
+    });
 
     return (
         <div className="day-planner">
@@ -77,12 +119,33 @@ const DayPlanner: React.FC<DayPlannerProps> = ({ initialDate }) => {
                 <button onClick={() => handleDayChange("next")} className="nav-button">▶</button>
             </div>
 
-
             {/* Main content area for daily events, tasks, or schedules */}
             <div className="day-content">
-                <p className="placeholder-text">
-                    (Here you could show events, tasks, or time slots for the selected day.)
-                </p>
+                {isLoading && <p>Loading events...</p>}
+
+                {!isLoading && eventsForSelectedDay.length === 0 && (
+                    <p className="placeholder-text">
+                        No events scheduled for this day.
+                    </p>
+                )}
+
+                {!isLoading && eventsForSelectedDay.map(event => (
+                    <Link
+                        key={event.id}
+                        to={`/selectedeventwithreviews/${event.id}`}
+                        className="day-event-link"
+                    >
+                        <div className="day-event">
+                            <h3>{event.title}</h3>
+                            <p>
+                                {new Date(event.start_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                                {" - "}
+                                {new Date(event.end_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                            </p>
+                            <p>{event.desc}</p>
+                        </div>
+                    </Link>
+                ))}
             </div>
         </div>
     );

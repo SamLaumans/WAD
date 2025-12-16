@@ -25,6 +25,7 @@ import Send_Message from './pages/send-message/send-message';
 import DayPlanner from "./components/DayPlanner";
 import MonthDayView from "./components/MonthDayView";
 import About from "./components/About"
+import SelectedEvent2 from "./components/SelectedEventWithReviews"
 
 const AppContent: React.FC = () => {
   const location = useLocation();
@@ -54,18 +55,21 @@ const AppContent: React.FC = () => {
           <Route path="/weekplanner" element={<WeekPlanner />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/faq" element={<FAQ />} />
-          <Route path="/event" element={<div><SelectedEvent /><Reviews /></div>} />
+          <Route path="/event" element={<div><SelectedEvent /><Reviews eventId={""} /></div>} />
           <Route path="/send-message" element={<Send_Message />} />
           <Route path="/admin-panel" element={<AdminPanel />} />
           <Route path="/admin-role-adjustment" element={<AdminRolBeheer />} />
           <Route path="/admin-profile" element={<Profiel />} />
           <Route path="/MonthPlanner" element={<MonthPlanner />} />
           <Route path="/DayPlanner" element={<DayPlanner />} />
-          <Route path="/Reviews" element={<Reviews />} />
+          <Route path="/Reviews" element={<Reviews eventId={""} />} />
           <Route path="/SelectedEvent" element={<SelectedEvent />} />
           <Route path="/DayPlanner/:date" element={<DayPlanner />} />
           <Route path="/MonthDayView" element={<MonthDayView />} />
           <Route path="/About" element={<About />} />
+          <Route path="/events/:eventId" element={<SelectedEvent />} />
+          <Route path="/selectedevent/:eventId" element={<SelectedEvent />} />
+          <Route path="/selectedeventwithreviews/:eventId" element={<SelectedEvent2 />} />
 
         </Routes>
       </main>

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import Reviews from './Reviews'; // Make sure path is correct
 
-// The SelectedEvent component displays detailed information about
-// a single selected event. It currently uses a hardcoded event object,
-// but could later receive event data as props or from context/state.
-const SelectedEvent: React.FC = () => {
+// The SelectedEvent2 component displays detailed information about
+// a single selected event along with its reviews.
+const SelectedEvent2: React.FC = () => {
     // Extract the eventId from the URL (e.g. /events/:eventId)
     const { eventId } = useParams<{ eventId: string }>();
 
@@ -96,8 +96,11 @@ const SelectedEvent: React.FC = () => {
                     </tr>
                 </tbody>
             </table>
+
+            {/* --- RENDER REVIEWS COMPONENT --- */}
+            <Reviews eventId={event.id} />
         </div>
     );
 };
 
-export default SelectedEvent;
+export default SelectedEvent2;
