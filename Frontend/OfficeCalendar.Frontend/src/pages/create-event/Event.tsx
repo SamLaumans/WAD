@@ -7,27 +7,25 @@ type Slot = {
 
 type Props = {
   slot?: Slot | null;
-  onClose: () => void;
+  onClose?: () => void;
 };
 
 function Event({ slot, onClose }: Props) {
   type FormData = {
-    naam: string;
-    info: string;
-    leden: string;
-    starttijd: string;
-    eindtijd: string;
+    title: string;
+    description: string;
+    start_time: string;
+    end_time: string;
   };
 
   const [formData, setFormData] = useState<FormData>({
-    naam: "",
-    info: "",
-    leden: "",
-    starttijd: "",
-    eindtijd: "",
+    title: "",
+    description: "",
+    start_time: "",
+    end_time: "",
   });
 
-  // vul start/eind tijd als er een slot is (bv. "09:30" -> eind +1 uur)
+  // vul start/end tijd als er een slot is (bv. "09:30" -> eind +1 uur)
   useEffect(() => {
     if (!slot) return;
     const start = slot.time;
@@ -40,9 +38,12 @@ function Event({ slot, onClose }: Props) {
         .getMinutes()
         .toString()
         .padStart(2, "0")}`;
-      setFormData((prev) => ({ ...prev, starttijd: start, eindtijd: endStr }));
+      const startDateTime = `${slot.day}T${start}:00`;
+      const endDateTime = `${slot.day}T${endStr}:00`;
+      setFormData((prev) => ({ ...prev, start_time: startDateTime, end_time: endDateTime }));
     } else {
-      setFormData((prev) => ({ ...prev, starttijd: start }));
+      const startDateTime = `${slot.day}T${start}:00`;
+      setFormData((prev) => ({ ...prev, start_time: startDateTime }));
     }
   }, [slot]);
 
@@ -58,18 +59,18 @@ function Event({ slot, onClose }: Props) {
 
     // optional: read username from localStorage if available
     const creator_username = localStorage.getItem("username") ?? undefined;
+    console.log("creator_username:", creator_username);
 
     const payload: any = {
-      naam: formData.naam,
-      info: formData.info,
-      leden: formData.leden,
-      starttijd: formData.starttijd,
-      eindtijd: formData.eindtijd,
+      title: formData.title,
+      desc: formData.description,
+      start_time: formData.start_time,
+      end_time: formData.end_time,
     };
     if (creator_username) payload.creator_username = creator_username;
 
     try {
-      const res = await fetch("http://localhost:5267/api/events/event-form", {
+      const res = await fetch(`http://localhost:5267/api/events?creator=${creator_username}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -78,26 +79,27 @@ function Event({ slot, onClose }: Props) {
       });
 
       if (res.status === 201 || res.ok) {
-        const data = await res.json();
+        // Event succesvol aangemaakt
         alert("Event succesvol aangemaakt!");
         // optioneel: gebruik returned data (data.id) voor iets
         // reset form
         setFormData({
-          naam: "",
-          info: "",
-          leden: "",
-          starttijd: "",
-          eindtijd: "",
+          title: "",
+          description: "",
+          start_time: "",
+          end_time: "",
         });
-        onClose();
+        onClose?.();
       } else {
+        console.log("Response status:", res.status);
         const err = await res.json().catch(() => null);
         const msg = err?.error ?? (await res.text());
+        console.log("Error message:", msg);
         alert("Fout bij aanmaken event: " + msg);
       }
     } catch (error) {
-      console.error(error);
-      alert("Netwerkfout bij aanmaken event");
+      console.error("Fetch error:", error);
+      alert("Netwerkfout bij aanmaken event: " + (error as Error).message);
     }
   };
 
@@ -108,45 +110,37 @@ function Event({ slot, onClose }: Props) {
       <div id="form-wrapper">
         <form onSubmit={handleSubmit} className="event-form">
           <div id="form">
-            <label>Naam</label>
+            <label>Title</label>
             <input
-              name="naam"
-              value={formData.naam}
+              name="title"
+              value={formData.title}
               onChange={handleChange}
               required
             />
 
-            <label>Info</label>
+            <label>Description</label>
             <textarea
-              name="info"
-              value={formData.info}
+              name="description"
+              value={formData.description}
               onChange={handleChange}
             />
 
-            <label>Leden (komma-gescheiden)</label>
+            <label>Start Time (ISO format)</label>
             <input
-              name="leden"
-              value={formData.leden}
-              onChange={handleChange}
-              placeholder="jan,piet"
-            />
-
-            <label>Starttijd (ISO of HH:mm)</label>
-            <input
-              name="starttijd"
-              value={formData.starttijd}
+              name="start_time"
+              value={formData.start_time}
               onChange={handleChange}
               required
-              placeholder="09:30 of 2025-12-01T09:30:00"
+              placeholder="2025-12-01T09:30:00"
             />
 
-            <label>Eindtijd (ISO of HH:mm)</label>
+            <label>End Time (ISO format)</label>
             <input
-              name="eindtijd"
-              value={formData.eindtijd}
+              name="end_time"
+              value={formData.end_time}
               onChange={handleChange}
               required
-              placeholder="10:30 of 2025-12-01T10:30:00"
+              placeholder="2025-12-01T10:30:00"
             />
 
             <button className="event-button" type="submit">

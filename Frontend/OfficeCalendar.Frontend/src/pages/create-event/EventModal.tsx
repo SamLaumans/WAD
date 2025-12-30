@@ -2,11 +2,6 @@ import React from "react";
 import Event from "./Event";
 import "./EventModal.css";
 
-type Slot = {
-  day: string;
-  time: string;
-};
-
 type Props = {
   show: boolean;
   onClose: () => void;
