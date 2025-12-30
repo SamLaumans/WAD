@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Officecalendar.Backend.Models;
 using OfficeCalendar.Backend.DTOs;
 using WADapi.Data;
@@ -13,73 +14,144 @@ namespace OfficeCalendar.Backend.Services
             _context = context;
         }
 
-        // Maakt een Event aan en slaat deze op. Geeft het opgeslagen Event terug.
-        public Event PostEvent(EventPostDto dto, string creatorUsername)
+
+        //MAPPING 
+        private UserGetDto MapUser(User user)
         {
-            if (dto.start_time >= dto.end_time)
-                throw new ArgumentException("start_time must be before end_time");
-
-            var ev = new Event
+            return new UserGetDto
             {
-                id = Guid.NewGuid(),
-                creator_username = creatorUsername,
-                title = dto.title,
-                desc = dto.desc ?? string.Empty,
-                start_time = dto.start_time,
-                end_time = dto.end_time,
-                booking_id = dto.booking_id,
-                last_edited_date = DateTime.UtcNow
+                username = user.username,
+                email = user.email,
+                nickname = user.nickname,
+                creation_date = user.creation_date,
+                role = user.role
             };
-
-            _context.Events.Add(ev);
-            _context.SaveChanges();
-
-            return ev;
         }
 
-        // Verwerkt het formulier uit de frontend (EventFormDto) en slaat een Event op.
-        // starttijd/eindtijd kunnen een volledige DateTime-string bevatten of alleen een tijd ("HH:mm").
-        public Event PostEventForm(EventFormDto formDto)
+        private RoomBookingGetDto MapRoomBooking(RoomBooking rb)
         {
-            DateTime ParseDateTime(string input)
+            return new RoomBookingGetDto
             {
-                // Probeer volledige DateTime
-                if (DateTime.TryParse(input, out var dt))
-                    return dt.ToUniversalTime();
-
-                // Probeer alleen tijd (HH:mm of HH:mm:ss) -> combineer met huidige datum (UTC)
-                if (TimeSpan.TryParse(input, out var ts))
-                    return DateTime.UtcNow.Date.Add(ts);
-
-                throw new ArgumentException($"Ongeldige datum/tijd: {input}");
-            }
-
-            var start = ParseDateTime(formDto.starttijd);
-            var end = ParseDateTime(formDto.eindtijd);
-
-            if (start >= end)
-                throw new ArgumentException("start_time must be before end_time");
-
-            var ev = new Event
-            {
-                id = Guid.NewGuid(),
-                creator_username = formDto.creator_username ?? "system",
-                title = formDto.naam,
-                desc = formDto.info ?? string.Empty,
-                start_time = start,
-                end_time = end,
-                last_edited_date = DateTime.UtcNow
+                id = rb.id,
+                room = new RoomGetDto
+                {
+                    id = rb.Room.id,
+                    room_location = rb.Room.room_location,
+                    available = rb.Room.available,
+                    capacity = rb.Room.capacity,
+                    visible = rb.Room.visible
+                },
+                start_time = rb.start_time,
+                end_time = rb.end_time,
+                booked_by = MapUser(rb.User),
+                visible = rb.visible,
+                Event = rb.Event == null ? null : new EventGetDto
+                {
+                    id = rb.Event.id,
+                    creator = MapUser(rb.Event.Creator),
+                    title = rb.Event.title,
+                    desc = rb.Event.desc,
+                    start_time = rb.Event.start_time,
+                    end_time = rb.Event.end_time,
+                    last_edited_date = rb.Event.last_edited_date,
+                    bookings = null
+                }
             };
-
-            _context.Events.Add(ev);
-            _context.SaveChanges();
-
-            return ev;
         }
 
+        private EventGetDto MapEvent(Event e)
+        {
+            return new EventGetDto
+            {
+                id = e.id,
+                creator = MapUser(e.Creator),
+                title = e.title,
+                desc = e.desc,
+                start_time = e.start_time,
+                end_time = e.end_time,
+                last_edited_date = e.last_edited_date,
+                bookings = e.RoomBookings.Select(rb => MapRoomBooking(rb)).ToList()
+            };
+        }
+
+        //GETS
         public Event? GetEvent(Guid id)
         {
-            return _context.Events.FirstOrDefault(e => e.id == id);
+            return _context.Events
+                .Include(e => e.Creator)
+                .Include(e => e.RoomBookings).ThenInclude(rb => rb.Room)
+                .Include(e => e.RoomBookings).ThenInclude(rb => rb.User)
+                .FirstOrDefault(e => e.id == id);
         }
+
+        public EventGetDto? GetEventDto(Guid id)
+        {
+            var e = GetEvent(id);
+            return e == null ? null : MapEvent(e);
+        }
+
+        public EventGetDto[] GetAllEvents()
+        {
+            return _context.Events
+                .Include(e => e.Creator)
+                .Include(e => e.RoomBookings).ThenInclude(rb => rb.Room)
+                .Include(e => e.RoomBookings).ThenInclude(rb => rb.User)
+                .AsNoTracking()
+                .Select(e => MapEvent(e))
+                .ToArray();
+        }
+
+        //CREATE
+        public EventGetDto CreateEvent(EventPostDto dto, string creator_username)
+        {
+            var newEvent = new Event
+            {
+                id = Guid.NewGuid(),
+                creator_username = creator_username,
+                title = dto.title,
+                desc = dto.desc,
+                start_time = dto.start_time,
+                end_time = dto.end_time,
+                booking_id = dto.booking_id
+            };
+
+            _context.Events.Add(newEvent);
+            _context.SaveChanges();
+
+            return MapEvent(newEvent);
+        }
+
+        //UPDATE
+        public EventGetDto UpdateEvent(Event existing, EventPutDto dto)
+        {
+            if (dto.title != null)
+                existing.title = dto.title;
+
+            if (dto.desc != null)
+                existing.desc = dto.desc;
+
+            if (dto.start_time != null)
+                existing.start_time = dto.start_time.Value;
+
+            if (dto.end_time != null)
+                existing.end_time = dto.end_time.Value;
+
+            if (dto.booking_id != null)
+                existing.booking_id = dto.booking_id;
+
+            existing.last_edited_date = dto.last_edited_date;
+
+            _context.SaveChanges();
+
+            return MapEvent(existing);
+        }
+
+        //DELETE (soft)
+        public void DeleteEvent(Event e)
+        {
+            e.visible = false;   // soft delete
+            _context.SaveChanges();
+        }
+
     }
 }

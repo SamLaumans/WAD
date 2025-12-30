@@ -14,6 +14,7 @@ namespace Officecalendar.Backend.Models
         public required DateTime end_time { get; set; }
         public DateTime? last_edited_date { get; set; }
         public Guid? booking_id { get; set; }
+        public bool visible { get; set; } = true;
 
         [ForeignKey(nameof(creator_username))]
         public User Creator { get; set; } = null!;

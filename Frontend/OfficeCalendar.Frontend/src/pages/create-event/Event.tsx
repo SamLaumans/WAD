@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import "./Event.css";
 
 type Slot = {
   day: string;
@@ -51,7 +52,7 @@ function Event({ slot, onClose }: Props) {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -67,7 +68,6 @@ function Event({ slot, onClose }: Props) {
       start_time: formData.start_time,
       end_time: formData.end_time,
     };
-    if (creator_username) payload.creator_username = creator_username;
 
     try {
       const res = await fetch(`http://localhost:5267/api/events?creator=${creator_username}`, {
@@ -104,8 +104,7 @@ function Event({ slot, onClose }: Props) {
   };
 
   return (
-    <div>
-      <div id="Eventheader">Event Aanmaken</div>
+    <form onSubmit={handleSubmit} className="event-form">
 
       <div id="form-wrapper">
         <form onSubmit={handleSubmit} className="event-form">

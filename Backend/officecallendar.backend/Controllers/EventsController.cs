@@ -1,91 +1,62 @@
 using Microsoft.AspNetCore.Mvc;
 using OfficeCalendar.Backend.DTOs;
-using Officecalendar.Backend.Models;
 using OfficeCalendar.Backend.Services;
+using WADapi.Data;
 
-namespace OfficeCalendar.Backend.Controllers
+namespace Officecalendar.Backend.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class EventsController : ControllerBase
+    [ApiController]
+    public class EventController : ControllerBase
     {
-        private readonly EventService _eventService;
+        private readonly EventService _service;
 
-        public EventsController(EventService eventService)
+        public EventController(EventService service)
         {
-            _eventService = eventService;
+            _service = service;
         }
 
-        // POST /api/events?creator=username
-        [HttpPost]
-        public IActionResult CreateEvent([FromBody] EventPostDto dto, [FromQuery] string? creator)
+        [HttpGet]
+        public ActionResult<IEnumerable<EventGetDto>> GetEvents()
         {
-            if (string.IsNullOrWhiteSpace(creator))
-                return BadRequest(new { error = "creator query parameter is required (e.g. ?creator=username)" });
-
-            try
-            {
-                var ev = _eventService.PostEvent(dto, creator);
-                var resp = new
-                {
-                    id = ev.id,
-                    title = ev.title,
-                    desc = ev.desc,
-                    start_time = ev.start_time,
-                    end_time = ev.end_time,
-                    booking_id = ev.booking_id,
-                    creator_username = ev.creator_username
-                };
-                return CreatedAtAction(nameof(GetEvent), new { id = ev.id }, resp);
-            }
-            catch (ArgumentException aEx)
-            {
-                return BadRequest(new { error = aEx.Message });
-            }
+            return Ok(_service.GetAllEvents());
         }
 
-        // POST /api/events/from-form
-        // Ontvangt het formulier uit de frontend (EventFormDto) en maakt een Event aan.
-        [HttpPost("event-form")]
-        public IActionResult CreateEventForm([FromBody] EventFormDto dto)
-        {
-            try
-            {
-                var ev = _eventService.PostEventForm(dto);
-                var resp = new
-                {
-                    id = ev.id,
-                    title = ev.title,
-                    desc = ev.desc,
-                    start_time = ev.start_time,
-                    end_time = ev.end_time,
-                    booking_id = ev.booking_id,
-                    creator_username = ev.creator_username
-                };
-                return CreatedAtAction(nameof(GetEvent), new { id = ev.id }, resp);
-            }
-            catch (ArgumentException aEx)
-            {
-                return BadRequest(new { error = aEx.Message });
-            }
-        }
-
-        // GET /api/events/{id}
         [HttpGet("{id:guid}")]
-        public IActionResult GetEvent(Guid id)
+        public ActionResult<EventGetDto> GetEvent(Guid id)
         {
-            var ev = _eventService.GetEvent(id);
+            var dto = _service.GetEventDto(id);
+            if (dto == null) return NotFound();
+            return Ok(dto);
+        }
+
+        [HttpPost]
+        public ActionResult<EventGetDto> PostEvent(EventPostDto dto)
+        {
+            string creator_username = User.Identity.Name;
+
+            var created = _service.CreateEvent(dto, creator_username);
+            return Ok(created);
+        }
+
+        [HttpPut("{id:guid}")]
+        public ActionResult<EventGetDto> UpdateEvent(Guid id, EventPutDto dto)
+        {
+            var ev = _service.GetEvent(id);
             if (ev == null) return NotFound();
-            return Ok(new
-            {
-                id = ev.id,
-                title = ev.title,
-                desc = ev.desc,
-                start_time = ev.start_time,
-                end_time = ev.end_time,
-                booking_id = ev.booking_id,
-                creator_username = ev.creator_username
-            });
+
+            var updated = _service.UpdateEvent(ev, dto);
+            return Ok(updated);
+        }
+
+        [HttpDelete("{id:guid}")]
+        public IActionResult DeleteEvent(Guid id)
+        {
+            var ev = _service.GetEvent(id);
+            if (ev == null) return NotFound();
+
+            _service.DeleteEvent(ev);
+            return NoContent();
         }
     }
 }
