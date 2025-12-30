@@ -148,8 +148,12 @@ function Event({ slot, onClose }: Props) {
           </div>
         </form>
       </div>
-    </div>
+    </form>
   );
 }
 
 export default Event;
+function useEffect(arg0: () => void, arg1: (Slot | null | undefined)[]) {
+  throw new Error("Function not implemented.");
+}
+
