@@ -44,9 +44,12 @@ function Event({ slot, onClose }: Props) {
       booking_id: null
     };
 
-    const res = await fetch("http://localhost:5267/api/event", {
+    const res = await fetch("http://localhost:5267/api/Events", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        ...(localStorage.getItem('token') ? { 'Authorization': `Bearer ${localStorage.getItem('token')}` } : {}),
+      },
       body: JSON.stringify(body),
     });
 
