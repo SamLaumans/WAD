@@ -10,78 +10,61 @@ interface Review {
     stars: number;
     desc: string;
     creation_date: string;
+    last_edited_date?: string | null;
 }
 
-// Define the props Reviews can receive
+// Props for Reviews component
 interface ReviewsProps {
     eventId: string;
 }
 
 const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
-    // === STATE VARIABLES ===
-    // Holds all reviews (fetched from backend)
     const [reviews, setReviews] = useState<Review[]>([]);
-
-    // Keeps track of the current pagination page
     const [currentPage, setCurrentPage] = useState(0);
+    const itemsPerPage = 5;
 
-    // Defines how many reviews are shown per page
-    const itemsPerPage = 4;
-
-    // Form input state for adding a new review
     const [newReview, setNewReview] = useState({
         stars: 5,
         desc: '',
     });
 
-    // FETCH REVIEWS FROM BACKEND
+    // Fetch reviews for this event
+    const fetchReviews = async () => {
+        try {
+            const response = await fetch(`http://localhost:5267/api/Reviews/get-all?eventId=${eventId}`);
+            if (!response.ok) throw new Error('Failed to fetch reviews');
+            const data: Review[] = await response.json();
+            setReviews(data);
+            setCurrentPage(0);
+        } catch (error) {
+            console.error('Error fetching reviews:', error);
+        }
+    };
+
     useEffect(() => {
-        const fetchReviews = async () => {
-            try {
-                const response = await fetch('http://localhost:5267/api/reviews/get-all');
-                if (!response.ok) throw new Error('Failed to load reviews');
+        if (eventId) {
+            fetchReviews();
+        }
+    }, [eventId]);
 
-                const data: Review[] = await response.json();
-
-                // Filter reviews so only reviews for this event are shown
-                const eventReviews = data.filter(
-                    (review) => review.event_id === eventId
-                );
-
-                setReviews(eventReviews);
-                setCurrentPage(0); // Reset pagination when event changes
-            } catch (error) {
-                console.error('Error fetching reviews:', error);
-            }
-        };
-
-        fetchReviews();
-    }, [eventId]); // Re-run when navigating to another event
-
-    // PAGINATION LOGIC
+    // Pagination logic
     const offset = currentPage * itemsPerPage;
     const currentReviews = reviews.slice(offset, offset + itemsPerPage);
 
-    // Handle page change from ReactPaginate
     const handlePageClick = (event: { selected: number }) => {
         setCurrentPage(event.selected);
     };
 
-    // FORM HANDLERS
-
-    // Update input values in the review form
-    const handleInputChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => {
+    // Handle input changes
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setNewReview((prev) => ({ ...prev, [name]: value }));
     };
 
-    // Handle form submission to add a new review
-    const handleAddReview = async (element: React.FormEvent) => {
-        element.preventDefault();
+    // Add new review
+    const handleAddReview = async (e: React.FormEvent) => {
+        e.preventDefault();
 
-        // Create new review object for backend
         const reviewToAdd = {
             event_id: eventId,
             stars: Number(newReview.stars),
@@ -89,36 +72,38 @@ const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
         };
 
         try {
-            await fetch('http://localhost:5267/api/reviews', {
+            const token = localStorage.getItem("token");
+
+            const response = await fetch('http://localhost:5267/api/Reviews', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
                 body: JSON.stringify(reviewToAdd),
             });
 
-            // Optimistically add review to UI
-            setReviews((prev) => [
-                {
-                    id: crypto.randomUUID(),
-                    username: 'You',
-                    creation_date: new Date().toISOString(),
-                    ...reviewToAdd,
-                },
-                ...prev,
-            ]);
+            if (!response.ok) {
+                const errorText = await response.text(); 
+                console.error("Failed to post review:", errorText);
+                return;
+            }
 
-            // Reset form
+            const createdReview: Review = await response.json();
+
+            setReviews((prev) => [createdReview, ...prev]);
             setNewReview({ stars: 5, desc: '' });
+            setCurrentPage(0);
         } catch (err) {
-            console.error('Failed to add review:', err);
+            console.error(err);
         }
     };
 
-    // RENDER COMPONENT
     return (
         <div>
             <h2>Reviews</h2>
 
-            {/* ADD REVIEW FORM */}
+            {/* Add review form */}
             <form className="review-form" onSubmit={handleAddReview}>
                 <input
                     type="number"
@@ -139,12 +124,11 @@ const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
                 <button type="submit">Add Review</button>
             </form>
 
-            {/* REVIEWS TABLE OR LOADING TEXT */}
+            {/* Reviews table */}
             {reviews.length === 0 ? (
                 <p>No reviews for this event yet.</p>
             ) : (
                 <>
-                    {/* REVIEWS TABLE */}
                     <table>
                         <thead>
                             <tr>
@@ -158,9 +142,7 @@ const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
                             {currentReviews.map((review) => (
                                 <tr key={review.id}>
                                     <td>{review.username}</td>
-                                    <td>
-                                        {new Date(review.creation_date).toLocaleDateString()}
-                                    </td>
+                                    <td>{new Date(review.creation_date).toLocaleDateString()}</td>
                                     <td>{`${review.stars}/5`}</td>
                                     <td>{review.desc}</td>
                                 </tr>
@@ -168,7 +150,6 @@ const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
                         </tbody>
                     </table>
 
-                    {/* PAGINATION CONTROL */}
                     <ReactPaginate
                         previousLabel={"← Previous"}
                         nextLabel={"Next →"}
