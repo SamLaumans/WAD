@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import SelectedEvent from './components/SelectedEvent';
@@ -25,6 +25,8 @@ import Send_Message from './pages/send-message/send-message';
 import DayPlanner from "./components/DayPlanner";
 import MonthDayView from "./components/MonthDayView";
 import About from "./components/About"
+import AdminRoutes from"./components/AdminRoutes.tsx";
+import LoggedinRoutes from"./components/LoggedinRoutes.tsx";
 
 const AppContent: React.FC = () => {
   const location = useLocation();
@@ -35,13 +37,42 @@ const AppContent: React.FC = () => {
     location.pathname !== '/registreer' &&
     location.pathname !== '/forgot-pw';
 
+const [user, setUser] = useState(null);
+const [loading, setLoading] = useState(true);
+
+useEffect(() => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    fetch('https://localhost:5267/api/me', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+    .then(res => res.ok ? res.json() : null)
+    .then(data => {
+      setUser(data);
+      setLoading(false);
+    })
+    .catch(() => {
+      setUser(null);
+      setLoading(false);
+    });
+  } else {
+    setLoading(false);
+  }
+}, []);
+
+
   return (
     <div className="app-container">
       {showHeaderFooter && <Toolbar />}
 
 
       <main className="main-content" style={{ height: '80px' }}>
-        <Routes>
+        <Routes>  
+          
+          <Route element ={<AdminRoutes user={user} isLoading={loading} />}>  
+            <Route path="/admin/role-adjustment" element={<AdminRolBeheer />} />
+          </Route>
+
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
           <Route path="/registreer" element={<Registreer />} />

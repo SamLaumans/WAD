@@ -20,16 +20,20 @@ public class ProfileController : ControllerBase
         _profileService = profileService;
     }
 
+    [Authorize]
     [HttpGet("me")]
     public async Task<IActionResult> GetCurrentUser()
     {
-        var username = User.Identity?.Name;
+        var username = User.FindFirst(ClaimTypes.Name)?.Value;
 
         if (string.IsNullOrEmpty(username))
-            return Unauthorized("User should be loggedin to get their info.");
+            return Unauthorized();
+
         var fullUser = await _profileService.GetUserByUsernameAsync(username);
+
         if (fullUser == null)
-            return NotFound("User record not found in database.");
+            return NotFound();
+
         return Ok(fullUser);
     }
 }

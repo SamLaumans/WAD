@@ -1,28 +1,30 @@
 import './Profiel.css';
-import img1 from '../../assets/janjanssen.jpg';
+import img1 from '../../assets/blank_profile.jpg';
 import React, { useEffect, useState } from 'react';
 
 const Profiel: React.FC = () => {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    // 1. Grab the 'VIP Pass' from storage
     const token = localStorage.getItem('token');
 
     if (token) {
-      // 2. Go to your "GetCurrentUser" endpoint
-      fetch('https://localhost:xxxx/api/user/me', {
+      fetch('https://localhost:5267/api/me', {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${token}` // This is the crucial part
+          'Authorization': `Bearer ${token}`
         }
       })
-      .then(res => res.json())
-      .then(data => {
-        setUser(data);
+      .then(res => {
+        if (!res.ok) {
+          console.error("Failed to fetch user");  //checkt op foutcodes (401, 500 etc)
+          return null;
+        }
+        return res.json();
       })
-      .catch(err => console.error("Could not fetch user", err));
-    }
+      .then(data => setUser(data))
+      .catch(err => console.error("Could not fetch user", err)); //checkt op httpfouten en netwerkfouten
+    } 
   }, []);
 
   return (
@@ -35,14 +37,13 @@ const Profiel: React.FC = () => {
         <div className='admin-profile-information-wrapper'>
           <img src={img1} alt="profiel" className="admin-profile-pic" />
           <div className="admin-profile-text2">
-            <h2 className="admin-profile-heavy">{user.username}</h2>
-            <h3 className="admin-profile-light">{user.email}</h3>
-            <h3 className="admin-profile-light">{user.nickname}</h3>
-            <h3 className="admin-profile-light">{user.creation_date}</h3>
+            <h2 className="admin-profile-heavy">{user?.username}</h2>
+            <h3 className="admin-profile-light">{user?.email}</h3>
+            <h3 className="admin-profile-light">{user?.nickname}</h3>
+            <h3 className="admin-profile-light">{user?.creation_date}</h3>
           </div>
         </div>
       </div>
-
     </div>
   );
 };
