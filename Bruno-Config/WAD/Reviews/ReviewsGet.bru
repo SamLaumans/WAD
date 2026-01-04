@@ -1,0 +1,25 @@
+meta {
+  name: ReviewsGet
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{url}}/reviews?reviewid=985e28ad-9245-4791-aeb7-b2b0b997053e
+  body: none
+  auth: inherit
+}
+
+params:query {
+  reviewid: 985e28ad-9245-4791-aeb7-b2b0b997053e
+}
+
+headers {
+  Authorization: {{token}}
+  Content-Type: application/json
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

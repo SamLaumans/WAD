@@ -1,0 +1,32 @@
+meta {
+  name: EventDelete
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{url}}/events?eventid=5666882e-e6b0-4ef6-ae87-46fecf29a2dc
+  body: json
+  auth: inherit
+}
+
+params:query {
+  eventid: 5666882e-e6b0-4ef6-ae87-46fecf29a2dc
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: {{token}}
+}
+
+body:json {
+  {
+      "title": "Titel 2 jaman"
+  }
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

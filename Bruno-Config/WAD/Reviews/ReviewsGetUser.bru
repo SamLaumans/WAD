@@ -1,0 +1,21 @@
+meta {
+  name: ReviewsGetUser
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{url}}/reviews/me
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: {{token}}
+  Content-Type: application/json
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

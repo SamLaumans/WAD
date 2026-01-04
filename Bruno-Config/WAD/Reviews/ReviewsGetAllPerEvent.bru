@@ -1,0 +1,25 @@
+meta {
+  name: ReviewsGetAllPerEvent
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{url}}/reviews/get-all?eventid=22374348-05e9-409f-8477-41847d61b1c9
+  body: none
+  auth: inherit
+}
+
+params:query {
+  eventid: 22374348-05e9-409f-8477-41847d61b1c9
+}
+
+headers {
+  Authorization: {{token}}
+  Content-Type: application/json
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

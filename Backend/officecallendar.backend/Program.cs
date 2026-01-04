@@ -15,9 +15,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<MessageService>();
 builder.Services.AddScoped<AttendanceService>();
+builder.Services.AddScoped<ReviewService>();
 builder.Services.AddScoped<RoomService>();
 builder.Services.AddScoped<RoomBookingService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
+builder.Services.AddScoped<EventService>();
+
 
 builder.Services.AddControllers();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -48,8 +51,20 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddAuthorization();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseStaticFiles();
+    app.UseSwaggerUI(c =>
+        c.InjectJavascript("/swagger-auth.js")
+    );
+}
+
 
 app.UseCors("AllowAll");
 

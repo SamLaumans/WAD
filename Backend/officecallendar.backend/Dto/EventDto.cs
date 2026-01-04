@@ -1,5 +1,6 @@
 namespace OfficeCalendar.Backend.DTOs
 {
+    //DTO for Post
     public class EventPostDto
     {
         public required string title { get; set; }
@@ -9,6 +10,7 @@ namespace OfficeCalendar.Backend.DTOs
         public Guid? booking_id { get; set; } = null;
     }
 
+    //DTO for Put
     public class EventPutDto
     {
         public string? title { get; set; }
@@ -17,9 +19,9 @@ namespace OfficeCalendar.Backend.DTOs
         public DateTime? end_time { get; set; }
         public Guid? booking_id { get; set; }
         public bool? visible { get; set; } = true;
-        public required DateTime last_edited_date { get; set; }
     }
 
+    //DTO for Get
     public class EventGetDto
     {
         public required Guid id { get; set; }
@@ -31,5 +33,4 @@ namespace OfficeCalendar.Backend.DTOs
         public required DateTime? last_edited_date { get; set; }
         public List<RoomBookingGetDto>? bookings { get; set; }
     }
-
 }

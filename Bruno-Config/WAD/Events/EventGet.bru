@@ -1,0 +1,24 @@
+meta {
+  name: EventGet
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{url}}/events/get-one/?eventid=5666882e-e6b0-4ef6-ae87-46fecf29a2dc
+  body: none
+  auth: inherit
+}
+
+params:query {
+  eventid: 5666882e-e6b0-4ef6-ae87-46fecf29a2dc
+}
+
+headers {
+  Authorization: {{token}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

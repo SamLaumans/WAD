@@ -87,7 +87,6 @@ useEffect(() => {
           <Route path="/faq" element={<FAQ />} />
           <Route path="/event" element={<div><SelectedEvent /><Reviews /></div>} />
           <Route path="/send-message" element={<Send_Message />} />
-          <Route path="/create-event" element={<CreateEvent />} />
           <Route path="/admin-panel" element={<AdminPanel />} />
           <Route path="/admin-role-adjustment" element={<AdminRolBeheer />} />
           <Route path="/admin-profile" element={<Profiel />} />
@@ -102,7 +101,7 @@ useEffect(() => {
         </Routes>
       </main>
     </div>
-    
+
   );
 };
 

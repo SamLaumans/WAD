@@ -1,6 +1,5 @@
 #Eventheader {
     text-align: center;
-    margin-top: 40px;
 }
 
 #form-wrapper {
@@ -15,14 +14,12 @@
     justify-content: center;
 }
 
-#form1,
-#form2 {
+#form {
     flex: 1 1 300px;
-    max-width: 500px;
+    max-width: 100%;
     background: white;
-    margin: 20px;
-    padding: 30px;
-    border-radius: 10px;
+    padding: 20px;
+    border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -45,7 +42,7 @@ select {
     font-size: 14px;
 }
 
-button {
+.event-button {
     /* ruimte boven */
     margin-top: 20px;
     width: 100%;
@@ -58,6 +55,6 @@ button {
     cursor: pointer;
 }
 
-button:hover {
+.event-button:hover {
     background-color: #00d52e;
 }

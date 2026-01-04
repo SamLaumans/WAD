@@ -1,0 +1,32 @@
+meta {
+  name: EventPut
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{url}}/events?eventid=a7b82938-9413-4c8a-9980-919bd277c9bc
+  body: json
+  auth: inherit
+}
+
+params:query {
+  eventid: a7b82938-9413-4c8a-9980-919bd277c9bc
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: {{token}}
+}
+
+body:json {
+  {
+      "desc": "/e pray"
+  }
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

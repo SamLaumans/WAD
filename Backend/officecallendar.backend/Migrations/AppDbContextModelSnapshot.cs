@@ -17,7 +17,7 @@ namespace officecallendar.backend.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.11")
+                .HasAnnotation("ProductVersion", "8.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -87,6 +87,9 @@ namespace officecallendar.backend.Migrations
 
                     b.Property<string>("username")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("visible")
+                        .HasColumnType("bit");
 
                     b.HasKey("id");
 
@@ -207,6 +210,9 @@ namespace officecallendar.backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("creation_date")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("desc")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -214,12 +220,18 @@ namespace officecallendar.backend.Migrations
                     b.Property<Guid>("event_id")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("last_edited_date")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("stars")
                         .HasColumnType("int");
 
                     b.Property<string>("username")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("visible")
+                        .HasColumnType("bit");
 
                     b.HasKey("id");
 

@@ -1,0 +1,25 @@
+meta {
+  name: ReviewsDelete
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{url}}/reviews?reviewid=0814969f-de3e-437c-8bdb-43df6a41b5af
+  body: none
+  auth: inherit
+}
+
+params:query {
+  reviewid: 0814969f-de3e-437c-8bdb-43df6a41b5af
+}
+
+headers {
+  Authorization: {{token}}
+  Content-Type: application/json
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

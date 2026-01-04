@@ -1,0 +1,20 @@
+meta {
+  name: EventGetAll
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{url}}/events/get-all
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: {{token}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

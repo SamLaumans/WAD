@@ -1,0 +1,31 @@
+meta {
+  name: ReviewPut
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{url}}/reviews?reviewid=985e28ad-9245-4791-aeb7-b2b0b997053e
+  body: json
+  auth: inherit
+}
+
+params:query {
+  reviewid: 985e28ad-9245-4791-aeb7-b2b0b997053e
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: {{token}}
+}
+
+body:json {
+  {
+      "desc": "Toch niet zo leuk"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
