@@ -19,71 +19,91 @@ interface ReviewsProps {
 }
 
 const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
+    // All reviews for this event
     const [reviews, setReviews] = useState<Review[]>([]);
+
+    // Pagination state
     const [currentPage, setCurrentPage] = useState(0);
     const itemsPerPage = 5;
 
+    // New review form state
     const [newReview, setNewReview] = useState({
         stars: 5,
         desc: '',
     });
 
-    // Editing state
+    // Editing state (which review is being edited)
     const [editingReview, setEditingReview] = useState<Review | null>(null);
+
+    // Edit form data
     const [editData, setEditData] = useState({ stars: 5, desc: '' });
 
-    // Extract current user from JWT
+    // Extract current user and role from JWT token
     const token = localStorage.getItem("token");
     let currentUser: string | null = null;
     let userRole: number | null = null;
 
     if (token) {
         try {
+            // Decode JWT payload
             const payload = JSON.parse(atob(token.split('.')[1]));
+
+            // Extract username from common JWT fields
             currentUser = payload.unique_name || payload.name || payload.sub || null;
+
+            // Extract role (admin = 1)
             userRole = payload.role !== undefined ? parseInt(payload.role) : null;
         } catch {
+            // If token is invalid or corrupted
             currentUser = null;
             userRole = null;
         }
     }
 
-    // Fetch reviews for this event
+    // Fetch all reviews for this event from backend
     const fetchReviews = async () => {
         try {
-            const response = await fetch(`http://localhost:5267/api/Reviews/get-all?eventId=${eventId}`,{
-                headers: token ? { 'Authorization': `Bearer ${token}` } : {},
-            });
+            const response = await fetch(
+                `http://localhost:5267/api/Reviews/get-all?eventId=${eventId}`,
+                {
+                    headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+                }
+            );
+
             if (!response.ok) throw new Error('Failed to fetch reviews');
+
             const data: Review[] = await response.json();
+
             setReviews(data);
-            setCurrentPage(0);
+            setCurrentPage(0); // Reset pagination when new data arrives
         } catch (error) {
             console.error('Error fetching reviews:', error);
         }
     };
 
+    // Fetch reviews whenever eventId changes
     useEffect(() => {
         if (eventId) {
             fetchReviews();
         }
     }, [eventId]);
 
-    // Pagination logic
+    // Pagination calculations
     const offset = currentPage * itemsPerPage;
     const currentReviews = reviews.slice(offset, offset + itemsPerPage);
 
+    // Handle page change from ReactPaginate
     const handlePageClick = (event: { selected: number }) => {
         setCurrentPage(event.selected);
     };
 
-    // Handle input changes for new review
+    // Handle input changes for new review form
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setNewReview((prev) => ({ ...prev, [name]: value }));
     };
 
-    // Add new review
+    // Submit new review to backend
     const handleAddReview = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -109,9 +129,11 @@ const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
                 return;
             }
 
+            // Add newly created review to state
             const createdReview: Review = await response.json();
-
             setReviews((prev) => [createdReview, ...prev]);
+
+            // Reset form
             setNewReview({ stars: 5, desc: '' });
             setCurrentPage(0);
         } catch (err) {
@@ -119,13 +141,13 @@ const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
         }
     };
 
-    // Start editing a review
+    // Begin editing a review
     const startEditing = (review: Review) => {
         setEditingReview(review);
         setEditData({ stars: review.stars, desc: review.desc });
     };
 
-    // Handle PUT update
+    // Submit updated review to backend
     const handleUpdateReview = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!editingReview) return;
@@ -137,14 +159,17 @@ const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
         };
 
         try {
-            const response = await fetch(`http://localhost:5267/api/Reviews/${editingReview.id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                },
-                body: JSON.stringify(updatedReview),
-            });
+            const response = await fetch(
+                `http://localhost:5267/api/Reviews/${editingReview.id}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(updatedReview),
+                }
+            );
 
             if (!response.ok) {
                 console.error("Failed to update review");
@@ -153,16 +178,18 @@ const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
 
             const updated = await response.json();
 
+            // Replace updated review in state
             setReviews((prev) =>
                 prev.map((r) => (r.id === updated.id ? updated : r))
             );
 
-            setEditingReview(null);
+            setEditingReview(null); // Close edit form
         } catch (err) {
             console.error(err);
         }
     };
 
+    // Delete a review
     const handleDeleteReview = async (reviewId: string) => {
         if (!window.confirm("Weet je zeker dat je deze review wilt verwijderen?")) return;
 
@@ -182,7 +209,7 @@ const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
                 return;
             }
 
-            // Verwijder review uit state
+            // Remove review from state
             setReviews(prev => prev.filter(r => r.id !== reviewId));
         } catch (err) {
             console.error(err);
@@ -194,7 +221,7 @@ const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
         <div>
             <h2>Reviews</h2>
 
-            {/* Add review form */}
+            {/* Form to add a new review */}
             <form className="review-form" onSubmit={handleAddReview}>
                 <input
                     type="number"
@@ -215,7 +242,7 @@ const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
                 <button type="submit">Add Review</button>
             </form>
 
-            {/* Edit review form */}
+            {/* Edit review form (only visible when editingReview is set) */}
             {editingReview && (
                 <form className="review-form" onSubmit={handleUpdateReview}>
                     <h3>Edit your review</h3>
@@ -263,24 +290,21 @@ const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
                                     <td>{`${review.stars}/5`}</td>
                                     <td>{review.desc}</td>
 
-                                    {/* Only show delete button for review owner or admin */}
+                                    {/* Show delete for owner or admin; edit only for owner */}
                                     <td>
-                                    {(review.username === currentUser || userRole === 1) && (
-                                        
+                                        {(review.username === currentUser || userRole === 1) && (
                                             <button onClick={() => handleDeleteReview(review.id)}>Delete</button>
-                                        
-                                    )}
-                                    {(review.username === currentUser) && (
-                                        
+                                        )}
+                                        {review.username === currentUser && (
                                             <button onClick={() => startEditing(review)}>Edit</button>
-                                        
-                                    )}
+                                        )}
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
 
+                    {/* Pagination component */}
                     <ReactPaginate
                         previousLabel={"← Previous"}
                         nextLabel={"Next →"}

@@ -16,23 +16,32 @@ interface Event {
 }
 
 const DayPlanner: React.FC<DayPlannerProps> = ({ initialDate }) => {
+    // Today's date (fallback if no initialDate is provided)
     const today = new Date();
+
+    // Read optional date parameter from URL (e.g., /dayplanner/2025-01-01)
     const { date } = useParams<{ date?: string }>();
 
+    // State: currently selected day in the planner
     const [selectedDate, setSelectedDate] = useState(initialDate || today);
+
+    // State: all events fetched from backend
     const [events, setEvents] = useState<Event[]>([]);
+
+    // State: loading indicator while fetching events
     const [isLoading, setIsLoading] = useState(true);
+
+    // State: controls visibility of the "Create Event" modal
     const [showEventModal, setShowEventModal] = useState(false);
 
+    // Day and month name helpers for UI display
     const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const monthNames = [
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
     ];
 
-    // ---------------------------
-    // Local date helper (timezone-safe)
-    // ---------------------------
+    // Converts a Date object into YYYY-MM-DD format (safe for backend)
     const toLocalDateString = (date: Date) => {
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -40,7 +49,7 @@ const DayPlanner: React.FC<DayPlannerProps> = ({ initialDate }) => {
         return `${year}-${month}-${day}`;
     };
 
-    // Date syncing
+    // Sync selectedDate with URL parameter when it changes
     useEffect(() => {
         if (date) {
             const parsed = new Date(date);
@@ -50,6 +59,7 @@ const DayPlanner: React.FC<DayPlannerProps> = ({ initialDate }) => {
         }
     }, [date]);
 
+    // Sync selectedDate when initialDate prop changes
     useEffect(() => {
         if (initialDate) {
             setSelectedDate(initialDate);
@@ -57,11 +67,24 @@ const DayPlanner: React.FC<DayPlannerProps> = ({ initialDate }) => {
     }, [initialDate]);
 
 
-    // Fetch events
+    // Fetch all events from backend API
     const fetchEvents = async () => {
         try {
             setIsLoading(true);
-            const response = await fetch("http://localhost:5267/api/events/get-all");
+
+            const token = localStorage.getItem("token");
+
+            const response = await fetch("http://localhost:5267/api/events/my-events", {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                console.error("Failed to fetch my events:", response.status);
+                return;
+            }
+
             const data: Event[] = await response.json();
             setEvents(data);
         } catch (error) {
@@ -71,12 +94,14 @@ const DayPlanner: React.FC<DayPlannerProps> = ({ initialDate }) => {
         }
     };
 
+
+    // Fetch events once when component mounts
     useEffect(() => {
         fetchEvents();
     }, []);
 
 
-    // Navigation
+    // Navigate to previous or next day
     const handleDayChange = (direction: "prev" | "next") => {
         const newDate = new Date(selectedDate);
         newDate.setDate(selectedDate.getDate() + (direction === "next" ? 1 : -1));
@@ -84,7 +109,7 @@ const DayPlanner: React.FC<DayPlannerProps> = ({ initialDate }) => {
     };
 
 
-    // Filter events for selected day
+    // Filter events that occur on the selected day
     const eventsForSelectedDay = events.filter(event => {
         const eventDate = new Date(event.start_time);
         return (
@@ -95,12 +120,13 @@ const DayPlanner: React.FC<DayPlannerProps> = ({ initialDate }) => {
     });
 
 
-    // Modal helpers
+    // Close modal and refresh events after creating a new one
     const handleCloseModal = () => {
         setShowEventModal(false);
         fetchEvents();
     };
 
+    // Default slot info passed to EventModal when creating a new event
     const selectedSlot = {
         day: dayNames[selectedDate.getDay()],
         time: "09:00",
@@ -109,7 +135,7 @@ const DayPlanner: React.FC<DayPlannerProps> = ({ initialDate }) => {
 
     return (
         <div className="day-planner">
-            {/* Header */}
+            {/* Header with navigation and date display */}
             <div className="day-header">
                 <button onClick={() => handleDayChange("prev")} className="nav-button">◀</button>
 
@@ -123,16 +149,18 @@ const DayPlanner: React.FC<DayPlannerProps> = ({ initialDate }) => {
                 <button onClick={() => handleDayChange("next")} className="nav-button">▶</button>
             </div>
 
-            {/* Content */}
+            {/* Main content area showing events */}
             <div className="day-content">
                 {isLoading && <p>Loading events...</p>}
 
+                {/* No events for this day */}
                 {!isLoading && eventsForSelectedDay.length === 0 && (
                     <p className="placeholder-text">
                         No events scheduled for this day.
                     </p>
                 )}
 
+                {/* Render each event as a clickable link */}
                 {!isLoading && eventsForSelectedDay.map(event => (
                     <Link
                         key={event.id}
@@ -152,7 +180,7 @@ const DayPlanner: React.FC<DayPlannerProps> = ({ initialDate }) => {
                 ))}
             </div>
 
-            {/* Footer */}
+            {/* Footer with button to open event creation modal */}
             <div className="day-footer">
                 <button
                     className="create-event-button"
@@ -162,7 +190,7 @@ const DayPlanner: React.FC<DayPlannerProps> = ({ initialDate }) => {
                 </button>
             </div>
 
-            {/* Modal */}
+            {/* Event creation modal */}
             <EventModal
                 show={showEventModal}
                 onClose={handleCloseModal}
