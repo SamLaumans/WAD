@@ -62,12 +62,12 @@ namespace OfficeCalendar.Backend.Services
                     visible = m.visible
                 })
                 .AsNoTracking()
-                .ToArray();
+                .ToArrayAsync();
         }
 
-        public MessageGetDto[] GetMessagesSentByUser(string username, int skip, int take)
+        public async Task<MessageGetDto[]> GetMessagesSentByUser(string username, int skip, int take)
         {
-            return _context.Messages
+            return await _context.Messages
                 .Where(m => m.sender_username == username)
                 .Where(m => m.visible == true)
                 .OrderByDescending(m => m.creation_date)

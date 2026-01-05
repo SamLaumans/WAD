@@ -53,9 +53,9 @@ public class MessagesController : ControllerBase
     }
 
     [HttpGet("sent")]
-    public ActionResult<MessageGetDto[]> GetMessagesSentByUser([FromQuery] int skip = 0, [FromQuery] int take = 20)
+    public async Task<ActionResult<MessageGetDto[]>> GetMessagesSentByUser([FromQuery] int skip = 0, [FromQuery] int take = 20)
     {
-        var messages = _messageService.GetMessagesSentByUser(User.Identity.Name, skip, take);
+        var messages = await _messageService.GetMessagesSentByUser(User.Identity.Name, skip, take);
 
         if (messages.Length == 0)
             return NotFound(new
