@@ -23,6 +23,25 @@
     color: white;
 }
 
+.logout-btn {
+    float: left;
+    color: #ffffff;
+    text-align: center;
+    padding: 16px 40px;
+    text-decoration: none;
+    font-size: 17px;
+    transition: 0.3s;
+    background-color: #b1b1b1;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.logout-btn:hover {
+    background-color: white;
+    color: black;
+}
+
 .toolbar-profile-pic {
     float: right;
     width: 40px;
