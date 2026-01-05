@@ -42,6 +42,27 @@ export default function WeekPlanner() {
     const [currentWeekStart, setCurrentWeekStart] = useState<Date>(getSunday(new Date()));
 
     const currentUsername = localStorage.getItem('username');
+    const [userRole, setUserRole] = useState<number>(0);
+
+    useEffect(() => {
+        const fetchUserInfo = async () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                try {
+                    const res = await fetch('http://localhost:5267/api/Auth/me', {
+                        headers: { 'Authorization': `Bearer ${token}` },
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        setUserRole(data.role);
+                    }
+                } catch (error) {
+                    console.error('Error fetching user info:', error);
+                }
+            }
+        };
+        fetchUserInfo();
+    }, []);
 
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -325,7 +346,7 @@ export default function WeekPlanner() {
                                                         });
                                                         setEditInvitedUsers(event.subscribers?.map(s => s.username) || []);
                                                         setShowEventDetails(true);
-                                                        setEditMode(event.creator.username === currentUsername);
+                                                        setEditMode(event.creator.username === currentUsername || userRole === 1);
                                                     }}
                                                 >
                                                     {event.title}
@@ -412,12 +433,12 @@ export default function WeekPlanner() {
                                 {selectedEvent.subscribers && selectedEvent.subscribers.length > 0 && (
                                     <p><strong>Subscribers:</strong> {selectedEvent.subscribers.map(s => s.nickname).join(', ')}</p>
                                 )}
-                                {selectedEvent.creator.username === localStorage.getItem('username') && (
-                                    <button onClick={() => setEditMode(true)}>Edit</button>
-                                )}
-                                {selectedEvent.creator.username === localStorage.getItem('username') && (
-                                    <button onClick={handleDeleteEvent}>Delete</button>
-                                )}
+                                {selectedEvent.creator.username === currentUsername || userRole === 1 ? (
+                                    <>
+                                        <button onClick={() => setEditMode(true)}>Edit</button>
+                                        <button onClick={handleDeleteEvent}>Delete</button>
+                                    </>
+                                ) : null}
                                 <button onClick={() => setShowEventDetails(false)}>Close</button>
                             </>
                         )}

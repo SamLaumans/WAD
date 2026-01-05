@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using OfficeCalendar.Backend.DTOs;
 using OfficeCalendar.Backend.Services;
 using WADapi.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Officecalendar.Backend.Controllers
 {
@@ -19,6 +20,7 @@ namespace Officecalendar.Backend.Controllers
 
         //Get all events
         [HttpGet("get-all")]
+        [Authorize(Roles = "1")]
         public ActionResult<IEnumerable<EventGetDto>> GetEvents()
         {
             return Ok(_service.GetAllEvents());
@@ -57,7 +59,7 @@ namespace Officecalendar.Backend.Controllers
         {
             var ev = _service.GetEvent(eventid);
             if (ev == null) return NotFound();
-            if (ev.creator_username != User.Identity.Name) return Unauthorized();
+            if (ev.creator_username != User.Identity.Name && !User.IsInRole("1")) return Unauthorized();
             var updated = _service.UpdateEvent(ev, dto);
             return Ok(updated);
         }
@@ -68,7 +70,7 @@ namespace Officecalendar.Backend.Controllers
         {
             var ev = _service.GetEvent(eventid);
             if (ev == null) return NotFound();
-            if (ev.creator_username != User.Identity.Name) return Unauthorized();
+            if (ev.creator_username != User.Identity.Name && !User.IsInRole("1")) return Unauthorized();
             _service.DeleteEvent(ev);
             return NoContent();
         }

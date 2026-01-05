@@ -51,4 +51,9 @@ public class AuthService
 
         return new RegisterResponseDto { success = true, username = user.username, role = user.role };
     }
+
+    public async Task<User> GetUserByUsername(string username)
+    {
+        return await _context.Users.FirstOrDefaultAsync(u => u.username == username);
+    }
 }

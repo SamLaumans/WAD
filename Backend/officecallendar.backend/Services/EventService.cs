@@ -109,14 +109,26 @@ namespace OfficeCalendar.Backend.Services
 
         public EventGetDto[] GetMyEvents(string username)
         {
-            var events = _context.Events
-                .Where(e => e.visible && (e.creator_username == username || e.EventSubscriptions.Any(es => es.username == username)))
+            var user = _context.Users.FirstOrDefault(u => u.username == username);
+            if (user == null) return Array.Empty<EventGetDto>();
+
+            IQueryable<Event> query = _context.Events
                 .Include(e => e.Creator)
                 .Include(e => e.RoomBookings).ThenInclude(rb => rb.Room)
                 .Include(e => e.RoomBookings).ThenInclude(rb => rb.User)
                 .Include(e => e.EventSubscriptions).ThenInclude(es => es.User)
-                .AsNoTracking()
-                .ToList();
+                .AsNoTracking();
+
+            if (user.role != 1) // Not admin
+            {
+                query = query.Where(e => e.visible && (e.creator_username == username || e.EventSubscriptions.Any(es => es.username == username)));
+            }
+            else
+            {
+                query = query.Where(e => e.visible); // Admin sees all
+            }
+
+            var events = query.ToList();
 
             return events.Select(e => MapEvent(e)).ToArray();
         }
