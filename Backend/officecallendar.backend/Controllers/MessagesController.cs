@@ -53,6 +53,21 @@ public class MessagesController : ControllerBase
         return Ok(messages);
     }
 
+    [HttpGet("sent")]
+    public ActionResult<MessageGetDto[]> GetMessagesSentByUser()
+    {
+        var messages = _messageService.GetMessagesSentByUser(User.Identity.Name);
+
+        if (messages.Length == 0)
+            return NotFound(new
+            {
+                statuscode = 404,
+                message = $"No messages sent by {User.Identity.Name} found"
+            });
+
+        return Ok(messages);
+    }
+
     [HttpPost]
     public ActionResult<MessageGetDto> CreateMessage(MessagePostDto dto)
     {

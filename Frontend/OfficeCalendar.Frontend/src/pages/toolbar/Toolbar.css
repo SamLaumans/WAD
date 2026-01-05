@@ -1,5 +1,5 @@
 .toolbar {
-    background-color: #b1b1b1;
+    background-color: #6d6d6d;
     overflow: hidden;
 }
 
@@ -28,10 +28,55 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    margin: 8px 20px 0 0; 
+    margin: 8px 20px 0 0;
     cursor: pointer;
     object-fit: cover;
     border: 2px solid white;
+}
+
+.toolbar-message-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    cursor: pointer;
+    transform: translateY(4px);
+    margin-right: 12px;
+}
+
+.toolbar-message-icon:hover {
+    background-color: white;
+    color: black;
+    transition: 0.3s;
+    border-radius: 5px;
+}
+
+.toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: white;
 }
 
 .profile-modal-overlay {
@@ -40,11 +85,11 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0, 0, 0, 0.6);
     display: flex;
     justify-content: flex-end;
-    align-items: flex-start;   
-    padding: 20px;             
+    align-items: flex-start;
+    padding: 20px;
     z-index: 9999;
     box-sizing: border-box;
 }
@@ -58,25 +103,25 @@
     height: auto;
     overflow: visible;
     position: relative;
-    
+
 }
 
 .close-btn {
     position: absolute;
-    top: 8px; 
+    top: 8px;
     right: 8px;
-    width: 24px;  
+    width: 24px;
     height: 24px;
     padding: 0;
     margin-right: 13px;
-    
+
     background-color: black;
     color: white;
     border: none;
     border-radius: 4px;
 
-    font-size: 18px; 
-    line-height: 20px; 
+    font-size: 18px;
+    line-height: 20px;
     cursor: pointer;
     transition: 0.3s;
 }
@@ -84,6 +129,3 @@
 .close-btn:hover {
     background-color: red;
 }
-
-
-

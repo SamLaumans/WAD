@@ -61,6 +61,27 @@ namespace OfficeCalendar.Backend.Services
                 .ToArray();
         }
 
+        public MessageGetDto[] GetMessagesSentByUser(string username)
+        {
+            return _context.Messages
+                .Where(m => m.sender_username == username)
+                .Where(m => m.visible == true)
+                .Select(m => new MessageGetDto
+                {
+                    id = m.id,
+                    sender_username = m.sender_username,
+                    title = m.title,
+                    desc = m.desc,
+                    receivers = m.MessageReceivers.Select(r => r.username).ToList(),
+                    referenced_event_id = m.referenced_event_id,
+                    creation_date = m.creation_date,
+                    last_edited_date = m.last_edited_date,
+                    visible = m.visible
+                })
+                .AsNoTracking()
+                .ToArray();
+        }
+
         public (bool success, string? error, MessageGetDto? message) PostMessage(MessagePostDto dto, string username)
         {
             var message = new Message
