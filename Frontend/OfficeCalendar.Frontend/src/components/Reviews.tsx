@@ -51,7 +51,9 @@ const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
     // Fetch reviews for this event
     const fetchReviews = async () => {
         try {
-            const response = await fetch(`http://localhost:5267/api/Reviews/get-all?eventId=${eventId}`);
+            const response = await fetch(`http://localhost:5267/api/Reviews/get-all?eventId=${eventId}`,{
+                headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+            });
             if (!response.ok) throw new Error('Failed to fetch reviews');
             const data: Review[] = await response.json();
             setReviews(data);
@@ -261,17 +263,19 @@ const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
                                     <td>{`${review.stars}/5`}</td>
                                     <td>{review.desc}</td>
 
-                                    {/* Only show edit / delete button for review owner or admin */}
+                                    {/* Only show delete button for review owner or admin */}
+                                    <td>
                                     {(review.username === currentUser || userRole === 1) && (
-                                        <td>
+                                        
                                             <button onClick={() => handleDeleteReview(review.id)}>Delete</button>
-                                        </td>
+                                        
                                     )}
                                     {(review.username === currentUser) && (
-                                        <td>
+                                        
                                             <button onClick={() => startEditing(review)}>Edit</button>
-                                        </td>
+                                        
                                     )}
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
