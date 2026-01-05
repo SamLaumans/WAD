@@ -263,7 +263,7 @@ const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
                                     <td>{`${review.stars}/5`}</td>
                                     <td>{review.desc}</td>
 
-                                    {/* Only show edit / delete button for review owner or admin */}
+                                    {/* Only show delete button for review owner or admin */}
                                     <td>
                                     {(review.username === currentUser || userRole === 1) && (
                                         
