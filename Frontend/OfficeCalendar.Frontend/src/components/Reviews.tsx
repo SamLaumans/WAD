@@ -158,6 +158,33 @@ const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
         }
     };
 
+    const handleDeleteReview = async (reviewId: string) => {
+        if (!window.confirm("Weet je zeker dat je deze review wilt verwijderen?")) return;
+
+        try {
+            const response = await fetch(
+                `http://localhost:5267/api/Reviews?reviewid=${reviewId}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                    },
+                }
+            );
+
+            if (!response.ok) {
+                console.error("Failed to delete review");
+                return;
+            }
+
+            // Verwijder review uit state
+            setReviews(prev => prev.filter(r => r.id !== reviewId));
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+
     return (
         <div>
             <h2>Reviews</h2>
@@ -235,6 +262,7 @@ const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
                                     {review.username === currentUser && (
                                         <td>
                                             <button onClick={() => startEditing(review)}>Edit</button>
+                                            <button onClick={() => handleDeleteReview(review.id)}>Delete</button>
                                         </td>
                                     )}
                                 </tr>
