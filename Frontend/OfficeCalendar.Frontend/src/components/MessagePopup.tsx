@@ -160,7 +160,7 @@ export default function MessagePopup({ onClose }: Props) {
                                 onClick={() => openMessage(m)}
                                 className={selectedMessage?.id === m.id ? "active" : ""}
                             >
-                                <div>From: {m.sender_username}</div>
+                                <div>Sent by: {m.sender_username}</div>
                                 <strong className="message-preview-title">{m.title}</strong>
                                 <div className="message-preview-message">{m.desc}</div>
                             </li>
