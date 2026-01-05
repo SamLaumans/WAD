@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
@@ -76,6 +77,22 @@ public class AuthController : ControllerBase
         {
             token = jwtToken,
             username = request.username
+        });
+    }
+
+    [HttpGet("me")]
+    [Authorize]
+    public async Task<IActionResult> GetMe()
+    {
+        var username = User.Identity.Name;
+        var user = await _authService.GetUserByUsername(username);
+        if (user == null) return NotFound();
+        return Ok(new
+        {
+            username = user.username,
+            email = user.email,
+            nickname = user.nickname,
+            role = user.role
         });
     }
 }
