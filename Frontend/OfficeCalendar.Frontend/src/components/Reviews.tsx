@@ -4,109 +4,107 @@ import '../Styling/Reviews.css';
 
 // Define the structure of a Review object
 interface Review {
-    user: string;
-    dateEvent: string;
-    datePlaced: string;
+    id: string;
+    event_id: string;
+    username: string;
     stars: number;
-    review: string;
+    desc: string;
+    creation_date: string;
+    last_edited_date?: string | null;
 }
 
-const Reviews: React.FC = () => {
-    // === STATE VARIABLES ===
-    // Holds all reviews (fetched from JSON or added manually)
+// Props for Reviews component
+interface ReviewsProps {
+    eventId: string;
+}
+
+const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
     const [reviews, setReviews] = useState<Review[]>([]);
-
-    // Keeps track of the current pagination page
     const [currentPage, setCurrentPage] = useState(0);
+    const itemsPerPage = 5;
 
-    // Defines how many reviews are shown per page
-    const itemsPerPage = 4;
-
-    // Form input state for adding a new review
     const [newReview, setNewReview] = useState({
-        user: '',
         stars: 5,
-        review: '',
+        desc: '',
     });
 
-    // FETCH REVIEWS FROM JSON
+    // Fetch reviews for this event
+    const fetchReviews = async () => {
+        try {
+            const response = await fetch(`http://localhost:5267/api/Reviews/get-all?eventId=${eventId}`);
+            if (!response.ok) throw new Error('Failed to fetch reviews');
+            const data: Review[] = await response.json();
+            setReviews(data);
+            setCurrentPage(0);
+        } catch (error) {
+            console.error('Error fetching reviews:', error);
+        }
+    };
+
     useEffect(() => {
-        fetch('/data/reviews.json')
-            .then((response) => {
-                if (!response.ok) throw new Error('Failed to load reviews');
-                return response.json();
-            })
-            .then((data) => setReviews(data))
-            .catch((error) => console.error('Error fetching reviews:', error));
-    }, []); // Empty dependency array ensures this runs only once on component mount
+        if (eventId) {
+            fetchReviews();
+        }
+    }, [eventId]);
 
-    // PAGINATION LOGIC
-    const offset = currentPage * itemsPerPage; // Starting index for current page
-    const currentReviews = reviews.slice(offset, offset + itemsPerPage); // Reviews to display on current page
+    // Pagination logic
+    const offset = currentPage * itemsPerPage;
+    const currentReviews = reviews.slice(offset, offset + itemsPerPage);
 
-    // Handle page change from ReactPaginate
     const handlePageClick = (event: { selected: number }) => {
         setCurrentPage(event.selected);
     };
 
-    // FORM HANDLERS
-
-    // Update input values in the review form
+    // Handle input changes
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setNewReview((prev) => ({ ...prev, [name]: value }));
     };
 
-    // Handle form submission to add a new review
-    const handleAddReview = async (element: React.FormEvent) => {
-        element.preventDefault();
+    // Add new review
+    const handleAddReview = async (e: React.FormEvent) => {
+        e.preventDefault();
 
-        // Automatically set both the event date and placement date to today
-        const today = new Date().toISOString().split('T')[0];
-
-        // Create new review object
-        const reviewToAdd: Review = {
-            ...newReview,
-            dateEvent: today, // Automatically set today's date for the event
-            datePlaced: today, // Automatically set today's date for placement
-            stars: Number(newReview.stars), // Ensure stars is stored as a number
+        const reviewToAdd = {
+            event_id: eventId,
+            stars: Number(newReview.stars),
+            desc: newReview.desc,
         };
 
-        // Add new review to local state (so it displays immediately)
-        const updatedReviews = [reviewToAdd, ...reviews];
-        setReviews(updatedReviews);
-
-        // Reset form fields
-        setNewReview({ user: '', stars: 5, review: '' });
-
-        // Attempt to send the new review to backend API (if available)
         try {
-            await fetch('/api/reviews', {
+            const token = localStorage.getItem("token");
+
+            const response = await fetch('http://localhost:5267/api/Reviews', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
                 body: JSON.stringify(reviewToAdd),
             });
+
+            if (!response.ok) {
+                const errorText = await response.text(); 
+                console.error("Failed to post review:", errorText);
+                return;
+            }
+
+            const createdReview: Review = await response.json();
+
+            setReviews((prev) => [createdReview, ...prev]);
+            setNewReview({ stars: 5, desc: '' });
+            setCurrentPage(0);
         } catch (err) {
-            console.warn('No backend available. Review only saved locally.');
+            console.error(err);
         }
     };
 
-    // RENDER COMPONENT
     return (
         <div>
             <h2>Reviews</h2>
 
-            {/* ADD REVIEW FORM */}
+            {/* Add review form */}
             <form className="review-form" onSubmit={handleAddReview}>
-                <input
-                    type="text"
-                    name="user"
-                    placeholder="Your name"
-                    value={newReview.user}
-                    onChange={handleInputChange}
-                    required
-                />
-                {/* The date is now automatically set, so we remove the manual input */}
                 <input
                     type="number"
                     name="stars"
@@ -117,56 +115,52 @@ const Reviews: React.FC = () => {
                     required
                 />
                 <textarea
-                    name="review"
+                    name="desc"
                     placeholder="Write your review..."
-                    value={newReview.review}
+                    value={newReview.desc}
                     onChange={handleInputChange}
                     required
                 />
                 <button type="submit">Add Review</button>
             </form>
 
-            {/* REVIEWS TABLE OR LOADING TEXT */}
+            {/* Reviews table */}
             {reviews.length === 0 ? (
-                <p>Loading reviews...</p>
+                <p>No reviews for this event yet.</p>
             ) : (
                 <>
-                    {/* REVIEWS TABLE */}
                     <table>
                         <thead>
                             <tr>
                                 <th>User</th>
-                                <th>Date event</th>
                                 <th>Date placed</th>
                                 <th>Stars</th>
                                 <th>Review</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {currentReviews.map((review, index) => (
-                                <tr key={index}>
-                                    <td>{review.user}</td>
-                                    <td>{review.dateEvent}</td>
-                                    <td>{review.datePlaced}</td>
+                            {currentReviews.map((review) => (
+                                <tr key={review.id}>
+                                    <td>{review.username}</td>
+                                    <td>{new Date(review.creation_date).toLocaleDateString()}</td>
                                     <td>{`${review.stars}/5`}</td>
-                                    <td>{review.review}</td>
+                                    <td>{review.desc}</td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
 
-                    {/* PAGINATION CONTROL */}
                     <ReactPaginate
                         previousLabel={"← Previous"}
                         nextLabel={"Next →"}
-                        pageCount={Math.ceil(reviews.length / itemsPerPage)} // Total number of pages
+                        pageCount={Math.ceil(reviews.length / itemsPerPage)}
                         onPageChange={handlePageClick}
-                        containerClassName={"pagination"} // Wrapper class for pagination controls
-                        activeClassName={"active"} // Active page styling
-                        pageClassName={"page"} // Each page number styling
-                        previousClassName={"prev"} // "Previous" button styling
-                        nextClassName={"next"} // "Next" button styling
-                        disabledClassName={"disabled"} // Disabled state styling
+                        containerClassName={"pagination"}
+                        activeClassName={"active"}
+                        pageClassName={"page"}
+                        previousClassName={"prev"}
+                        nextClassName={"next"}
+                        disabledClassName={"disabled"}
                     />
                 </>
             )}

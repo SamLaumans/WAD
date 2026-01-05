@@ -128,17 +128,11 @@ public class ReviewsController : ControllerBase
         return Ok(updatedDto);
     }
     [HttpGet("get-all")]
-    public ActionResult<ReviewsGetDto[]> GetReviewsForEvent([FromQuery]Guid eventId)
+    public ActionResult<ReviewsGetDto[]> GetReviewsForEvent([FromQuery] Guid eventId)
     {
         var reviews = _reviewService.GetReviewsForEvent(eventId);
 
-        if (reviews.Length == 0)
-            return NotFound(new
-            {
-                statuscode = 404,
-                review = $"No reviews found for event with id {eventId}"
-            });
-
+        // Always return 200 OK with an array
         return Ok(reviews);
     }
 }

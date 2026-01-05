@@ -62,3 +62,7 @@
   color: #faf4f4;
   font-style: italic;
 }
+.day-event-link {
+    text-decoration: none;
+    color: white;
+}
