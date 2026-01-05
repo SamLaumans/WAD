@@ -258,8 +258,8 @@ const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
                                     <td>{`${review.stars}/5`}</td>
                                     <td>{review.desc}</td>
 
-                                    {/* Only show edit button for own review */}
-                                    {review.username === currentUser && (
+                                    {/* Only show edit / delete button for own review */}
+                                    {review.username === currentUser || && (
                                         <td>
                                             <button onClick={() => startEditing(review)}>Edit</button>
                                             <button onClick={() => handleDeleteReview(review.id)}>Delete</button>
