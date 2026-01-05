@@ -106,6 +106,19 @@ namespace OfficeCalendar.Backend.Services
 
         }
 
+        public EventGetDto[] GetMyEvents(string username)
+        {
+            var events = _context.Events
+                .Where(e => e.visible && e.creator_username == username)
+                .Include(e => e.Creator)
+                .Include(e => e.RoomBookings).ThenInclude(rb => rb.Room)
+                .Include(e => e.RoomBookings).ThenInclude(rb => rb.User)
+                .AsNoTracking()
+                .ToList();
+
+            return events.Select(e => MapEvent(e)).ToArray();
+        }
+
         //CREATE
         public EventGetDto CreateEvent(EventPostDto dto, string creator_username)
         {

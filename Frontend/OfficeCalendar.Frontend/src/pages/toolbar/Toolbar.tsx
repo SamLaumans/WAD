@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Profiel from '../profile-page/profiel';
 import './Toolbar.css';
-import img1 from '../../assets/janjanssen.jpg';
+import img1 from '../../assets/blank_profile.jpg';
 
 const Toolbar: React.FC = () => {
     const location = useLocation();
