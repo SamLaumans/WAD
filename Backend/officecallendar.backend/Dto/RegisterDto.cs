@@ -21,5 +21,6 @@ namespace OfficeCalendar.Backend.DTOs
         public string message { get; set; } = string.Empty;
         public string username { get; set; } = string.Empty;
         public string token { get; set; } = string.Empty;
+        public int role { get; set; }
     }
 }
