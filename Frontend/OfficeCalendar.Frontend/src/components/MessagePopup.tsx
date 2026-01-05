@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { MessageDto } from "../types/MessageDto";
-import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
+import { getMyMessages, getMessageById, getSentMessages, sendMessage } from "../api/MessageApi";
 import "../Styling/MessagePopup.css";
 
 interface Props {
@@ -16,22 +16,7 @@ export default function MessagePopup({ onClose }: Props) {
     const [skip, setSkip] = useState(0);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
-    const [activeTab, setActiveTab] = useState<'inbox' | 'sent' | 'send'>('inbox');
-    const [sentMessages, setSentMessages] = useState<MessageDto[]>([]);
-    const [connection, setConnection] = useState<any>(null);
-
-    const getCurrentUser = () => {
-        const token = localStorage.getItem('token');
-        if (!token) return null;
-        try {
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            return payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || payload.sub;
-        } catch {
-            return null;
-        }
-    };
-
-    const currentUser = getCurrentUser();
+    const [activeTab, setActiveTab] = useState<'inbox' | 'sent' | 'send'>('inbox'); const [sentMessages, setSentMessages] = useState<MessageDto[]>([]);
     useEffect(() => {
         const cached = localStorage.getItem('messageCache');
         if (cached) {
@@ -49,43 +34,6 @@ export default function MessagePopup({ onClose }: Props) {
             }
         }
         loadMessages();
-
-        // SignalR connection
-        const newConnection = new HubConnectionBuilder()
-            .withUrl('http://localhost:5267/messageHub', {
-                accessTokenFactory: () => localStorage.getItem('token') || ''
-            })
-            .withAutomaticReconnect()
-            .configureLogging(LogLevel.Information)
-            .build();
-
-        newConnection.on('NewMessage', (message: MessageDto) => {
-            if (message.sender_username === currentUser) {
-                setSentMessages(prev => {
-                    const updated = [message, ...prev].sort((a, b) =>
-                        new Date(b.creation_date).getTime() - new Date(a.creation_date).getTime()
-                    );
-                    return updated;
-                });
-            } else if (message.receivers.includes(currentUser || '')) {
-                setLoadedMessages(prev => {
-                    const updated = [message, ...prev].sort((a, b) =>
-                        new Date(b.creation_date).getTime() - new Date(a.creation_date).getTime()
-                    );
-                    localStorage.setItem('messageCache', JSON.stringify({ messages: updated, timestamp: Date.now() }));
-                    return updated;
-                });
-            }
-        });
-
-        newConnection.start().then(() => {
-            console.log('SignalR connected');
-            setConnection(newConnection);
-        }).catch(err => console.error('SignalR Connection Error:', err));
-
-        return () => {
-            if (newConnection) newConnection.stop();
-        };
     }, []);
 
     async function loadMessages() {
@@ -140,8 +88,17 @@ export default function MessagePopup({ onClose }: Props) {
             setSendTitle('');
             setSendDesc('');
             setSendReceivers('');
-            // Switch to sent tab, SignalR will add the message
+
+            const msgs = await getMyMessages(0, 1000);
+            const sorted = msgs.sort((a, b) =>
+                new Date(b.creation_date).getTime() - new Date(a.creation_date).getTime()
+            );
+            setLoadedMessages(sorted);
+            localStorage.setItem('messageCache', JSON.stringify({ messages: sorted, timestamp: Date.now() }));
+            setSkip(sorted.length);
+            setHasMore(sorted.length >= 1000);
             setActiveTab('sent');
+            loadSent();
 
         } catch (error: any) {
             alert(error.message || 'Failed to send message');

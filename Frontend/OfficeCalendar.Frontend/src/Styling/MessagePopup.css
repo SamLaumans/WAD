@@ -144,6 +144,7 @@
     margin-bottom: 10px;
 }
 
+
 .message-header-3 {
     font-size: 1.2rem;
     margin: 0;
@@ -152,8 +153,11 @@
 }
 
 .message-header-3.active {
-    background-color: rgba(0, 128, 0, 0.3);
-    border-radius: 5px;
+    background-color: rgb(4, 170, 109);
+}
+
+.message-header-3:hover {
+    background-color: rgba(4, 170, 109, 0.3);
 }
 
 .close-btn {
