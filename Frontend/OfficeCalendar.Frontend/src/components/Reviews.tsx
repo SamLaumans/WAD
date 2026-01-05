@@ -35,13 +35,16 @@ const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
     // Extract current user from JWT
     const token = localStorage.getItem("token");
     let currentUser: string | null = null;
+    let userRole: number | null = null;
 
     if (token) {
         try {
             const payload = JSON.parse(atob(token.split('.')[1]));
             currentUser = payload.unique_name || payload.name || payload.sub || null;
+            userRole = payload.role !== undefined ? parseInt(payload.role) : null;
         } catch {
             currentUser = null;
+            userRole = null;
         }
     }
 
@@ -258,8 +261,8 @@ const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
                                     <td>{`${review.stars}/5`}</td>
                                     <td>{review.desc}</td>
 
-                                    {/* Only show edit / delete button for own review */}
-                                    {review.username === currentUser || && (
+                                    {/* Only show edit / delete button for review owner or admin */}
+                                    {(review.username === currentUser || userRole === 1) && (
                                         <td>
                                             <button onClick={() => startEditing(review)}>Edit</button>
                                             <button onClick={() => handleDeleteReview(review.id)}>Delete</button>
