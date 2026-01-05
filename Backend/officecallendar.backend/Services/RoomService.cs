@@ -14,17 +14,17 @@ namespace OfficeCalendar.Backend.Services
             _context = context;
         }
 
-        public Room? GetRoomByGuid(Guid roomId)
+        public async Task<Room?> GetRoomByGuid(Guid roomId)
         {
-            return _context.Rooms
+            return await _context.Rooms
             .Where(r => r.visible == true)
             .Include(r => r.RoomBookings)
-            .FirstOrDefault(r => r.id == roomId);
+            .FirstOrDefaultAsync(r => r.id == roomId);
         }
 
-        public RoomGetDto? GetRoomDtoByGuid(Guid roomId)
+        public async Task<RoomGetDto?> GetRoomDtoByGuid(Guid roomId)
         {
-            return _context.Rooms
+            return await _context.Rooms
             .Where(r => r.id == roomId)
             .Where(r => r.visible == true)
             .Select(r => new RoomGetDto
@@ -35,12 +35,12 @@ namespace OfficeCalendar.Backend.Services
                 capacity = r.capacity,
                 visible = r.visible,
             })
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
         }
 
-        public RoomGetDto? GetRoomDtoByLocation(string location)
+        public async Task<RoomGetDto?> GetRoomDtoByLocation(string location)
         {
-            return _context.Rooms
+            return await _context.Rooms
             .Where(r => r.visible == true)
             .Where(r => EF.Functions.Like(r.room_location.ToLower(), $"%{location.ToLower()}%"))
             .Include(r => r.RoomBookings)
@@ -52,10 +52,10 @@ namespace OfficeCalendar.Backend.Services
                 capacity = r.capacity,
                 visible = r.visible
             })
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
         }
 
-        public RoomGetDto PostRoom(RoomPostDto dto)
+        public async Task<RoomGetDto> PostRoom(RoomPostDto dto)
         {
             DateTime date = DateTime.UtcNow;
 
@@ -69,7 +69,7 @@ namespace OfficeCalendar.Backend.Services
             };
 
             _context.Rooms.Add(room);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             var roomDto = new RoomGetDto
             {
@@ -83,13 +83,13 @@ namespace OfficeCalendar.Backend.Services
             return roomDto;
         }
 
-        public void DeleteRoom(Room room)
+        public async Task DeleteRoom(Room room)
         {
             room.visible = false;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public RoomGetDto UpdateRoom(Room room, RoomPutDto dto)
+        public async Task<RoomGetDto> UpdateRoom(Room room, RoomPutDto dto)
         {
             if (!string.IsNullOrEmpty(dto.room_location))
                 room.room_location = dto.room_location;
@@ -103,7 +103,7 @@ namespace OfficeCalendar.Backend.Services
             if (dto.visible is not null)
                 room.visible = dto.visible.Value;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return new RoomGetDto
             {

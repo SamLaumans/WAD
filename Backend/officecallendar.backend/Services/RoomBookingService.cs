@@ -14,20 +14,20 @@ namespace OfficeCalendar.Backend.Services
             _context = context;
         }
 
-        public RoomBooking? GetRoomBookingByGuid(Guid roomBookingId)
+        public async Task<RoomBooking?> GetRoomBookingByGuid(Guid roomBookingId)
         {
-            return _context.RoomBookings
+            return await _context.RoomBookings
             .Where(r => r.visible == true)
             .Include(r => r.Room)
             .Include(r => r.Event)
                 .ThenInclude(e => e.Creator)
             .Include(r => r.User)
-            .FirstOrDefault(r => r.id == roomBookingId);
+            .FirstOrDefaultAsync(r => r.id == roomBookingId);
         }
 
-        public RoomBookingGetDto? GetRoomBookingDtoByGuid(Guid roomBookingId)
+        public async Task<RoomBookingGetDto?> GetRoomBookingDtoByGuid(Guid roomBookingId)
         {
-            return _context.RoomBookings
+            return await _context.RoomBookings
             .Where(r => r.id == roomBookingId)
             .Where(r => r.visible == true)
             .Include(r => r.Room)
@@ -35,12 +35,12 @@ namespace OfficeCalendar.Backend.Services
                 .ThenInclude(e => e.Creator)
             .Include(r => r.User)
             .Select(r => ToDto(r))
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
         }
 
-        public RoomBookingGetDto[] GetRoomBookingsForUser(string username)
+        public async Task<RoomBookingGetDto[]> GetRoomBookingsForUser(string username)
         {
-            return _context.RoomBookings
+            return await _context.RoomBookings
                 .Where(rb => rb.booked_by == username)
                 .Where(rb => rb.visible == true)
                 .Include(r => r.Room)
@@ -49,10 +49,10 @@ namespace OfficeCalendar.Backend.Services
                 .Include(r => r.User)
                 .Select(rb => ToDto(rb))
                 .AsNoTracking()
-                .ToArray();
+                .ToArrayAsync();
         }
 
-        public RoomBookingGetDto PostRoomBooking(RoomBookingPostDto dto, string username)
+        public async Task<RoomBookingGetDto> PostRoomBooking(RoomBookingPostDto dto, string username)
         {
             Guid id = Guid.NewGuid();
 
@@ -68,25 +68,25 @@ namespace OfficeCalendar.Backend.Services
             };
 
             _context.RoomBookings.Add(roomBooking);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            return _context.RoomBookings
+            return await _context.RoomBookings
                 .Where(rb => rb.id == id)
                 .Where(rb => rb.visible == true)
                 .Include(r => r.Room)
                 .Include(r => r.Event)
                     .ThenInclude(e => e.Creator)
                 .Include(r => r.User)
-                .Select(rb => ToDto(rb)).First();
+                .Select(rb => ToDto(rb)).FirstAsync();
         }
 
-        public void DeleteRoomBooking(RoomBooking roomBooking)
+        public async Task DeleteRoomBooking(RoomBooking roomBooking)
         {
             roomBooking.visible = false;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public RoomBookingGetDto UpdateRoomBooking(RoomBooking roomBooking, RoomBookingPutDto dto)
+        public async Task<RoomBookingGetDto> UpdateRoomBooking(RoomBooking roomBooking, RoomBookingPutDto dto)
         {
             if (dto.room_id is not null)
                 roomBooking.room_id = dto.room_id.Value;
@@ -103,15 +103,15 @@ namespace OfficeCalendar.Backend.Services
             if (dto.visible is not null)
                 roomBooking.visible = dto.visible.Value;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            var reloaded = _context.RoomBookings
+            var reloaded = await _context.RoomBookings
                 .Where(rb => rb.id == roomBooking.id)
                 .Include(r => r.Room)
                 .Include(r => r.Event)
                     .ThenInclude(e => e.Creator)
                 .Include(r => r.User)
-                .First();
+                .FirstAsync();
 
             return ToDto(reloaded);
         }
@@ -160,9 +160,9 @@ namespace OfficeCalendar.Backend.Services
             };
         }
 
-        public bool IsTimeSlotAvailable(DateTime start, DateTime end, Guid roomId, Guid? ignoreId = null)
+        public async Task<bool> IsTimeSlotAvailable(DateTime start, DateTime end, Guid roomId, Guid? ignoreId = null)
         {
-            return !_context.RoomBookings.Any(b => b.room_id == roomId && (ignoreId == null || b.id != ignoreId.Value) &&
+            return !await _context.RoomBookings.AnyAsync(b => b.room_id == roomId && (ignoreId == null || b.id != ignoreId.Value) &&
             start < b.end_time && end > b.start_time);
         }
 

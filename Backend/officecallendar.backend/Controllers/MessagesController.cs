@@ -20,9 +20,9 @@ public class MessagesController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<MessageGetDto> GetMessage([FromQuery] Guid messageid)
+    public async Task<ActionResult<MessageGetDto>> GetMessage([FromQuery] Guid messageid)
     {
-        var message = _messageService.GetMessageDtoByGuid(messageid);
+        var message = await _messageService.GetMessageDtoByGuid(messageid);
         if (message == null)
             return NotFound(new
             {
@@ -39,9 +39,9 @@ public class MessagesController : ControllerBase
     }
 
     [HttpGet("me")]
-    public ActionResult<MessageGetDto[]> GetMessageForUser()
+    public async Task<ActionResult<MessageGetDto[]>> GetMessageForUser()
     {
-        var messages = _messageService.GetMessagesForUser(User.Identity.Name);
+        var messages = await _messageService.GetMessagesForUser(User.Identity.Name);
 
         if (messages.Length == 0)
             return NotFound(new
@@ -54,7 +54,7 @@ public class MessagesController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult<MessageGetDto> CreateMessage(MessagePostDto dto)
+    public async Task<ActionResult<MessageGetDto>> CreateMessage(MessagePostDto dto)
     {
         if (!ModelState.IsValid)
             return BadRequest(
@@ -64,7 +64,7 @@ public class MessagesController : ControllerBase
                     message = ModelState
                 });
 
-        var response = _messageService.PostMessage(dto, User.Identity.Name);
+        var response = await _messageService.PostMessage(dto, User.Identity.Name);
         if (!response.success)
         {
             return NotFound(new
@@ -78,9 +78,9 @@ public class MessagesController : ControllerBase
     }
 
     [HttpDelete]
-    public ActionResult<Message> DeleteMessage([FromQuery] Guid messageid)
+    public async Task<ActionResult<Message>> DeleteMessage([FromQuery] Guid messageid)
     {
-        var message = _messageService.GetByGuid(messageid);
+        var message = await _messageService.GetByGuid(messageid);
         if (message == null)
             return NotFound(new
             {
@@ -93,15 +93,15 @@ public class MessagesController : ControllerBase
             return Forbid();
         }
 
-        _messageService.DeleteMessage(message);
+        await _messageService.DeleteMessage(message);
 
         return NoContent();
     }
 
     [HttpPut]
-    public ActionResult<MessageGetDto> UpdateMessage([FromQuery] Guid messageid, MessagePutDto dto)
+    public async Task<ActionResult<MessageGetDto>> UpdateMessage([FromQuery] Guid messageid, MessagePutDto dto)
     {
-        var message = _messageService.GetByGuid(messageid);
+        var message = await _messageService.GetByGuid(messageid);
         if (message == null)
             return NotFound(new
             {
@@ -114,7 +114,7 @@ public class MessagesController : ControllerBase
             return Forbid();
         }
 
-        MessageGetDto updatedDto = _messageService.UpdateMessage(message, dto);
+        MessageGetDto updatedDto = await _messageService.UpdateMessage(message, dto);
 
         return Ok(updatedDto);
     }

@@ -14,16 +14,16 @@ namespace OfficeCalendar.Backend.Services
             _context = context;
         }
 
-        public Message? GetByGuid(Guid messageId)
+        public async Task<Message?> GetByGuid(Guid messageId)
         {
-            return _context.Messages
+            return await _context.Messages
             .Include(m => m.MessageReceivers)
-            .FirstOrDefault(m => m.id == messageId);
+            .FirstOrDefaultAsync(m => m.id == messageId);
         }
 
-        public MessageGetDto? GetMessageDtoByGuid(Guid messageId)
+        public async Task<MessageGetDto?> GetMessageDtoByGuid(Guid messageId)
         {
-            return _context.Messages
+            return await _context.Messages
             .Where(m => m.id == messageId)
             .Select(m => new MessageGetDto
             {
@@ -37,12 +37,12 @@ namespace OfficeCalendar.Backend.Services
                 last_edited_date = m.last_edited_date,
                 visible = m.visible
             })
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
         }
 
-        public MessageGetDto[] GetMessagesForUser(string username)
+        public async Task<MessageGetDto[]> GetMessagesForUser(string username)
         {
-            return _context.Messages
+            return await _context.Messages
                 .Where(m => m.MessageReceivers.Any(r => r.username == username))
                 .Where(m => m.visible == true)
                 .Select(m => new MessageGetDto
@@ -58,10 +58,10 @@ namespace OfficeCalendar.Backend.Services
                     visible = m.visible
                 })
                 .AsNoTracking()
-                .ToArray();
+                .ToArrayAsync();
         }
 
-        public (bool success, string? error, MessageGetDto? message) PostMessage(MessagePostDto dto, string username)
+        public async Task<(bool success, string? error, MessageGetDto? message)> PostMessage(MessagePostDto dto, string username)
         {
             var message = new Message
             {
@@ -74,7 +74,7 @@ namespace OfficeCalendar.Backend.Services
             };
 
             _context.Messages.Add(message);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             var uniqueReceivers = dto.receivers.Distinct().ToList();
 
@@ -101,7 +101,7 @@ namespace OfficeCalendar.Backend.Services
 
             }
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             var messageDto = new MessageGetDto
             {
@@ -119,13 +119,13 @@ namespace OfficeCalendar.Backend.Services
             return (true, null, messageDto);
         }
 
-        public void DeleteMessage(Message message)
+        public async Task DeleteMessage(Message message)
         {
             message.visible = false;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public MessageGetDto UpdateMessage(Message message, MessagePutDto dto)
+        public async Task<MessageGetDto> UpdateMessage(Message message, MessagePutDto dto)
         {
             if (!string.IsNullOrEmpty(dto.title))
                 message.title = dto.title;
@@ -141,7 +141,7 @@ namespace OfficeCalendar.Backend.Services
 
             message.last_edited_date = DateTime.UtcNow;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             var uniqueReceivers = dto.receivers.Distinct().ToList();
 
