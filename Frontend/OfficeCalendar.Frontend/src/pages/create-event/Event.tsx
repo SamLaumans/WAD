@@ -4,6 +4,7 @@ import "./Event.css";
 type Slot = {
   day: string;
   time: string;
+  date: string;
 };
 
 type Props = {
@@ -39,8 +40,8 @@ function Event({ slot, onClose }: Props) {
     const body = {
       title: formData.title,
       desc: formData.desc,
-      start_time: new Date(`1970-01-01T${formData.start_time}:00`),
-      end_time: new Date(`1970-01-01T${formData.end_time}:00`),
+      start_time: new Date(`${slot?.date ?? new Date().toISOString().split('T')[0]}T${formData.start_time}:00`),
+      end_time: new Date(`${slot?.date ?? new Date().toISOString().split('T')[0]}T${formData.end_time}:00`),
       booking_id: null
     };
 

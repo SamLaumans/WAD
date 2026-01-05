@@ -26,7 +26,7 @@ interface Event {
 // It's designed to display events from the database in each cell.
 export default function WeekPlanner() {
     const [showEventModal, setShowEventModal] = useState(false);
-    const [selectedSlot, setSelectedSlot] = useState<{ day: string; time: string } | undefined>(undefined);
+    const [selectedSlot, setSelectedSlot] = useState<{ day: string; time: string; date: string } | undefined>(undefined);
     const [modalPosition, setModalPosition] = useState<{ top: number; left: number } | null>(null);
     const [events, setEvents] = useState<Event[]>([]);
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
@@ -130,6 +130,7 @@ export default function WeekPlanner() {
     const handleCellClick = (
         day: string,
         time: string,
+        date: string,
         e: React.MouseEvent<HTMLTableCellElement>
     ) => {
         const rect = e.currentTarget.getBoundingClientRect();
@@ -154,7 +155,7 @@ export default function WeekPlanner() {
         // Set final popup position
         setModalPosition({ top, left });
 
-        setSelectedSlot({ day, time });
+        setSelectedSlot({ day, time, date });
         setShowEventModal(true);
     };
     
@@ -228,7 +229,7 @@ export default function WeekPlanner() {
                                         <td
                                             key={day + time}
                                             className="planner-cell"
-                                            onClick={(e) => handleCellClick(day, time, e)}
+                                            onClick={(e) => handleCellClick(day, time, weekDays[i].toISOString().split('T')[0], e)}
                                         >
                                             {cellEvents.map(event => (
                                                 <div

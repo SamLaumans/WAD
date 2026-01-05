@@ -5,6 +5,7 @@ import "./EventModal.css";
 type Slot = {
   day: string;
   time: string;
+  date: string;
 };
 
 type Props = {
