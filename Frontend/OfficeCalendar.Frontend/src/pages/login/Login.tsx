@@ -11,13 +11,6 @@ function Login() {
 
     const [loginMessage, setLoginMessage] = useState("");
 
-    const checkPassword = (user: string, pass: string): boolean => {
-        if (users[0].userName == user && users[0].password == pass) {
-            return true;
-        }
-        else return false;
-    }
-
     const checkFields = async (user: string, pass: string): Promise<void> => {
         if (!username || !password) {
             setLoginMessage("Please enter username and password");
