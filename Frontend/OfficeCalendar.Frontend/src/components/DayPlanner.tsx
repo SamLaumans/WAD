@@ -40,9 +40,7 @@ const DayPlanner: React.FC<DayPlannerProps> = ({ initialDate }) => {
         return `${year}-${month}-${day}`;
     };
 
-    // ---------------------------
     // Date syncing
-    // ---------------------------
     useEffect(() => {
         if (date) {
             const parsed = new Date(date);
@@ -58,9 +56,8 @@ const DayPlanner: React.FC<DayPlannerProps> = ({ initialDate }) => {
         }
     }, [initialDate]);
 
-    // ---------------------------
+
     // Fetch events
-    // ---------------------------
     const fetchEvents = async () => {
         try {
             setIsLoading(true);
@@ -78,18 +75,16 @@ const DayPlanner: React.FC<DayPlannerProps> = ({ initialDate }) => {
         fetchEvents();
     }, []);
 
-    // ---------------------------
+
     // Navigation
-    // ---------------------------
     const handleDayChange = (direction: "prev" | "next") => {
         const newDate = new Date(selectedDate);
         newDate.setDate(selectedDate.getDate() + (direction === "next" ? 1 : -1));
         setSelectedDate(newDate);
     };
 
-    // ---------------------------
+
     // Filter events for selected day
-    // ---------------------------
     const eventsForSelectedDay = events.filter(event => {
         const eventDate = new Date(event.start_time);
         return (
@@ -99,9 +94,8 @@ const DayPlanner: React.FC<DayPlannerProps> = ({ initialDate }) => {
         );
     });
 
-    // ---------------------------
+
     // Modal helpers
-    // ---------------------------
     const handleCloseModal = () => {
         setShowEventModal(false);
         fetchEvents();
@@ -110,7 +104,7 @@ const DayPlanner: React.FC<DayPlannerProps> = ({ initialDate }) => {
     const selectedSlot = {
         day: dayNames[selectedDate.getDay()],
         time: "09:00",
-        date: toLocalDateString(selectedDate), // ✅ FIXED
+        date: toLocalDateString(selectedDate),
     };
 
     return (
