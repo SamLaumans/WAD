@@ -27,7 +27,7 @@ function Login() {
                 const data = await res.json();
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('username', data.username);
-                navigate("/main-page");
+                window.location.href = "/";
             } else {
                 setLoginMessage("Invalid credentials");
             }

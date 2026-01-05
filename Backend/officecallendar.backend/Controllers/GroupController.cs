@@ -20,9 +20,9 @@ public class GroupController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<GroupGetDto> GetGroupById([FromQuery] Guid groupId)
+    public async Task<ActionResult<GroupGetDto>> GetGroupById([FromQuery] Guid groupId)
     {
-        var group = _groupService.GetGroupById(groupId);
+        var group = await _groupService.GetGroupById(groupId);
 
         if (group == null)
             return NotFound(new
@@ -35,9 +35,9 @@ public class GroupController : ControllerBase
     }
 
     [HttpGet("Memberships")]
-    public ActionResult<IEnumerable<MembershipDto>> GetMembershipForGroup([FromQuery] Guid groupId)
+    public async Task<ActionResult<IEnumerable<MembershipDto>>> GetMembershipForGroup([FromQuery] Guid groupId)
     {
-        var memberships = _groupService.GetMembershipForGroup(groupId);
+        var memberships = await _groupService.GetMembershipForGroup(groupId);
 
         if (memberships == null || !memberships.Any())
             return NotFound(new
@@ -50,7 +50,7 @@ public class GroupController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult<GroupGetDto> CreateGroup([FromBody] CreateGroupDto dto)
+    public async Task<ActionResult<GroupGetDto>> CreateGroup([FromBody] CreateGroupDto dto)
     {
         if (!ModelState.IsValid)
             return BadRequest(new
@@ -59,7 +59,7 @@ public class GroupController : ControllerBase
                 message = ModelState
             });
 
-        var createdGroup = _groupService.CreateGroup(dto);
+        var createdGroup = await _groupService.CreateGroup(dto);
 
         return CreatedAtAction(
             nameof(GetGroupById),
@@ -69,14 +69,14 @@ public class GroupController : ControllerBase
     }
 
     [HttpDelete]
-    public ActionResult DeleteGroup([FromQuery] Guid groupId)
+    public async Task<ActionResult> DeleteGroup([FromQuery] Guid groupId)
     {
         string username = User.FindFirstValue(ClaimTypes.Name);
 
-        if (!_groupService.IsUserAdmin(username))
+        if (!await _groupService.IsUserAdmin(username))
             return Forbid();
 
-        var group = _groupService.GetGroupById(groupId);
+        var group = await _groupService.GetGroupById(groupId);
 
         if (group == null)
             return NotFound(new
@@ -85,13 +85,13 @@ public class GroupController : ControllerBase
                 message = "Group not found"
             });
 
-        _groupService.DeleteGroup(groupId);
+        await _groupService.DeleteGroup(groupId);
 
         return NoContent();
     }
 
     [HttpPut]
-    public ActionResult<GroupGetDto> UpdateGroup([FromBody] GroupGetDto dto)
+    public async Task<ActionResult<GroupGetDto>> UpdateGroup([FromBody] GroupGetDto dto)
     {
         if (!ModelState.IsValid)
             return BadRequest(new
@@ -100,7 +100,7 @@ public class GroupController : ControllerBase
                 message = ModelState
             });
 
-        var updatedGroup = _groupService.UpdateGroup(dto);
+        var updatedGroup = await _groupService.UpdateGroup(dto);
 
         if (updatedGroup == null)
             return NotFound(new

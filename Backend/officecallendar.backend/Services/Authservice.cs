@@ -28,7 +28,7 @@ public class AuthService
         if (!isPasswordCorrect)
             return new LoginResponseDto { success = false, message = "Invalid username or password" };
 
-        return new LoginResponseDto { success = true, username = user.username };
+        return new LoginResponseDto { success = true, username = user.username, role = user.role };
     }
 
     public async Task<RegisterResponseDto> Register(RegisterPostDto request)
@@ -49,6 +49,11 @@ public class AuthService
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
-        return new RegisterResponseDto { success = true, username = user.username };
+        return new RegisterResponseDto { success = true, username = user.username, role = user.role };
+    }
+
+    public async Task<User> GetUserByUsername(string username)
+    {
+        return await _context.Users.FirstOrDefaultAsync(u => u.username == username);
     }
 }

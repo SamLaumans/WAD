@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../Styling/WeekPlanner.css'
 import EventModal from '../pages/create-event/EventModal';
+import { useNavigate } from 'react-router-dom';
 
 interface User {
     username: string;
@@ -19,6 +20,7 @@ interface Event {
     end_time: string;
     last_edited_date: string | null;
     bookings: any[];
+    subscribers?: User[];
 }
 
 // The WeekPlanner component displays a weekly schedule grid
@@ -26,16 +28,43 @@ interface Event {
 // It's designed to display events from the database in each cell.
 export default function WeekPlanner() {
     const [showEventModal, setShowEventModal] = useState(false);
-    const [selectedSlot, setSelectedSlot] = useState<{ day: string; time: string } | undefined>(undefined);
+    const [selectedSlot, setSelectedSlot] = useState<{ day: string; time: string; date: string } | undefined>(undefined);
     const [modalPosition, setModalPosition] = useState<{ top: number; left: number } | null>(null);
     const [events, setEvents] = useState<Event[]>([]);
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
     const [showEventDetails, setShowEventDetails] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [editForm, setEditForm] = useState({ title: '', desc: '', start_time: '', end_time: '' });
+    const [editInvitedUsers, setEditInvitedUsers] = useState<string[]>([]);
+    const [editSearchQuery, setEditSearchQuery] = useState("");
+    const [editSearchResults, setEditSearchResults] = useState<any[]>([]);
+    const navigate = useNavigate();
 
     // const [events, setEvents] = React.useState<any[]>([]);
-    const [currentWeekStart, setCurrentWeekStart] = React.useState<Date>(getSunday(new Date()));
+    const [currentWeekStart, setCurrentWeekStart] = useState<Date>(getSunday(new Date()));
+
+    const currentUsername = localStorage.getItem('username');
+    const [userRole, setUserRole] = useState<number>(0);
+
+    useEffect(() => {
+        const fetchUserInfo = async () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                try {
+                    const res = await fetch('http://localhost:5267/api/Auth/me', {
+                        headers: { 'Authorization': `Bearer ${token}` },
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        setUserRole(data.role);
+                    }
+                } catch (error) {
+                    console.error('Error fetching user info:', error);
+                }
+            }
+        };
+        fetchUserInfo();
+    }, []);
 
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -51,32 +80,10 @@ export default function WeekPlanner() {
 
     // --- Load events ---
     // --- Load events from backend ---
-    React.useEffect(() => {
-        const fetchEvents = async () => {
-            try {
-                const token = localStorage.getItem("token"); // pas aan waar je token staat
-                const res = await fetch("http://localhost:5267/api/events/get-all", {
-                    headers: {
-                        "Authorization": `Bearer ${token}`,
-                        "Content-Type": "application/json"
-                    }
-                });
-
-                if (!res.ok) {
-                    throw new Error(`Error fetching events: ${res.status}`);
-                }
-
-                const data = await res.json();
-
-                // Je backend geeft nu één object terug. Als je meerdere events wilt, moet het een array zijn.
-                // Als je backend een array terugstuurt, kun je dit direct gebruiken:
-                setEvents(Array.isArray(data) ? data : [data]);
-            } catch (err) {
-                console.error(err);
-            }
-        };
-
+    useEffect(() => {
         fetchEvents();
+        const interval = setInterval(fetchEvents, 30000); // elke 30 seconden
+        return () => clearInterval(interval);
     }, []);
 
 
@@ -97,7 +104,7 @@ export default function WeekPlanner() {
     const formatDate = (d: Date) =>
         d.toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit" });
 
-    // --- NIEUW: check of event in deze week valt ---
+    // --- check of event in deze week valt ---
     const isEventInCurrentWeek = (ev: any) => {
         const start = new Date(ev.start_time);
 
@@ -111,28 +118,15 @@ export default function WeekPlanner() {
         return start >= weekStart && start <= weekEnd;
     };
 
-    // Dagindex binnen geselecteerde week
-    const getDayIndexInWeek = (date: string) => {
-        const d = new Date(date);
-        const diff = (d.getTime() - currentWeekStart.getTime()) / (1000 * 60 * 60 * 24);
-        return Math.floor(diff);
-    };
-
-    const getTimeString = (date: string) => {
-        const d = new Date(date);
-        return d.toTimeString().slice(0, 5);
-    };
-
     const handlePrevWeek = () => {
         setCurrentWeekStart(prev => addDays(prev, -7));
+        fetchEvents();
     };
 
     const handleNextWeek = () => {
         setCurrentWeekStart(prev => addDays(prev, 7));
-    };
-    useEffect(() => {
         fetchEvents();
-    }, []);
+    };
 
     const fetchEvents = async () => {
         const token = localStorage.getItem('token');
@@ -141,6 +135,7 @@ export default function WeekPlanner() {
                 headers: token ? { 'Authorization': `Bearer ${token}` } : {},
             });
             const data = await res.json();
+            console.log('Fetched events:', data);
             setEvents(data);
         } catch (error) {
             console.error('Error fetching events:', error);
@@ -153,8 +148,9 @@ export default function WeekPlanner() {
         const body = {
             title: editForm.title,
             desc: editForm.desc,
-            start_time: new Date(editForm.start_time),
-            end_time: new Date(editForm.end_time),
+            start_time: new Date(editForm.start_time + ':00Z'),
+            end_time: new Date(editForm.end_time + ':00Z'),
+            invitedUsers: editInvitedUsers
         };
         try {
             const res = await fetch(`http://localhost:5267/api/Events?eventid=${selectedEvent.id}`, {
@@ -197,23 +193,41 @@ export default function WeekPlanner() {
         }
     };
 
-    const getWeekStart = (date: Date) => {
-        const d = new Date(date);
-        const day = d.getDay();
-        const diff = d.getDate() - day;
-        return new Date(d.setDate(diff));
+    const handleEditSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const query = e.target.value;
+        setEditSearchQuery(query);
+        if (query.length > 2) {
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch(`http://localhost:5267/api/SearchUsers?query=${query}`, {
+                    headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+                });
+                const data = await res.json();
+                setEditSearchResults(data);
+            } catch (error) {
+                console.error('Error searching users:', error);
+            }
+        } else {
+            setEditSearchResults([]);
+        }
     };
 
-    const weekStart = getWeekStart(new Date());
-    const weekDays = Array.from({ length: 7 }, (_, i) => {
-        const d = new Date(weekStart);
-        d.setDate(weekStart.getDate() + i);
-        return d;
-    });
+    const addEditUser = (username: string) => {
+        if (!editInvitedUsers.includes(username)) {
+            setEditInvitedUsers([...editInvitedUsers, username]);
+        }
+        setEditSearchQuery("");
+        setEditSearchResults([]);
+    };
+
+    const removeEditUser = (username: string) => {
+        setEditInvitedUsers(editInvitedUsers.filter(u => u !== username));
+    };
 
     const handleCellClick = (
         day: string,
         time: string,
+        date: string,
         e: React.MouseEvent<HTMLTableCellElement>
     ) => {
         const rect = e.currentTarget.getBoundingClientRect();
@@ -230,7 +244,7 @@ export default function WeekPlanner() {
 
         setModalPosition({ top, left });
 
-        setSelectedSlot({ day, time });
+        setSelectedSlot({ day, time, date });
         setShowEventModal(true);
     };
 
@@ -269,6 +283,7 @@ export default function WeekPlanner() {
                 onClose={() => setShowEventModal(false)}
                 position={modalPosition}
                 slot={selectedSlot}
+                onEventCreated={fetchEvents}
             />
 
             {/* Main grid */}
@@ -301,7 +316,7 @@ export default function WeekPlanner() {
 
                                 {/* Create a cell for each day at that time slot */}
                                 {days.map((day, i) => {
-                                    const date = weekDays[i];
+                                    const date = addDays(currentWeekStart, i);
                                     const [h, m] = time.split(':').map(Number);
                                     const cellStart = new Date(date);
                                     cellStart.setHours(h, m, 0, 0);
@@ -316,12 +331,12 @@ export default function WeekPlanner() {
                                         <td
                                             key={day + time}
                                             className="planner-cell"
-                                            onClick={(e) => handleCellClick(day, time, e)}
+                                            onClick={(e) => handleCellClick(day, time, date.toISOString().split('T')[0], e)}
                                         >
                                             {cellEvents.map(event => (
                                                 <div
                                                     key={event.id}
-                                                    className="event-item"
+                                                    className={`event-item ${event.creator.username === currentUsername ? 'own-event' : 'invited-event'}`}
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         setSelectedEvent(event);
@@ -331,8 +346,9 @@ export default function WeekPlanner() {
                                                             start_time: event.start_time,
                                                             end_time: event.end_time,
                                                         });
+                                                        setEditInvitedUsers(event.subscribers?.map(s => s.username) || []);
                                                         setShowEventDetails(true);
-                                                        setEditMode(false);
+                                                        setEditMode(event.creator.username === currentUsername || userRole === 1);
                                                     }}
                                                 >
                                                     {event.title}
@@ -375,6 +391,37 @@ export default function WeekPlanner() {
                                     value={editForm.end_time.slice(0, 16)}
                                     onChange={(e) => setEditForm({ ...editForm, end_time: e.target.value })}
                                 />
+                                <div>
+                                    <label>Gebruikers uitnodigen</label>
+                                    <input
+                                        type="text"
+                                        placeholder="Zoek gebruikers..."
+                                        value={editSearchQuery}
+                                        onChange={handleEditSearchChange}
+                                    />
+                                    {editSearchResults.length > 0 && (
+                                        <ul style={{ listStyle: 'none', padding: 0, border: '1px solid #ccc', maxHeight: '100px', overflowY: 'auto' }}>
+                                            {editSearchResults.map(user => (
+                                                <li key={user.username} onClick={() => addEditUser(user.username)} style={{ cursor: 'pointer', padding: '5px' }}>
+                                                    {user.nickname} ({user.username})
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
+                                    {editInvitedUsers.length > 0 && (
+                                        <div>
+                                            <label>Uitgenodigde gebruikers:</label>
+                                            <ul style={{ listStyle: 'none', padding: 0 }}>
+                                                {editInvitedUsers.map(username => (
+                                                    <li key={username} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                        {username}
+                                                        <button type="button" onClick={() => removeEditUser(username)}>Verwijder</button>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>
                                 <button onClick={handleEditEvent}>Save</button>
                                 <button onClick={() => setEditMode(false)}>Cancel</button>
                             </>
@@ -385,8 +432,16 @@ export default function WeekPlanner() {
                                 <p><strong>Start:</strong> {new Date(selectedEvent.start_time).toLocaleString()}</p>
                                 <p><strong>End:</strong> {new Date(selectedEvent.end_time).toLocaleString()}</p>
                                 <p><strong>Creator:</strong> {selectedEvent.creator.nickname}</p>
-                                <button onClick={() => setEditMode(true)}>Edit</button>
-                                <button onClick={handleDeleteEvent}>Delete</button>
+                                {selectedEvent.subscribers && selectedEvent.subscribers.length > 0 && (
+                                    <p><strong>Subscribers:</strong> {selectedEvent.subscribers.map(s => s.nickname).join(', ')}</p>
+                                )}
+                                {selectedEvent.creator.username === currentUsername || userRole === 1 ? (
+                                    <>
+                                        <button onClick={() => setEditMode(true)}>Edit</button>
+                                        <button onClick={handleDeleteEvent}>Delete</button>
+                                    </>
+                                ) : null}
+                                <button onClick={() => navigate(`/selectedeventwithreviews/${selectedEvent.id}`)}>Reviews</button>
                                 <button onClick={() => setShowEventDetails(false)}>Close</button>
                             </>
                         )}

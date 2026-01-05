@@ -16,7 +16,7 @@ namespace OfficeCalendar.Backend.Services
 
 
         //MAPPING 
-        private UserGetDto MapUser(User user)
+        private async Task<UserGetDto> MapUser(User user)
         {
             return new UserGetDto
             {
@@ -28,7 +28,7 @@ namespace OfficeCalendar.Backend.Services
             };
         }
 
-        private RoomBookingGetDto MapRoomBooking(RoomBooking rb)
+        private async Task<RoomBookingGetDto> MapRoomBooking(RoomBooking rb)
         {
             return new RoomBookingGetDto
             {
@@ -43,12 +43,12 @@ namespace OfficeCalendar.Backend.Services
                 },
                 start_time = rb.start_time,
                 end_time = rb.end_time,
-                booked_by = MapUser(rb.User),
+                booked_by = await MapUser(rb.User),
                 visible = rb.visible,
                 Event = rb.Event == null ? null : new EventGetDto
                 {
                     id = rb.Event.id,
-                    creator = MapUser(rb.Event.Creator),
+                    creator = await MapUser(rb.Event.Creator),
                     title = rb.Event.title,
                     desc = rb.Event.desc,
                     start_time = rb.Event.start_time,
@@ -59,68 +59,84 @@ namespace OfficeCalendar.Backend.Services
             };
         }
 
-        private EventGetDto MapEvent(Event e)
+        private async Task<EventGetDto> MapEvent(Event e)
         {
+            var bookingTasks = e.RoomBookings?.Select(rb => MapRoomBooking(rb)) ?? Enumerable.Empty<Task<RoomBookingGetDto>>();
+            var subscriberTasks = e.EventSubscriptions?.Select(es => MapUser(es.User)) ?? Enumerable.Empty<Task<UserGetDto>>();
+
             return new EventGetDto
             {
                 id = e.id,
-                creator = MapUser(e.Creator),
+                creator = await MapUser(e.Creator),
                 title = e.title,
                 desc = e.desc,
                 start_time = e.start_time,
                 end_time = e.end_time,
                 last_edited_date = e.last_edited_date,
-                bookings = e.RoomBookings == null ? null : e.RoomBookings.Select(rb => MapRoomBooking(rb)).ToList()
-                //If there are no bookings, return null, else map each booking
+                bookings = (await Task.WhenAll(bookingTasks)).ToList(),
+                subscribers = (await Task.WhenAll(subscriberTasks)).ToList()
             };
         }
 
         //GETS
-        public Event? GetEvent(Guid id)
+        public async Task<Event?> GetEvent(Guid id)
         {
-            return _context.Events
+            return await _context.Events
                 .Where(e => e.visible)
                 .Include(e => e.Creator)
                 .Include(e => e.RoomBookings).ThenInclude(rb => rb.Room)
                 .Include(e => e.RoomBookings).ThenInclude(rb => rb.User)
-                .FirstOrDefault(e => e.id == id);
+                .FirstOrDefaultAsync(e => e.id == id);
         }
 
-        public EventGetDto? GetEventDto(Guid id)
+        public async Task<EventGetDto?> GetEventDto(Guid id)
         {
-            var e = GetEvent(id);
-            return e == null ? null : MapEvent(e);
+            var e = await GetEvent(id);
+            return e == null ? null : await MapEvent(e);
         }
 
-        public EventGetDto[] GetAllEvents()
+        public async Task<EventGetDto[]> GetAllEvents()
         {
-            var events = _context.Events
+            var events = await _context.Events
                 .Where(e => e.visible)
                 .Include(e => e.Creator)
                 .Include(e => e.RoomBookings).ThenInclude(rb => rb.Room)
                 .Include(e => e.RoomBookings).ThenInclude(rb => rb.User)
-                .AsNoTracking() // zodat EF de entities niet in de change tracker zet, wat performance verbetert bij read-only (GET)
-                .ToList();
-
-            return events.Select(e => MapEvent(e)).ToArray();
-
-        }
-
-        public EventGetDto[] GetMyEvents(string username)
-        {
-            var events = _context.Events
-                .Where(e => e.visible && e.creator_username == username)
-                .Include(e => e.Creator)
-                .Include(e => e.RoomBookings).ThenInclude(rb => rb.Room)
-                .Include(e => e.RoomBookings).ThenInclude(rb => rb.User)
+                .Include(e => e.EventSubscriptions).ThenInclude(es => es.User)
                 .AsNoTracking()
-                .ToList();
+                .ToListAsync();
 
-            return events.Select(e => MapEvent(e)).ToArray();
+            return (await Task.WhenAll(events.Select(e => MapEvent(e)))).ToArray();
+        }
+
+        public async Task<EventGetDto[]> GetMyEvents(string username)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.username == username);
+            if (user == null) return Array.Empty<EventGetDto>();
+
+            IQueryable<Event> query = _context.Events
+                .Include(e => e.Creator)
+                .Include(e => e.RoomBookings).ThenInclude(rb => rb.Room)
+                .Include(e => e.RoomBookings).ThenInclude(rb => rb.User)
+                .Include(e => e.EventSubscriptions).ThenInclude(es => es.User)
+                .AsNoTracking();
+
+            if (user.role != 1) // Not admin
+            {
+                query = query.Where(e => e.visible && (e.creator_username == username || e.EventSubscriptions.Any(es => es.username == username)));
+            }
+            else
+            {
+                query = query.Where(e => e.visible); // Admin sees all
+            }
+
+            var events = await query.ToListAsync();
+
+            return (await Task.WhenAll(events.Select(e => MapEvent(e)))).ToArray();
         }
 
         //CREATE
-        public EventGetDto CreateEvent(EventPostDto dto, string creator_username)
+        public async Task<EventGetDto> CreateEvent(EventPostDto dto, string creator_username)
         {
             var id = Guid.NewGuid();
 
@@ -136,15 +152,41 @@ namespace OfficeCalendar.Backend.Services
             };
 
             _context.Events.Add(newEvent);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            var savedEvent = GetEvent(id);
+            // Add subscriptions for invited users
+            if (dto.invitedUsers != null)
+            {
+                foreach (var username in dto.invitedUsers)
+                {
+                    var user = await _context.Users.FirstOrDefaultAsync(u => u.username == username);
+                    if (user != null)
+                    {
+                        var subscription = new EventSubscription
+                        {
+                            username = username,
+                            event_id = id,
+                            participated = null
+                        };
+                        _context.EventSubscriptions.Add(subscription);
+                    }
+                }
+                await _context.SaveChangesAsync();
+            }
 
-            return MapEvent(savedEvent);
+            var savedEvent = await GetEvent(id);
+
+            // Ensure Creator is loaded
+            if (savedEvent != null)
+            {
+                await _context.Entry(savedEvent).Reference(e => e.Creator).LoadAsync();
+            }
+
+            return await MapEvent(savedEvent);
         }
 
         //UPDATE
-        public EventGetDto UpdateEvent(Event existing, EventPutDto dto)
+        public async Task<EventGetDto> UpdateEvent(Event existing, EventPutDto dto)
         {
             if (dto.title != null)
                 existing.title = dto.title;
@@ -163,16 +205,40 @@ namespace OfficeCalendar.Backend.Services
 
             existing.last_edited_date = DateTime.UtcNow;
 
+            // Update subscriptions
+            if (dto.invitedUsers != null)
+            {
+                // Remove old subscriptions
+                var oldSubscriptions = _context.EventSubscriptions.Where(es => es.event_id == existing.id);
+                _context.EventSubscriptions.RemoveRange(oldSubscriptions);
+
+                // Add new subscriptions
+                foreach (var username in dto.invitedUsers)
+                {
+                    var user = await _context.Users.FirstOrDefaultAsync(u => u.username == username);
+                    if (user != null)
+                    {
+                        var subscription = new EventSubscription
+                        {
+                            username = username,
+                            event_id = existing.id,
+                            participated = null
+                        };
+                        await _context.EventSubscriptions.AddAsync(subscription);
+                    }
+                }
+            }
+
             _context.SaveChanges();
 
-            return MapEvent(existing);
+            return await MapEvent(existing);
         }
 
         //DELETE (soft)
-        public void DeleteEvent(Event e)
+        public async Task DeleteEvent(Event e)
         {
             e.visible = false;   // soft delete
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
     }

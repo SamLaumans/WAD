@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Profiel from '../profile-page/profiel';
 import './Toolbar.css';
 import img1 from '../../assets/blank_profile.jpg';
@@ -7,9 +7,16 @@ import MessagePopup from '../../components/MessagePopup';
 
 const Toolbar: React.FC = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const [showProfile, setShowProfile] = useState(false);
     const [showMessages, setShowMessages] = useState(false);
 
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        navigate('/login');
+    };
 
     return (
         <>
@@ -19,9 +26,8 @@ const Toolbar: React.FC = () => {
                 <Link to="/main-page" className={location.pathname === '/main-page' ? 'active' : ''}>Home</Link>
                 <Link to="/weekplanner" className={location.pathname === '/weekplanner' ? 'active' : ''}>Week Planner</Link>
                 <Link to="/monthdayview" className={location.pathname === '/monthdayview' ? 'active' : ''}>Maand Planner</Link>
-                <Link to="/create-event" className={location.pathname === '/create-event' ? 'active' : ''}>Create Event</Link>
                 <Link to="/about" className={location.pathname === '/about' ? 'active' : ''}>About</Link>
-                <Link to="/logout" className={location.pathname === '/logout' ? 'active' : ''}>Logout</Link>
+                <button onClick={handleLogout} className="logout-btn">Logout</button>
 
                 <div className='toolbar-right'>
                     <span

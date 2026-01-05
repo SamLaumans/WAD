@@ -9,7 +9,7 @@ const Profiel: React.FC = () => {
     const token = localStorage.getItem('token');
 
     if (token) {
-      fetch('https://localhost:5267/api/me', {
+      fetch('http://localhost:5267/api/me', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`

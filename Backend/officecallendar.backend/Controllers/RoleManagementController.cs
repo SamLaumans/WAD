@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using OfficeCalendar.Backend.DTOs;
 using OfficeCalendar.Backend.Services;
 using Officecalendar.Backend.Models;
@@ -17,6 +18,7 @@ public class RolBeheerController : ControllerBase
     }
 
     [HttpGet("SearchUsers")]
+    [Authorize]
     public async Task<ActionResult<List<UserSearchDto>>> SearchUsers([FromQuery] string query)
     {
         if (string.IsNullOrWhiteSpace(query))
@@ -26,10 +28,14 @@ public class RolBeheerController : ControllerBase
         return Ok(users);
     }
 
-
     [HttpPost("AdjustRole")]
+    [Authorize(Roles = "1")]
     public async Task<ActionResult<UserSearchDto>> AdjustUserRole([FromBody] AdjustRoleDto dto)
     {
+        if (dto.NewRole < 0 || dto.NewRole > 1)
+        {
+            return BadRequest("Role must be 0(user) or 1(admin)");
+        }
         var updatedUser = await _userService.ChangeUserRoleAsync(dto.Username, dto.NewRole);
 
         if (updatedUser == null)

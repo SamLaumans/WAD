@@ -3,14 +3,12 @@ import React, { useState, useEffect } from "react";
 
 const ROLE_MAP: Record<number, string> = {
   0: "user",
-  1: "moderator",
-  2: "admin"
+  1: "admin",
 };
 
 const ROLE_REVERSE: Record<string, number> = {
   "user": 0,
-  "moderator": 1,
-  "admin": 2
+  "admin": 1,
 };
 
 const AdminRolBeheer: React.FC = () => {
@@ -28,8 +26,10 @@ const AdminRolBeheer: React.FC = () => {
 
     const controller = new AbortController();
 
+    const token = localStorage.getItem('token');
     fetch(`http://localhost:5267/api/SearchUsers?query=${search}`, {
-      signal: controller.signal
+      signal: controller.signal,
+      headers: token ? { 'Authorization': `Bearer ${token}` } : {}
     })
       .then(res => res.json())
       .then(data => setUsers(data))
@@ -51,7 +51,10 @@ const AdminRolBeheer: React.FC = () => {
 
     fetch("http://localhost:5267/api/AdjustRole", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
       body: JSON.stringify({
         username: selectedUser.username,
         newRole: ROLE_REVERSE[newRole]
@@ -118,7 +121,6 @@ const AdminRolBeheer: React.FC = () => {
                 className="role-select"
               >
                 <option value="admin">admin</option>
-                <option value="moderator">moderator</option>
                 <option value="user">user</option>
               </select>
 

@@ -23,11 +23,37 @@ function Registreer() {
         else return false;
     };
 
-    const handleRegistration = () => {
-        if (checkInputs() && passwordErrors.length == 0 && emailErrors.length == 0)
-            setCreatedMessage("Account created");
-        else setCreatedMessage("Some fields are empty or incorrect");
+    const handleRegistration = async () => {
+        if (!checkInputs() || passwordErrors.length > 0 || emailErrors.length > 0) {
+            setCreatedMessage("Some fields are empty or incorrect");
+            return;
+        }
 
+        try {
+            const res = await fetch('http://localhost:5267/api/Auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: username, password: password, email: email, nickname: name }),
+            });
+            
+            console.log('Response status:', res.status, 'OK:', res.ok);
+            const data = await res.json();
+            console.log('Response data:', data);
+            
+            if (res.ok) {
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('username', data.username);
+                console.log('Registration successful, redirecting...');
+                setTimeout(() => {
+                    window.location.href = "/";
+                }, 500);
+            } else {
+                setCreatedMessage(data.message || "Registration failed");
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            setCreatedMessage("Registration failed");
+        }
     };
 
 

@@ -23,40 +23,46 @@ import DayPlanner from "./components/DayPlanner";
 import MonthDayView from "./components/MonthDayView";
 import About from "./components/About"
 import SelectedEvent2 from "./components/SelectedEventWithReviews"
-import AdminRoutes from "./components/AdminRoutes.tsx";
-import LoggedinRoutes from "./components/LoggedinRoutes.tsx";
+import AdminRoutes from"./components/AdminRoutes.tsx";
+import LoggedinRoutes from"./components/LoggedinRoutes.tsx";
+import Unauthorized from "./pages/unauthorized/unauthorized";
 
 const AppContent: React.FC = () => {
   const location = useLocation();
 
   const showHeaderFooter =
-    location.pathname !== '/' &&
     location.pathname !== '/login' &&
     location.pathname !== '/registreer' &&
-    location.pathname !== '/forgot-pw';
+    location.pathname !== '/forgot-pw' &&
+    location.pathname !== '/unauthorized';
 
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+const [user, setUser] = useState(null);
+const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      fetch('https://localhost:5267/api/me', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
-        .then(res => res.ok ? res.json() : null)
-        .then(data => {
-          setUser(data);
-          setLoading(false);
-        })
-        .catch(() => {
-          setUser(null);
-          setLoading(false);
-        });
-    } else {
+useEffect(() => {
+  setLoading(true);
+  const token = localStorage.getItem('token');
+  if (token) {
+    fetch('http://localhost:5267/api/me', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+    .then(res => {
+      if (res.ok) return res.json();
+      throw new Error('Not authenticated');
+    })
+    .then(data => {
+      setUser(data);
       setLoading(false);
-    }
-  }, []);
+    })
+    .catch(() => {
+      setUser(null);
+      setLoading(false);
+    });
+  } else {
+    setUser(null);
+    setLoading(false);
+  }
+}, []);
 
 
   return (
@@ -65,37 +71,43 @@ const AppContent: React.FC = () => {
 
 
       <main className="main-content" style={{ height: '80px' }}>
-        <Routes>
-
-          <Route element={<AdminRoutes user={user} isLoading={loading} />}>
-            <Route path="/admin/role-adjustment" element={<AdminRolBeheer />} />
+        <Routes>  
+           {/* Routes that are accesible for admins only */}
+          <Route element ={<AdminRoutes user={user} isLoading={loading} />}>  
+            <Route path="/admin-role-adjustment" element={<AdminRolBeheer />} />
           </Route>
 
-          <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
           <Route path="/registreer" element={<Registreer />} />
           <Route path="/forgot-pw" element={<Forgot_Password />} />
-          <Route path="/main-page" element={<Main_Page />} />
-          <Route path="/events" element={<Events />} />
-          <Route path="/events/:eventID" element={<SingleEvent />} />
-          <Route path="/weekplanner" element={<WeekPlanner />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/faq" element={<FAQ />} />
-          <Route path="/event" element={<div><SelectedEvent /><Reviews eventId={""} /></div>} />
-          <Route path="/admin-panel" element={<AdminPanel />} />
-          <Route path="/admin-role-adjustment" element={<AdminRolBeheer />} />
-          <Route path="/admin-profile" element={<Profiel />} />
-          <Route path="/MonthPlanner" element={<MonthPlanner />} />
-          <Route path="/DayPlanner" element={<DayPlanner />} />
-          <Route path="/Reviews" element={<Reviews eventId={""} />} />
-          <Route path="/SelectedEvent" element={<SelectedEvent />} />
-          <Route path="/DayPlanner/:date" element={<DayPlanner />} />
-          <Route path="/MonthDayView" element={<MonthDayView />} />
-          <Route path="/About" element={<About />} />
-          <Route path="/events/:eventId" element={<SelectedEvent />} />
-          <Route path="/selectedevent/:eventId" element={<SelectedEvent />} />
-          <Route path="/selectedeventwithreviews/:eventId" element={<SelectedEvent2 />} />
+          <Route path="/unauthorized" element={<Unauthorized />} />
 
+          {/* Routes that are accesible for loggedin users only */}
+          <Route element ={<LoggedinRoutes user={user} isLoading={loading} />}>
+            <Route path="/" element={<Main_Page />} />
+            <Route path="/main-page" element={<Main_Page />} />
+            <Route path="/messages" element={<Messages />} />
+            <Route path="/messages/:messageID" element={<SingleMessage />} />
+            <Route path="/events" element={<Events />} />
+            <Route path="/events/:eventID" element={<SingleEvent />} />
+            <Route path="/weekplanner" element={<WeekPlanner />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/event" element={<div><SelectedEvent /><Reviews eventId={""} /></div>} />
+            <Route path="/send-message" element={<Send_Message />} />
+            <Route path="/admin-panel" element={<AdminPanel />} />
+            <Route path="/admin-profile" element={<Profiel />} />
+            <Route path="/MonthPlanner" element={<MonthPlanner />} />
+            <Route path="/DayPlanner" element={<DayPlanner />} />
+            <Route path="/Reviews" element={<Reviews eventId={""} />} />
+            <Route path="/SelectedEvent" element={<SelectedEvent />} />
+            <Route path="/DayPlanner/:date" element={<DayPlanner />} />
+            <Route path="/MonthDayView" element={<MonthDayView />} />
+            <Route path="/About" element={<About />} />
+            <Route path="/events/:eventId" element={<SelectedEvent />} />
+            <Route path="/selectedevent/:eventId" element={<SelectedEvent />} />
+            <Route path="/selectedeventwithreviews/:eventId" element={<SelectedEvent2 />} />
+          </Route>
         </Routes>
       </main>
     </div>
@@ -109,16 +121,5 @@ const App: React.FC = () => (
     <AppContent />
   </BrowserRouter>
 );
-// popup event code
-// const [showModal, setShowModal] = useState(false);
-
-// return (
-//   <div>
-//     <h1>Welkom op de hoofdpagina</h1>
-//     <button onClick={() => setShowModal(true)}>Nieuw Event Aanmaken</button>
-
-//     <EventModal show={showModal} onClose={() => setShowModal(false)} />
-//   </div>
-// );
 
 export default App;
