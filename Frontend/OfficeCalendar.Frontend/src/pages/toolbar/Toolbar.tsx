@@ -3,11 +3,14 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Profiel from '../profile-page/profiel';
 import './Toolbar.css';
 import img1 from '../../assets/blank_profile.jpg';
+import MessagePopup from '../../components/MessagePopup';
 
 const Toolbar: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const [showProfile, setShowProfile] = useState(false);
+    const [showMessages, setShowMessages] = useState(false);
+
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -26,12 +29,22 @@ const Toolbar: React.FC = () => {
                 <Link to="/about" className={location.pathname === '/about' ? 'active' : ''}>About</Link>
                 <button onClick={handleLogout} className="logout-btn">Logout</button>
 
-                <img  //profiel foto
-                    src={img1} 
-                    alt="profile" 
-                    className="toolbar-profile-pic"
-                    onClick={() => setShowProfile(true)}
-                />
+                <div className='toolbar-right'>
+                    <span
+                        className="toolbar-message-icon"
+                        onClick={() => setShowMessages(true)}
+                        title="Messages"
+                    >
+                        ✉
+                    </span>
+
+                    <img  //profiel foto
+                        src={img1}
+                        alt="profile"
+                        className="toolbar-profile-pic"
+                        onClick={() => setShowProfile(true)}
+                    />
+                </div>
             </div>
 
             {showProfile && ( //popup
@@ -42,6 +55,15 @@ const Toolbar: React.FC = () => {
                     </div>
                 </div>
             )}
+
+            {showMessages && (
+                <div className="message-overlay" onClick={() => setShowMessages(false)}>
+                    <div className="message-modal" onClick={(e) => e.stopPropagation()}>
+                        <MessagePopup onClose={() => setShowMessages(false)} />
+                    </div>
+                </div>
+            )}
+
         </>
     );
 };

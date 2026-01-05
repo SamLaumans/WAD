@@ -1,0 +1,21 @@
+.message-item {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.message-item.received {
+    background: #f5f5f5;
+    border-left: 3px solid #3a7afe;
+}
+
+.message-item.sent {
+    background: #e1f4ff;
+    border-left: 3px solid #00a2ff;
+}
+
+.message-item:hover {
+    background: #ddd;
+}

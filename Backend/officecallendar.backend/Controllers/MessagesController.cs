@@ -39,15 +39,29 @@ public class MessagesController : ControllerBase
     }
 
     [HttpGet("me")]
-    public async Task<ActionResult<MessageGetDto[]>> GetMessageForUser()
+    public async Task<ActionResult<MessageGetDto[]>> GetMessageForUser([FromQuery] int skip = 0, [FromQuery] int take = 20)
     {
-        var messages = await _messageService.GetMessagesForUser(User.Identity.Name);
-
+        var messages = await _messageService.GetMessagesForUser(User.Identity.Name, skip, take);
         if (messages.Length == 0)
             return NotFound(new
             {
                 statuscode = 404,
                 message = $"No messages for {User.Identity.Name} found"
+            });
+
+        return Ok(messages);
+    }
+
+    [HttpGet("sent")]
+    public ActionResult<MessageGetDto[]> GetMessagesSentByUser([FromQuery] int skip = 0, [FromQuery] int take = 20)
+    {
+        var messages = _messageService.GetMessagesSentByUser(User.Identity.Name, skip, take);
+
+        if (messages.Length == 0)
+            return NotFound(new
+            {
+                statuscode = 404,
+                message = $"No messages sent by {User.Identity.Name} found"
             });
 
         return Ok(messages);
@@ -77,6 +91,7 @@ public class MessagesController : ControllerBase
         return CreatedAtAction(nameof(GetMessage), new { messageid = response.message.id }, response);
     }
 
+    [Authorize(Roles = "1")]
     [HttpDelete]
     public async Task<ActionResult<Message>> DeleteMessage([FromQuery] Guid messageid)
     {

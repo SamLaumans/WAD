@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import SelectedEvent from './components/SelectedEvent';
@@ -12,8 +12,6 @@ import Registreer from './pages/register/Registreer';
 import Login from './pages/login/Login';
 import Forgot_Password from './pages/forgot-password/Forgot-Password';
 import Main_Page from './pages/main-page/Main-Page';
-import Messages from './pages/messages/Messages';
-import SingleMessage from './pages/singlemessage/SingleMessage';
 import CreateEvent from './pages/create-event/Event';
 import AdminPanel from './pages/admin-panel/AdminPanel';
 import Profiel from "./pages/profile-page/profiel";
@@ -21,7 +19,6 @@ import AdminRolBeheer from "./pages/admin-role-adjustment/admin-role-adjustment"
 //import EventModal from "./pages/create-event/EventModal";
 import Events from './pages/events/Events';
 import SingleEvent from './pages/singleevent/SingleEvent';
-import Send_Message from './pages/send-message/send-message';
 import DayPlanner from "./components/DayPlanner";
 import MonthDayView from "./components/MonthDayView";
 import About from "./components/About"

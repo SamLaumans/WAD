@@ -1,68 +1,44 @@
 import './Main-Page.css';
-import { useState, type JSX } from 'react';
+import { useState, useEffect, type JSX } from 'react';
 import { useNavigate } from 'react-router-dom';
-import messageData from "../../assets/messages.json";
 import eventData from "../../assets/events.json";
+import type { MessageDto } from '../../types/MessageDto';
 import Clock from '../../components/Clock';
 import DayPlanner from '../../components/DayPlanner';
+import MessagePopup from '../../components/MessagePopup';
 
 function Main_Page() {
     const navigate = useNavigate();
     const [today] = useState(new Date()); // voor DayPlanner preview
+    const [messages, setMessages] = useState<MessageDto[]>([]);
+    const [showMessages, setShowMessages] = useState(false);
 
-    interface Message {
-        messageID: string;
-        senderID: string;
-        receiverID: string[];
-        title: string;
-        message: string;
-    }
 
-    interface Event {
-        eventID: string;
-        title: string;
-        description: string;
-    }
+    useEffect(() => {
+        const fetchMessages = async () => {
+            try {
+                const response = await fetch('/api/messages/me?skip=0&take=3');
+                if (response.ok) {
+                    const data: MessageDto[] = await response.json();
+                    setMessages(data);
+                }
+            } catch (error) {
+                console.error('Error fetching messages:', error);
+            }
+        };
+        fetchMessages();
+    }, []);
 
-    const messages: Message[] = messageData.messages;
-    const events: Event[] = eventData.events;
-
-    const getMessageTitles = (receiverid: string): JSX.Element[] => {
+    const getMessageTitles = (): JSX.Element[] => {
         if (messages.length > 0) {
             const titles: JSX.Element[] = [];
             for (let i = 0; i < messages.length && i < 3; i++) {
-                if (messages[i].receiverID.includes(receiverid))
-                    titles.push(
-                        <div
-                            key={messages[i].messageID}
-                            className='message'
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                navigate(`/messages/${messages[i].messageID}`);
-                            }}
-                        >
-                            - {messages[i].title}
-                        </div>
-                    );
-            }
-            return titles;
-        } else return [];
-    };
-
-    const getEventTitles = (): JSX.Element[] => {
-        if (events.length > 0) {
-            const titles: JSX.Element[] = [];
-            for (let i = 0; i < events.length && i < 3; i++) {
                 titles.push(
                     <div
-                        key={events[i].eventID}
-                        className='event'
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`/events/${events[i].eventID}`);
-                        }}
+                        key={messages[i].id}
+                        className='message'
                     >
-                        - {events[i].title}
+                        - {messages[i].title}
                     </div>
                 );
             }
@@ -71,33 +47,41 @@ function Main_Page() {
     };
 
     return (
-        <div className="main-page-wrapper">
+        <>
+            <div className="main-page-wrapper">
 
-            {/* DayPlanner preview voor vandaag */}
-            <div className='dayplanner-preview-container'>
-                <div className='dayplanner-preview'>
-                    <DayPlanner initialDate={today} />
+                {/* DayPlanner preview voor vandaag */}
+                <div className='dayplanner-preview-container'>
+                    <div className='dayplanner-preview'>
+                        <DayPlanner initialDate={today} />
+                    </div>
+                </div>
+
+                <div className='infoboard'>
+
+                    <div className='clock'>
+                        <Clock />
+                    </div>
+
+                    <div className='bulletin' onClick={() => setShowMessages(true)}>
+                        <h2>Berichten</h2>
+                        {getMessageTitles()}
+                    </div>
+
+                    <div className='events' onClick={() => navigate("/events")}>
+                        <h2>Evenementen</h2>
+                    </div>
+
                 </div>
             </div>
-
-            <div className='infoboard'>
-
-                <div className='clock'>
-                    <Clock />
+            {showMessages && (
+                <div className="message-overlay" onClick={() => setShowMessages(false)}>
+                    <div className="message-modal" onClick={(e) => e.stopPropagation()}>
+                        <MessagePopup onClose={() => setShowMessages(false)} />
+                    </div>
                 </div>
-
-                <div className='bulletin' onClick={() => navigate("/messages")}>
-                    <h2>Berichten ({getMessageTitles("1").length})</h2>
-                    {getMessageTitles("1")}
-                </div>
-
-                <div className='events' onClick={() => navigate("/events")}>
-                    <h2>Evenementen ({events.length})</h2>
-                    {getEventTitles()}
-                </div>
-
-            </div>
-        </div>
+            )}
+        </>
     );
 }
 

@@ -40,11 +40,39 @@ namespace OfficeCalendar.Backend.Services
             .FirstOrDefaultAsync();
         }
 
-        public async Task<MessageGetDto[]> GetMessagesForUser(string username)
+
+        public async Task<MessageGetDto[]> GetMessagesForUser(string username, int skip, int take)
         {
             return await _context.Messages
                 .Where(m => m.MessageReceivers.Any(r => r.username == username))
                 .Where(m => m.visible == true)
+                .OrderByDescending(m => m.creation_date)
+                .Skip(skip)
+                .Take(take)
+                .Select(m => new MessageGetDto
+                {
+                    id = m.id,
+                    sender_username = m.sender_username,
+                    title = m.title,
+                    desc = m.desc,
+                    receivers = m.MessageReceivers.Select(r => r.username).ToList(),
+                    referenced_event_id = m.referenced_event_id,
+                    creation_date = m.creation_date,
+                    last_edited_date = m.last_edited_date,
+                    visible = m.visible
+                })
+                .AsNoTracking()
+                .ToArray();
+        }
+
+        public MessageGetDto[] GetMessagesSentByUser(string username, int skip, int take)
+        {
+            return _context.Messages
+                .Where(m => m.sender_username == username)
+                .Where(m => m.visible == true)
+                .OrderByDescending(m => m.creation_date)
+                .Skip(skip)
+                .Take(take)
                 .Select(m => new MessageGetDto
                 {
                     id = m.id,
