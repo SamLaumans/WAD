@@ -12,11 +12,14 @@ export default function MessagePopup({ onClose }: Props) {
     const [selectedMessage, setSelectedMessage] = useState<MessageDto | null>(null);
     const [sendTitle, setSendTitle] = useState('');
     const [sendDesc, setSendDesc] = useState('');
-    const [sendReceivers, setSendReceivers] = useState('');
+    const [sendReceivers, setSendReceivers] = useState<any[]>([]);
+    const [receiverSearch, setReceiverSearch] = useState('');
+    const [searchResults, setSearchResults] = useState<any[]>([]);
     const [skip, setSkip] = useState(0);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
-    const [activeTab, setActiveTab] = useState<'inbox' | 'sent' | 'send'>('inbox'); const [sentMessages, setSentMessages] = useState<MessageDto[]>([]);
+    const [activeTab, setActiveTab] = useState<'inbox' | 'sent' | 'send'>('inbox'); 
+    const [sentMessages, setSentMessages] = useState<MessageDto[]>([]);
     useEffect(() => {
         const cached = localStorage.getItem('messageCache');
         if (cached) {
@@ -35,6 +38,27 @@ export default function MessagePopup({ onClose }: Props) {
         }
         loadMessages();
     }, []);
+
+    //Search users for message receivers
+    useEffect(() => {
+        if (!receiverSearch) {
+            setSearchResults([]);
+            return;
+        }
+
+        const controller = new AbortController();
+
+        fetch(`http://localhost:5267/api/SearchUsers?query=${receiverSearch}`, {
+            signal: controller.signal
+        })
+            .then(res => res.json())
+            .then(data => setSearchResults(data))
+            .catch(err => {
+                if (err.name !== "AbortError") console.error("Error loading users:", err);
+            });
+
+        return () => controller.abort();
+    }, [receiverSearch]);
 
     async function loadMessages() {
         if (loading || !hasMore) return;
@@ -72,13 +96,10 @@ export default function MessagePopup({ onClose }: Props) {
     }
 
     async function handleSendMessage() {
-        const receivers = sendReceivers
-            .split(',')
-            .map(r => r.trim())
-            .filter(r => r);
+        const receivers = sendReceivers.map(r => r.username);
 
         if (!sendTitle || !sendDesc || receivers.length === 0) {
-            alert('Please fill all fields');
+            alert('Please fill all fields and select at least one receiver');
             return;
         }
 
@@ -87,7 +108,8 @@ export default function MessagePopup({ onClose }: Props) {
 
             setSendTitle('');
             setSendDesc('');
-            setSendReceivers('');
+            setSendReceivers([]);
+            setReceiverSearch('');
 
             const msgs = await getMyMessages(0, 1000);
             const sorted = msgs.sort((a, b) =>
@@ -141,12 +163,86 @@ export default function MessagePopup({ onClose }: Props) {
                     {activeTab === 'send' ? (
                         <div>
                             <h2>Send Message</h2>
-                            <input
-                                type="text"
-                                placeholder="Receivers (comma separated usernames)"
-                                value={sendReceivers}
-                                onChange={(e) => setSendReceivers(e.target.value)}
-                            />
+                            <div style={{ marginBottom: '15px' }}>
+                                <label>Search Recipients:</label>
+                                <input
+                                    type="text"
+                                    placeholder="Search by username..."
+                                    autoComplete="off"
+                                    value={receiverSearch}
+                                    onChange={(e) => setReceiverSearch(e.target.value)}
+                                    style={{ width: "100%", padding: "8px", marginBottom: "8px" }}
+                                />
+                                
+                                {searchResults.length > 0 && receiverSearch && (
+                                    <div style={{ 
+                                        border: '1px solid #ddd', 
+                                        maxHeight: '200px', 
+                                        overflowY: 'auto',
+                                        marginBottom: '8px'
+                                    }}>
+                                        {searchResults.map((user) => (
+                                            <div
+                                                key={user.username}
+                                                onClick={() => {
+                                                    if (!sendReceivers.find(r => r.username === user.username)) {
+                                                        setSendReceivers([...sendReceivers, user]);
+                                                    }
+                                                    setReceiverSearch('');
+                                                    setSearchResults([]);
+                                                }}
+                                                style={{
+                                                    padding: '8px',
+                                                    cursor: 'pointer',
+                                                    borderBottom: '1px solid #eee',
+                                                    backgroundColor: '#f9f9f9'
+                                                }}
+                                                onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#e9e9e9')}
+                                                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#f9f9f9')}
+                                            >
+                                                {user.username}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {sendReceivers.length > 0 && (
+                                    <div style={{ marginBottom: '8px' }}>
+                                        <label>Selected Recipients:</label>
+                                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+                                            {sendReceivers.map((user) => (
+                                                <div
+                                                    key={user.username}
+                                                    style={{
+                                                        backgroundColor: '#4CAF50',
+                                                        color: 'white',
+                                                        padding: '5px 10px',
+                                                        borderRadius: '4px',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        gap: '5px'
+                                                    }}
+                                                >
+                                                    {user.username}
+                                                    <button
+                                                        onClick={() => setSendReceivers(sendReceivers.filter(r => r.username !== user.username))}
+                                                        style={{
+                                                            background: 'none',
+                                                            border: 'none',
+                                                            color: 'white',
+                                                            cursor: 'pointer',
+                                                            fontSize: '16px'
+                                                        }}
+                                                    >
+                                                        ✕
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
                             <input
                                 type="text"
                                 placeholder="Title"
@@ -159,7 +255,7 @@ export default function MessagePopup({ onClose }: Props) {
                                 onChange={(e) => setSendDesc(e.target.value)}
                             />
                             <button onClick={handleSendMessage}>Send</button>
-                            <button onClick={() => { setActiveTab('inbox'); setSendTitle(''); setSendDesc(''); setSendReceivers(''); }}>Cancel</button>
+                            <button onClick={() => { setActiveTab('inbox'); setSendTitle(''); setSendDesc(''); setSendReceivers([]); setReceiverSearch(''); }}>Cancel</button>
                         </div>
                     ) : !selectedMessage ? (
                         <p>Select a message</p>
