@@ -1,15 +1,6 @@
 import { useState } from 'react'
 import './Login.css'
 import { useNavigate } from 'react-router-dom'
-import userData from '../../assets/users.json';
-
-interface User {
-    userName: string;
-    name: string;
-    password: string;
-}
-
-const users: User[] = userData.users;
 
 function Login() {
     const navigate = useNavigate()
@@ -20,18 +11,29 @@ function Login() {
 
     const [loginMessage, setLoginMessage] = useState("");
 
-    const checkPassword = (user: string, pass: string): boolean => {
-        if (users[0].userName == user && users[0].password == pass) {
-            return true;
+    const checkFields = async (user: string, pass: string): Promise<void> => {
+        if (!username || !password) {
+            setLoginMessage("Please enter username and password");
+            return;
         }
-        else return false;
-    }
 
-    const checkFields = (user: string, pass: string): void => {
-
-        if (username && password && checkPassword(user, pass))
-            navigate("/main-page")
-        else setLoginMessage("Invalid credentials")
+        try {
+            const res = await fetch('http://localhost:5267/api/Auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: user, password: pass }),
+            });
+            if (res.ok) {
+                const data = await res.json();
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('username', data.username);
+                navigate("/main-page");
+            } else {
+                setLoginMessage("Invalid credentials");
+            }
+        } catch (error) {
+            setLoginMessage("Login failed");
+        }
     };
 
     return (
