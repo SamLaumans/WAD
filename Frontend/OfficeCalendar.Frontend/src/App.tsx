@@ -86,15 +86,10 @@ useEffect(() => {
           <Route element ={<LoggedinRoutes user={user} isLoading={loading} />}>
             <Route path="/" element={<Main_Page />} />
             <Route path="/main-page" element={<Main_Page />} />
-            <Route path="/messages" element={<Messages />} />
-            <Route path="/messages/:messageID" element={<SingleMessage />} />
-            <Route path="/events" element={<Events />} />
-            <Route path="/events/:eventID" element={<SingleEvent />} />
             <Route path="/weekplanner" element={<WeekPlanner />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/event" element={<div><SelectedEvent /><Reviews eventId={""} /></div>} />
-            <Route path="/send-message" element={<Send_Message />} />
             <Route path="/admin-panel" element={<AdminPanel />} />
             <Route path="/admin-profile" element={<Profiel />} />
             <Route path="/MonthPlanner" element={<MonthPlanner />} />
