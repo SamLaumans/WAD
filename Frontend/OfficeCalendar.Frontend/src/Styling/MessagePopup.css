@@ -64,6 +64,7 @@
     color: rgb(0, 225, 255);
 }
 
+.message-preview-title,
 .message-preview-message {
     white-space: nowrap;
     overflow: hidden;
