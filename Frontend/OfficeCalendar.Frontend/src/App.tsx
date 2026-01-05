@@ -34,7 +34,6 @@ const AppContent: React.FC = () => {
   const location = useLocation();
 
   const showHeaderFooter =
-    location.pathname !== '/' &&
     location.pathname !== '/login' &&
     location.pathname !== '/registreer' &&
     location.pathname !== '/forgot-pw' &&
@@ -42,9 +41,6 @@ const AppContent: React.FC = () => {
 
 const [user, setUser] = useState(null);
 const [loading, setLoading] = useState(true);
-const [revalidate, setRevalidate] = useState(0);
-
-const triggerRevalidation = () => setRevalidate(prev => prev + 1);
 
 useEffect(() => {
   setLoading(true);
@@ -53,7 +49,10 @@ useEffect(() => {
     fetch('http://localhost:5267/api/me', {
       headers: { 'Authorization': `Bearer ${token}` }
     })
-    .then(res => res.ok ? res.json() : null)
+    .then(res => {
+      if (res.ok) return res.json();
+      throw new Error('Not authenticated');
+    })
     .then(data => {
       setUser(data);
       setLoading(false);
@@ -66,7 +65,7 @@ useEffect(() => {
     setUser(null);
     setLoading(false);
   }
-}, [revalidate]);
+}, []);
 
 
   return (
@@ -81,14 +80,14 @@ useEffect(() => {
             <Route path="/admin-role-adjustment" element={<AdminRolBeheer />} />
           </Route>
 
-          <Route path="/" element={<Login onLoginSuccess={triggerRevalidation} />} />
-          <Route path="/login" element={<Login onLoginSuccess={triggerRevalidation} />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/registreer" element={<Registreer />} />
           <Route path="/forgot-pw" element={<Forgot_Password />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
 
           {/* Routes that are accesible for loggedin users only */}
           <Route element ={<LoggedinRoutes user={user} isLoading={loading} />}>
+            <Route path="/" element={<Main_Page />} />
             <Route path="/main-page" element={<Main_Page />} />
             <Route path="/messages" element={<Messages />} />
             <Route path="/messages/:messageID" element={<SingleMessage />} />
@@ -125,16 +124,5 @@ const App: React.FC = () => (
     <AppContent />
   </BrowserRouter>
 );
-// popup event code
-// const [showModal, setShowModal] = useState(false);
-
-// return (
-//   <div>
-//     <h1>Welkom op de hoofdpagina</h1>
-//     <button onClick={() => setShowModal(true)}>Nieuw Event Aanmaken</button>
-
-//     <EventModal show={showModal} onClose={() => setShowModal(false)} />
-//   </div>
-// );
 
 export default App;

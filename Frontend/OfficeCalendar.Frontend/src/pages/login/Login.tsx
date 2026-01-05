@@ -2,11 +2,7 @@ import { useState } from 'react'
 import './Login.css'
 import { useNavigate } from 'react-router-dom'
 
-interface LoginProps {
-    onLoginSuccess?: () => void;
-}
-
-function Login({ onLoginSuccess }: LoginProps) {
+function Login() {
     const navigate = useNavigate()
 
     const [username, setUsername] = useState("")
@@ -29,17 +25,9 @@ function Login({ onLoginSuccess }: LoginProps) {
             });
             if (res.ok) {
                 const data = await res.json();
-                // Clear any old auth data first
-                localStorage.removeItem('token');
-                localStorage.removeItem('username');
-                // Store new token
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('username', data.username);
-                onLoginSuccess?.();
-                // Wachten op validaie token voor redireting
-                setTimeout(() => {
-                    navigate("/main-page");
-                }, 100);
+                window.location.href = "/";
             } else {
                 setLoginMessage("Invalid credentials");
             }
