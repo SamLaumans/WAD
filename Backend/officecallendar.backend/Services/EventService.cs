@@ -70,8 +70,8 @@ namespace OfficeCalendar.Backend.Services
                 start_time = e.start_time,
                 end_time = e.end_time,
                 last_edited_date = e.last_edited_date,
-                bookings = e.RoomBookings == null ? null : e.RoomBookings.Select(rb => MapRoomBooking(rb)).ToList()
-                //If there are no bookings, return null, else map each booking
+                bookings = e.RoomBookings == null ? null : e.RoomBookings.Select(rb => MapRoomBooking(rb)).ToList(),
+                subscribers = e.EventSubscriptions == null ? null : e.EventSubscriptions.Select(es => MapUser(es.User)).ToList()
             };
         }
 
@@ -99,7 +99,8 @@ namespace OfficeCalendar.Backend.Services
                 .Include(e => e.Creator)
                 .Include(e => e.RoomBookings).ThenInclude(rb => rb.Room)
                 .Include(e => e.RoomBookings).ThenInclude(rb => rb.User)
-                .AsNoTracking() // zodat EF de entities niet in de change tracker zet, wat performance verbetert bij read-only (GET)
+                .Include(e => e.EventSubscriptions).ThenInclude(es => es.User)
+                .AsNoTracking()
                 .ToList();
 
             return events.Select(e => MapEvent(e)).ToArray();
@@ -109,10 +110,11 @@ namespace OfficeCalendar.Backend.Services
         public EventGetDto[] GetMyEvents(string username)
         {
             var events = _context.Events
-                .Where(e => e.visible && e.creator_username == username)
+                .Where(e => e.visible && (e.creator_username == username || e.EventSubscriptions.Any(es => es.username == username)))
                 .Include(e => e.Creator)
                 .Include(e => e.RoomBookings).ThenInclude(rb => rb.Room)
                 .Include(e => e.RoomBookings).ThenInclude(rb => rb.User)
+                .Include(e => e.EventSubscriptions).ThenInclude(es => es.User)
                 .AsNoTracking()
                 .ToList();
 
@@ -138,6 +140,26 @@ namespace OfficeCalendar.Backend.Services
             _context.Events.Add(newEvent);
             _context.SaveChanges();
 
+            // Add subscriptions for invited users
+            if (dto.invitedUsers != null)
+            {
+                foreach (var username in dto.invitedUsers)
+                {
+                    var user = _context.Users.FirstOrDefault(u => u.username == username);
+                    if (user != null)
+                    {
+                        var subscription = new EventSubscription
+                        {
+                            username = username,
+                            event_id = id,
+                            participated = null
+                        };
+                        _context.EventSubscriptions.Add(subscription);
+                    }
+                }
+                _context.SaveChanges();
+            }
+
             var savedEvent = GetEvent(id);
 
             return MapEvent(savedEvent);
@@ -162,6 +184,30 @@ namespace OfficeCalendar.Backend.Services
                 existing.booking_id = dto.booking_id;
 
             existing.last_edited_date = DateTime.UtcNow;
+
+            // Update subscriptions
+            if (dto.invitedUsers != null)
+            {
+                // Remove old subscriptions
+                var oldSubscriptions = _context.EventSubscriptions.Where(es => es.event_id == existing.id);
+                _context.EventSubscriptions.RemoveRange(oldSubscriptions);
+
+                // Add new subscriptions
+                foreach (var username in dto.invitedUsers)
+                {
+                    var user = _context.Users.FirstOrDefault(u => u.username == username);
+                    if (user != null)
+                    {
+                        var subscription = new EventSubscription
+                        {
+                            username = username,
+                            event_id = existing.id,
+                            participated = null
+                        };
+                        _context.EventSubscriptions.Add(subscription);
+                    }
+                }
+            }
 
             _context.SaveChanges();
 

@@ -8,6 +8,7 @@ namespace OfficeCalendar.Backend.DTOs
         public required DateTime start_time { get; set; }
         public required DateTime end_time { get; set; }
         public Guid? booking_id { get; set; } = null;
+        public List<string>? invitedUsers { get; set; }
     }
 
     //DTO for Put
@@ -19,6 +20,7 @@ namespace OfficeCalendar.Backend.DTOs
         public DateTime? end_time { get; set; }
         public Guid? booking_id { get; set; }
         public bool? visible { get; set; } = true;
+        public List<string>? invitedUsers { get; set; }
     }
 
     //DTO for Get
@@ -32,5 +34,6 @@ namespace OfficeCalendar.Backend.DTOs
         public required DateTime end_time { get; set; }
         public required DateTime? last_edited_date { get; set; }
         public List<RoomBookingGetDto>? bookings { get; set; }
+        public List<UserGetDto>? subscribers { get; set; }
     }
 }
