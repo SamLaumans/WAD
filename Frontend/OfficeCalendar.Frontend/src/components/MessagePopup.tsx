@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { MessageDto } from "../types/MessageDto";
-import { getMyMessages, getMessageById } from "../api/MessageApi";
+import { getMyMessages, getMessageById, getSentMessages } from "../api/MessageApi";
 import "../Styling/MessagePopup.css";
 
 interface Props {
