@@ -64,12 +64,7 @@ function Main_Page() {
                     </div>
 
                     <div className='bulletin' onClick={() => setShowMessages(true)}>
-                        <h2>Berichten</h2>
-                        {getMessageTitles()}
-                    </div>
-
-                    <div className='events' onClick={() => navigate("/events")}>
-                        <h2>Evenementen</h2>
+                        Berichten
                     </div>
 
                 </div>

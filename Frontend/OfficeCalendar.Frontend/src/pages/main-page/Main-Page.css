@@ -57,7 +57,6 @@ body {
 .infoboard {
     display: flex;
     flex-direction: column;
-    gap: 24px;
     justify-content: space-evenly;
     align-items: stretch;
     box-sizing: border-box;
@@ -73,7 +72,7 @@ body {
     gap: 24px;
     background: rgba(255, 255, 255, 0.15);
     border-radius: 10px;
-    height: auto;
+    height: 400px;
     width: auto;
     font-size: 1.5em;
     padding: 24px;
@@ -81,12 +80,9 @@ body {
 
 .infoboard .bulletin,
 .infoboard .events {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    text-align: left;
-    overflow-y: auto;
+    font-size: 80px;
+    align-items: center;
+    justify-content: center;
 }
 
 .infoboard .bulletin::-webkit-scrollbar,
