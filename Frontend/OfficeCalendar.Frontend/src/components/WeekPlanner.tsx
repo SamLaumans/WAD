@@ -44,6 +44,7 @@ export default function WeekPlanner() {
     const currentUsername = localStorage.getItem('username');
     const [userRole, setUserRole] = useState<number>(0);
 
+    //Fetch user role
     useEffect(() => {
         const fetchUserInfo = async () => {
             const token = localStorage.getItem('token');
@@ -126,6 +127,7 @@ export default function WeekPlanner() {
         fetchEvents();
     };
 
+    //fetch events for specific user
     const fetchEvents = async () => {
         const token = localStorage.getItem('token');
         try {
@@ -140,6 +142,7 @@ export default function WeekPlanner() {
         }
     };
 
+    //Handle event edit
     const handleEditEvent = async () => {
         if (!selectedEvent) return;
         const token = localStorage.getItem('token');
@@ -171,6 +174,7 @@ export default function WeekPlanner() {
         }
     };
 
+    //Handle event delete
     const handleDeleteEvent = async () => {
         if (!selectedEvent) return;
         if (!confirm('Are you sure you want to delete this event?')) return;
@@ -191,6 +195,7 @@ export default function WeekPlanner() {
         }
     };
 
+    //Handle edit user search
     const handleEditSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const query = e.target.value;
         setEditSearchQuery(query);
@@ -210,6 +215,7 @@ export default function WeekPlanner() {
         }
     };
 
+    //Handle add/remove invited users in edit mode
     const addEditUser = (username: string) => {
         if (!editInvitedUsers.includes(username)) {
             setEditInvitedUsers([...editInvitedUsers, username]);
@@ -218,6 +224,7 @@ export default function WeekPlanner() {
         setEditSearchResults([]);
     };
 
+    //remove invited user in edit mode
     const removeEditUser = (username: string) => {
         setEditInvitedUsers(editInvitedUsers.filter(u => u !== username));
     };
