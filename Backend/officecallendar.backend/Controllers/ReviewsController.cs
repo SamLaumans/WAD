@@ -86,10 +86,6 @@ public class ReviewsController : ControllerBase
                 review = $"Review not found"
             });
 
-        if (review.username != User.Identity.Name)
-        {
-            return Forbid();
-        }
 
         _reviewService.DeleteReview(review);
 
