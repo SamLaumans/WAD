@@ -7,7 +7,7 @@ using OfficeCalendar.Backend.Services;
 
 namespace OfficeCalendar.Backend.Controllers;
 
-
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class ReviewsController : ControllerBase
