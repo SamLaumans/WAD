@@ -96,8 +96,9 @@ public class ReviewsController : ControllerBase
         return NoContent();
     }
 
-    [HttpPut]
-    public ActionResult<ReviewsGetDto> UpdateReview([FromQuery] Guid reviewid, ReviewsPutDto dto)
+    [HttpPut("{reviewid}")]
+    public ActionResult<ReviewsGetDto> UpdateReview(Guid reviewid, ReviewsPutDto dto)
+
     {
         var review = _reviewService.GetByGuid(reviewid);
         if (review == null)
