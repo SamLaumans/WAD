@@ -20,7 +20,6 @@ namespace Officecalendar.Backend.Controllers
 
         //Get all events
         [HttpGet("get-all")]
-        [Authorize(Roles = "1")]
         public ActionResult<IEnumerable<EventGetDto>> GetEvents()
         {
             return Ok(_service.GetAllEvents());

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../Styling/WeekPlanner.css'
 import EventModal from '../pages/create-event/EventModal';
+import { useNavigate } from 'react-router-dom';
 
 interface User {
     username: string;
@@ -37,6 +38,7 @@ export default function WeekPlanner() {
     const [editInvitedUsers, setEditInvitedUsers] = useState<string[]>([]);
     const [editSearchQuery, setEditSearchQuery] = useState("");
     const [editSearchResults, setEditSearchResults] = useState<any[]>([]);
+    const navigate = useNavigate();
 
     // const [events, setEvents] = React.useState<any[]>([]);
     const [currentWeekStart, setCurrentWeekStart] = useState<Date>(getSunday(new Date()));
@@ -439,6 +441,7 @@ export default function WeekPlanner() {
                                         <button onClick={handleDeleteEvent}>Delete</button>
                                     </>
                                 ) : null}
+                                <button onClick={() => navigate(`/selectedeventwithreviews/${selectedEvent.id}`)}>Reviews</button>
                                 <button onClick={() => setShowEventDetails(false)}>Close</button>
                             </>
                         )}
