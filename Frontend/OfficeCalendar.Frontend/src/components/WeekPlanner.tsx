@@ -35,7 +35,7 @@ export default function WeekPlanner() {
     const [editForm, setEditForm] = useState({ title: '', desc: '', start_time: '', end_time: '' });
 
     // const [events, setEvents] = React.useState<any[]>([]);
-    const [currentWeekStart, setCurrentWeekStart] = React.useState<Date>(getSunday(new Date()));
+    const [currentWeekStart, setCurrentWeekStart] = useState<Date>(getSunday(new Date()));
 
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -51,32 +51,10 @@ export default function WeekPlanner() {
 
     // --- Load events ---
     // --- Load events from backend ---
-    React.useEffect(() => {
-        const fetchEvents = async () => {
-            try {
-                const token = localStorage.getItem("token"); // pas aan waar je token staat
-                const res = await fetch("http://localhost:5267/api/events/get-all", {
-                    headers: {
-                        "Authorization": `Bearer ${token}`,
-                        "Content-Type": "application/json"
-                    }
-                });
-
-                if (!res.ok) {
-                    throw new Error(`Error fetching events: ${res.status}`);
-                }
-
-                const data = await res.json();
-
-                // Je backend geeft nu één object terug. Als je meerdere events wilt, moet het een array zijn.
-                // Als je backend een array terugstuurt, kun je dit direct gebruiken:
-                setEvents(Array.isArray(data) ? data : [data]);
-            } catch (err) {
-                console.error(err);
-            }
-        };
-
+    useEffect(() => {
         fetchEvents();
+        const interval = setInterval(fetchEvents, 30000); // elke 30 seconden
+        return () => clearInterval(interval);
     }, []);
 
 
@@ -97,7 +75,7 @@ export default function WeekPlanner() {
     const formatDate = (d: Date) =>
         d.toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit" });
 
-    // --- NIEUW: check of event in deze week valt ---
+    // --- check of event in deze week valt ---
     const isEventInCurrentWeek = (ev: any) => {
         const start = new Date(ev.start_time);
 
@@ -111,28 +89,15 @@ export default function WeekPlanner() {
         return start >= weekStart && start <= weekEnd;
     };
 
-    // Dagindex binnen geselecteerde week
-    const getDayIndexInWeek = (date: string) => {
-        const d = new Date(date);
-        const diff = (d.getTime() - currentWeekStart.getTime()) / (1000 * 60 * 60 * 24);
-        return Math.floor(diff);
-    };
-
-    const getTimeString = (date: string) => {
-        const d = new Date(date);
-        return d.toTimeString().slice(0, 5);
-    };
-
     const handlePrevWeek = () => {
         setCurrentWeekStart(prev => addDays(prev, -7));
+        fetchEvents();
     };
 
     const handleNextWeek = () => {
         setCurrentWeekStart(prev => addDays(prev, 7));
-    };
-    useEffect(() => {
         fetchEvents();
-    }, []);
+    };
 
     const fetchEvents = async () => {
         const token = localStorage.getItem('token');
@@ -196,20 +161,6 @@ export default function WeekPlanner() {
             console.error('Error deleting event:', error);
         }
     };
-
-    const getWeekStart = (date: Date) => {
-        const d = new Date(date);
-        const day = d.getDay();
-        const diff = d.getDate() - day;
-        return new Date(d.setDate(diff));
-    };
-
-    const weekStart = getWeekStart(new Date());
-    const weekDays = Array.from({ length: 7 }, (_, i) => {
-        const d = new Date(weekStart);
-        d.setDate(weekStart.getDate() + i);
-        return d;
-    });
 
     const handleCellClick = (
         day: string,
@@ -302,13 +253,14 @@ export default function WeekPlanner() {
 
                                 {/* Create a cell for each day at that time slot */}
                                 {days.map((day, i) => {
-                                    const date = weekDays[i];
+                                    const date = addDays(currentWeekStart, i);
                                     const [h, m] = time.split(':').map(Number);
                                     const cellStart = new Date(date);
                                     cellStart.setHours(h, m, 0, 0);
                                     const cellEnd = new Date(cellStart);
                                     cellEnd.setMinutes(cellStart.getMinutes() + 30);
                                     const cellEvents = events.filter(e => {
+                                        if (!isEventInCurrentWeek(e)) return false;
                                         const start = new Date(e.start_time);
                                         const end = new Date(e.end_time);
                                         return start < cellEnd && end > cellStart;
@@ -317,7 +269,7 @@ export default function WeekPlanner() {
                                         <td
                                             key={day + time}
                                             className="planner-cell"
-                                            onClick={(e) => handleCellClick(day, time, weekDays[i].toISOString().split('T')[0], e)}
+                                            onClick={(e) => handleCellClick(day, time, date.toISOString().split('T')[0], e)}
                                         >
                                             {cellEvents.map(event => (
                                                 <div
