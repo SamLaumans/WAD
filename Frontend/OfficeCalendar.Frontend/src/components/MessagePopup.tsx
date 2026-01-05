@@ -10,16 +10,24 @@ interface Props {
 export default function MessagePopup({ onClose }: Props) {
     const [loadedMessages, setLoadedMessages] = useState<MessageDto[]>([]);
     const [selectedMessage, setSelectedMessage] = useState<MessageDto | null>(null);
+
     const [sendTitle, setSendTitle] = useState('');
     const [sendDesc, setSendDesc] = useState('');
     const [sendReceivers, setSendReceivers] = useState<any[]>([]);
+
     const [receiverSearch, setReceiverSearch] = useState('');
     const [searchResults, setSearchResults] = useState<any[]>([]);
+
     const [skip, setSkip] = useState(0);
+
     const [loading, setLoading] = useState(false);
+
     const [hasMore, setHasMore] = useState(true);
+
     const [activeTab, setActiveTab] = useState<'inbox' | 'sent' | 'send'>('inbox'); 
+
     const [sentMessages, setSentMessages] = useState<MessageDto[]>([]);
+
     useEffect(() => {
         const cached = localStorage.getItem('messageCache');
         if (cached) {
@@ -39,7 +47,6 @@ export default function MessagePopup({ onClose }: Props) {
         loadMessages();
     }, []);
 
-    //Search users for message receivers
     useEffect(() => {
         if (!receiverSearch) {
             setSearchResults([]);
@@ -175,14 +182,9 @@ export default function MessagePopup({ onClose }: Props) {
                                 />
                                 
                                 {searchResults.length > 0 && receiverSearch && (
-                                    <div style={{ 
-                                        border: '1px solid #ddd', 
-                                        maxHeight: '200px', 
-                                        overflowY: 'auto',
-                                        marginBottom: '8px'
-                                    }}>
+                                    <div className="message-recipient-search-result">
                                         {searchResults.map((user) => (
-                                            <div
+                                            <div className="message-result-list"
                                                 key={user.username}
                                                 onClick={() => {
                                                     if (!sendReceivers.find(r => r.username === user.username)) {
@@ -191,14 +193,6 @@ export default function MessagePopup({ onClose }: Props) {
                                                     setReceiverSearch('');
                                                     setSearchResults([]);
                                                 }}
-                                                style={{
-                                                    padding: '8px',
-                                                    cursor: 'pointer',
-                                                    borderBottom: '1px solid #eee',
-                                                    backgroundColor: '#f9f9f9'
-                                                }}
-                                                onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#e9e9e9')}
-                                                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#f9f9f9')}
                                             >
                                                 {user.username}
                                             </div>
