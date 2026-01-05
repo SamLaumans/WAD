@@ -24,6 +24,15 @@ namespace Officecalendar.Backend.Controllers
             return Ok(_service.GetAllEvents());
         }
 
+        //Get my events
+        [HttpGet("my-events")]
+        public ActionResult<IEnumerable<EventGetDto>> GetMyEvents()
+        {
+            string username = User.Identity.Name;
+            if (username == null) return Unauthorized();
+            return Ok(_service.GetMyEvents(username));
+        }
+
         //Get event by id
         [HttpGet("get-one")]
         public ActionResult<EventGetDto> GetEvent([FromQuery] Guid eventid)
@@ -48,6 +57,7 @@ namespace Officecalendar.Backend.Controllers
         {
             var ev = _service.GetEvent(eventid);
             if (ev == null) return NotFound();
+            if (ev.creator_username != User.Identity.Name) return Unauthorized();
             var updated = _service.UpdateEvent(ev, dto);
             return Ok(updated);
         }
@@ -58,6 +68,7 @@ namespace Officecalendar.Backend.Controllers
         {
             var ev = _service.GetEvent(eventid);
             if (ev == null) return NotFound();
+            if (ev.creator_username != User.Identity.Name) return Unauthorized();
             _service.DeleteEvent(ev);
             return NoContent();
         }
