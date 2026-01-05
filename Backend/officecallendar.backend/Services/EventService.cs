@@ -174,6 +174,12 @@ namespace OfficeCalendar.Backend.Services
 
             var savedEvent = GetEvent(id);
 
+            // Ensure Creator is loaded
+            if (savedEvent != null)
+            {
+                _context.Entry(savedEvent).Reference(e => e.Creator).Load();
+            }
+
             return MapEvent(savedEvent);
         }
 
