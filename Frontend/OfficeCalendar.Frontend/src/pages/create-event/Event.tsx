@@ -39,6 +39,7 @@ function Event({ slot, onClose, onEventCreated }: Props) {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  //Handle user search
   const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     setSearchQuery(query);
@@ -58,6 +59,7 @@ function Event({ slot, onClose, onEventCreated }: Props) {
     }
   };
 
+  //Handle adding/removing invited users
   const addUser = (username: string) => {
     if (!invitedUsers.includes(username)) {
       setInvitedUsers([...invitedUsers, username]);
@@ -66,10 +68,12 @@ function Event({ slot, onClose, onEventCreated }: Props) {
     setSearchResults([]);
   };
 
+  //remove invited user
   const removeUser = (username: string) => {
     setInvitedUsers(invitedUsers.filter(u => u !== username));
   };
 
+  //Handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
