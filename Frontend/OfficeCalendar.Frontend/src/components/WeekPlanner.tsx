@@ -34,7 +34,7 @@ export default function WeekPlanner() {
     const [editMode, setEditMode] = useState(false);
     const [editForm, setEditForm] = useState({ title: '', desc: '', start_time: '', end_time: '' });
 
-    const [events, setEvents] = React.useState<any[]>([]);
+    // const [events, setEvents] = React.useState<any[]>([]);
     const [currentWeekStart, setCurrentWeekStart] = React.useState<Date>(getSunday(new Date()));
 
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
