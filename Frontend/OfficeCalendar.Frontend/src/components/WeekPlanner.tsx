@@ -48,6 +48,8 @@ export default function WeekPlanner() {
 
     useEffect(() => {
         fetchEvents();
+        const interval = setInterval(fetchEvents, 30000); // elke 30 seconden
+        return () => clearInterval(interval);
     }, []);
 
     const fetchEvents = async () => {
@@ -189,6 +191,7 @@ export default function WeekPlanner() {
                 onClose={() => setShowEventModal(false)}
                 position={modalPosition}
                 slot={selectedSlot}
+                onEventCreated={fetchEvents}
             />
 
             <div className="planner-table-container">

@@ -13,9 +13,10 @@ type Props = {
   onClose: () => void;
   slot?: Slot;
   position?: { top: number; left: number } | null;
+  onEventCreated?: () => void;
 };
 
-const EventModal: React.FC<Props> = ({ show, onClose, slot, position }) => {
+const EventModal: React.FC<Props> = ({ show, onClose, slot, position, onEventCreated }) => {
   if (!show) return null;
 
   return (
@@ -39,7 +40,7 @@ const EventModal: React.FC<Props> = ({ show, onClose, slot, position }) => {
             </p>
           )}
 
-          <Event slot={slot} onClose={onClose} />
+          <Event slot={slot} onClose={onClose} onEventCreated={onEventCreated} />
         </div>
       </div>
     </div>
