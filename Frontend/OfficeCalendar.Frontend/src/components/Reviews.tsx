@@ -28,6 +28,23 @@ const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
         desc: '',
     });
 
+    // Editing state
+    const [editingReview, setEditingReview] = useState<Review | null>(null);
+    const [editData, setEditData] = useState({ stars: 5, desc: '' });
+
+    // Extract current user from JWT
+    const token = localStorage.getItem("token");
+    let currentUser: string | null = null;
+
+    if (token) {
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            currentUser = payload.unique_name || payload.name || payload.sub || null;
+        } catch {
+            currentUser = null;
+        }
+    }
+
     // Fetch reviews for this event
     const fetchReviews = async () => {
         try {
@@ -55,7 +72,7 @@ const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
         setCurrentPage(event.selected);
     };
 
-    // Handle input changes
+    // Handle input changes for new review
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setNewReview((prev) => ({ ...prev, [name]: value }));
@@ -72,8 +89,6 @@ const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
         };
 
         try {
-            const token = localStorage.getItem("token");
-
             const response = await fetch('http://localhost:5267/api/Reviews', {
                 method: 'POST',
                 headers: {
@@ -84,7 +99,7 @@ const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
             });
 
             if (!response.ok) {
-                const errorText = await response.text(); 
+                const errorText = await response.text();
                 console.error("Failed to post review:", errorText);
                 return;
             }
@@ -98,6 +113,77 @@ const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
             console.error(err);
         }
     };
+
+    // Start editing a review
+    const startEditing = (review: Review) => {
+        setEditingReview(review);
+        setEditData({ stars: review.stars, desc: review.desc });
+    };
+
+    // Handle PUT update
+    const handleUpdateReview = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!editingReview) return;
+
+        const updatedReview = {
+            id: editingReview.id,
+            stars: editData.stars,
+            desc: editData.desc,
+        };
+
+        try {
+            const response = await fetch(`http://localhost:5267/api/Reviews/${editingReview.id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify(updatedReview),
+            });
+
+            if (!response.ok) {
+                console.error("Failed to update review");
+                return;
+            }
+
+            const updated = await response.json();
+
+            setReviews((prev) =>
+                prev.map((r) => (r.id === updated.id ? updated : r))
+            );
+
+            setEditingReview(null);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const handleDeleteReview = async (reviewId: string) => {
+        if (!window.confirm("Weet je zeker dat je deze review wilt verwijderen?")) return;
+
+        try {
+            const response = await fetch(
+                `http://localhost:5267/api/Reviews?reviewid=${reviewId}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                    },
+                }
+            );
+
+            if (!response.ok) {
+                console.error("Failed to delete review");
+                return;
+            }
+
+            // Verwijder review uit state
+            setReviews(prev => prev.filter(r => r.id !== reviewId));
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
 
     return (
         <div>
@@ -124,6 +210,31 @@ const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
                 <button type="submit">Add Review</button>
             </form>
 
+            {/* Edit review form */}
+            {editingReview && (
+                <form className="review-form" onSubmit={handleUpdateReview}>
+                    <h3>Edit your review</h3>
+
+                    <input
+                        type="number"
+                        min="1"
+                        max="5"
+                        value={editData.stars}
+                        onChange={(e) => setEditData({ ...editData, stars: Number(e.target.value) })}
+                        required
+                    />
+
+                    <textarea
+                        value={editData.desc}
+                        onChange={(e) => setEditData({ ...editData, desc: e.target.value })}
+                        required
+                    />
+
+                    <button type="submit">Save</button>
+                    <button type="button" onClick={() => setEditingReview(null)}>Cancel</button>
+                </form>
+            )}
+
             {/* Reviews table */}
             {reviews.length === 0 ? (
                 <p>No reviews for this event yet.</p>
@@ -136,6 +247,7 @@ const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
                                 <th>Date placed</th>
                                 <th>Stars</th>
                                 <th>Review</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -145,6 +257,14 @@ const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
                                     <td>{new Date(review.creation_date).toLocaleDateString()}</td>
                                     <td>{`${review.stars}/5`}</td>
                                     <td>{review.desc}</td>
+
+                                    {/* Only show edit / delete button for own review */}
+                                    {review.username === currentUser || && (
+                                        <td>
+                                            <button onClick={() => startEditing(review)}>Edit</button>
+                                            <button onClick={() => handleDeleteReview(review.id)}>Delete</button>
+                                        </td>
+                                    )}
                                 </tr>
                             ))}
                         </tbody>
