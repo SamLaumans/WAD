@@ -19,6 +19,7 @@ interface Event {
     end_time: string;
     last_edited_date: string | null;
     bookings: any[];
+    subscribers?: User[];
 }
 
 // The WeekPlanner component displays a weekly schedule grid
@@ -33,9 +34,14 @@ export default function WeekPlanner() {
     const [showEventDetails, setShowEventDetails] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [editForm, setEditForm] = useState({ title: '', desc: '', start_time: '', end_time: '' });
+    const [editInvitedUsers, setEditInvitedUsers] = useState<string[]>([]);
+    const [editSearchQuery, setEditSearchQuery] = useState("");
+    const [editSearchResults, setEditSearchResults] = useState<any[]>([]);
 
     // const [events, setEvents] = React.useState<any[]>([]);
     const [currentWeekStart, setCurrentWeekStart] = useState<Date>(getSunday(new Date()));
+
+    const currentUsername = localStorage.getItem('username');
 
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -106,6 +112,7 @@ export default function WeekPlanner() {
                 headers: token ? { 'Authorization': `Bearer ${token}` } : {},
             });
             const data = await res.json();
+            console.log('Fetched events:', data);
             setEvents(data);
         } catch (error) {
             console.error('Error fetching events:', error);
@@ -118,8 +125,9 @@ export default function WeekPlanner() {
         const body = {
             title: editForm.title,
             desc: editForm.desc,
-            start_time: new Date(editForm.start_time),
-            end_time: new Date(editForm.end_time),
+            start_time: new Date(editForm.start_time + ':00Z'),
+            end_time: new Date(editForm.end_time + ':00Z'),
+            invitedUsers: editInvitedUsers
         };
         try {
             const res = await fetch(`http://localhost:5267/api/Events?eventid=${selectedEvent.id}`, {
@@ -160,6 +168,37 @@ export default function WeekPlanner() {
         } catch (error) {
             console.error('Error deleting event:', error);
         }
+    };
+
+    const handleEditSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const query = e.target.value;
+        setEditSearchQuery(query);
+        if (query.length > 2) {
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch(`http://localhost:5267/api/SearchUsers?query=${query}`, {
+                    headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+                });
+                const data = await res.json();
+                setEditSearchResults(data);
+            } catch (error) {
+                console.error('Error searching users:', error);
+            }
+        } else {
+            setEditSearchResults([]);
+        }
+    };
+
+    const addEditUser = (username: string) => {
+        if (!editInvitedUsers.includes(username)) {
+            setEditInvitedUsers([...editInvitedUsers, username]);
+        }
+        setEditSearchQuery("");
+        setEditSearchResults([]);
+    };
+
+    const removeEditUser = (username: string) => {
+        setEditInvitedUsers(editInvitedUsers.filter(u => u !== username));
     };
 
     const handleCellClick = (
@@ -261,7 +300,6 @@ export default function WeekPlanner() {
                                     const cellEnd = new Date(cellStart);
                                     cellEnd.setMinutes(cellStart.getMinutes() + 30);
                                     const cellEvents = events.filter(e => {
-                                        if (!isEventInCurrentWeek(e)) return false;
                                         const start = new Date(e.start_time);
                                         const end = new Date(e.end_time);
                                         return start < cellEnd && end > cellStart;
@@ -275,7 +313,7 @@ export default function WeekPlanner() {
                                             {cellEvents.map(event => (
                                                 <div
                                                     key={event.id}
-                                                    className="event-item"
+                                                    className={`event-item ${event.creator.username === currentUsername ? 'own-event' : 'invited-event'}`}
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         setSelectedEvent(event);
@@ -285,8 +323,9 @@ export default function WeekPlanner() {
                                                             start_time: event.start_time,
                                                             end_time: event.end_time,
                                                         });
+                                                        setEditInvitedUsers(event.subscribers?.map(s => s.username) || []);
                                                         setShowEventDetails(true);
-                                                        setEditMode(false);
+                                                        setEditMode(event.creator.username === currentUsername);
                                                     }}
                                                 >
                                                     {event.title}
@@ -329,6 +368,37 @@ export default function WeekPlanner() {
                                     value={editForm.end_time.slice(0, 16)}
                                     onChange={(e) => setEditForm({ ...editForm, end_time: e.target.value })}
                                 />
+                                <div>
+                                    <label>Gebruikers uitnodigen</label>
+                                    <input
+                                        type="text"
+                                        placeholder="Zoek gebruikers..."
+                                        value={editSearchQuery}
+                                        onChange={handleEditSearchChange}
+                                    />
+                                    {editSearchResults.length > 0 && (
+                                        <ul style={{ listStyle: 'none', padding: 0, border: '1px solid #ccc', maxHeight: '100px', overflowY: 'auto' }}>
+                                            {editSearchResults.map(user => (
+                                                <li key={user.username} onClick={() => addEditUser(user.username)} style={{ cursor: 'pointer', padding: '5px' }}>
+                                                    {user.nickname} ({user.username})
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
+                                    {editInvitedUsers.length > 0 && (
+                                        <div>
+                                            <label>Uitgenodigde gebruikers:</label>
+                                            <ul style={{ listStyle: 'none', padding: 0 }}>
+                                                {editInvitedUsers.map(username => (
+                                                    <li key={username} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                        {username}
+                                                        <button type="button" onClick={() => removeEditUser(username)}>Verwijder</button>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>
                                 <button onClick={handleEditEvent}>Save</button>
                                 <button onClick={() => setEditMode(false)}>Cancel</button>
                             </>
@@ -339,8 +409,15 @@ export default function WeekPlanner() {
                                 <p><strong>Start:</strong> {new Date(selectedEvent.start_time).toLocaleString()}</p>
                                 <p><strong>End:</strong> {new Date(selectedEvent.end_time).toLocaleString()}</p>
                                 <p><strong>Creator:</strong> {selectedEvent.creator.nickname}</p>
-                                <button onClick={() => setEditMode(true)}>Edit</button>
-                                <button onClick={handleDeleteEvent}>Delete</button>
+                                {selectedEvent.subscribers && selectedEvent.subscribers.length > 0 && (
+                                    <p><strong>Subscribers:</strong> {selectedEvent.subscribers.map(s => s.nickname).join(', ')}</p>
+                                )}
+                                {selectedEvent.creator.username === localStorage.getItem('username') && (
+                                    <button onClick={() => setEditMode(true)}>Edit</button>
+                                )}
+                                {selectedEvent.creator.username === localStorage.getItem('username') && (
+                                    <button onClick={handleDeleteEvent}>Delete</button>
+                                )}
                                 <button onClick={() => setShowEventDetails(false)}>Close</button>
                             </>
                         )}

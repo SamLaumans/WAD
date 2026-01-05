@@ -101,7 +101,6 @@ body {
 
 /* EVENT ITEMS */
 .event-item {
-    background-color: #6666ff;
     color: white;
     padding: 4px 6px;
     border-radius: 6px;
@@ -110,16 +109,19 @@ body {
     cursor: pointer;
     border: 1px solid #8888ff;
 }
-    padding: 0.2rem 0.5rem;
-    margin: 0.1rem 0;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.8rem;
-    text-align: left;
+
+.own-event {
+    background-color: #66ff66; /* green for own events */
+    border: 1px solid #88ff88;
+}
+
+.invited-event {
+    background-color: #6666ff; /* blue for invited events */
+    border: 1px solid #8888ff;
 }
 
 .event-item:hover {
-    background-color: #7777ff;
+    opacity: 0.8;
 }
 
 /* MODAL */
