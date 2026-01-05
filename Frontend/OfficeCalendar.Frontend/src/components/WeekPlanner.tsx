@@ -46,6 +46,7 @@ export default function WeekPlanner() {
     const currentUsername = localStorage.getItem('username');
     const [userRole, setUserRole] = useState<number>(0);
 
+    //Fetch user role
     useEffect(() => {
         const fetchUserInfo = async () => {
             const token = localStorage.getItem('token');
@@ -128,6 +129,7 @@ export default function WeekPlanner() {
         fetchEvents();
     };
 
+    //fetch events for specific user
     const fetchEvents = async () => {
         const token = localStorage.getItem('token');
         try {
@@ -142,6 +144,7 @@ export default function WeekPlanner() {
         }
     };
 
+    //Handle event edit
     const handleEditEvent = async () => {
         if (!selectedEvent) return;
         const token = localStorage.getItem('token');
@@ -173,6 +176,7 @@ export default function WeekPlanner() {
         }
     };
 
+    //Handle event delete
     const handleDeleteEvent = async () => {
         if (!selectedEvent) return;
         if (!confirm('Are you sure you want to delete this event?')) return;
@@ -193,6 +197,7 @@ export default function WeekPlanner() {
         }
     };
 
+    //Handle edit user search
     const handleEditSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const query = e.target.value;
         setEditSearchQuery(query);
@@ -212,6 +217,7 @@ export default function WeekPlanner() {
         }
     };
 
+    //Handle add/remove invited users in edit mode
     const addEditUser = (username: string) => {
         if (!editInvitedUsers.includes(username)) {
             setEditInvitedUsers([...editInvitedUsers, username]);
@@ -220,6 +226,7 @@ export default function WeekPlanner() {
         setEditSearchResults([]);
     };
 
+    //remove invited user in edit mode
     const removeEditUser = (username: string) => {
         setEditInvitedUsers(editInvitedUsers.filter(u => u !== username));
     };
@@ -335,6 +342,7 @@ export default function WeekPlanner() {
                                         >
                                             {cellEvents.map(event => (
                                                 <div
+                                                //show event details on click, and allow edit/delete if creator or admin
                                                     key={event.id}
                                                     className={`event-item ${event.creator.username === currentUsername ? 'own-event' : 'invited-event'}`}
                                                     onClick={(e) => {
@@ -400,6 +408,7 @@ export default function WeekPlanner() {
                                         onChange={handleEditSearchChange}
                                     />
                                     {editSearchResults.length > 0 && (
+                                        // Display search results for inviting users
                                         <ul style={{ listStyle: 'none', padding: 0, border: '1px solid #ccc', maxHeight: '100px', overflowY: 'auto' }}>
                                             {editSearchResults.map(user => (
                                                 <li key={user.username} onClick={() => addEditUser(user.username)} style={{ cursor: 'pointer', padding: '5px' }}>
@@ -413,6 +422,7 @@ export default function WeekPlanner() {
                                             <label>Uitgenodigde gebruikers:</label>
                                             <ul style={{ listStyle: 'none', padding: 0 }}>
                                                 {editInvitedUsers.map(username => (
+                                                    //display invited users with remove option
                                                     <li key={username} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                         {username}
                                                         <button type="button" onClick={() => removeEditUser(username)}>Verwijder</button>
@@ -426,6 +436,7 @@ export default function WeekPlanner() {
                                 <button onClick={() => setEditMode(false)}>Cancel</button>
                             </>
                         ) : (
+                            // Display event details
                             <>
                                 <h3>{selectedEvent.title}</h3>
                                 <p><strong>Description:</strong> {selectedEvent.desc}</p>
