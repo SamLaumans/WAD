@@ -56,7 +56,10 @@ export default function MessagePopup({ onClose }: Props) {
         const controller = new AbortController();
 
         fetch(`http://localhost:5267/api/SearchUsers?query=${receiverSearch}`, {
-            signal: controller.signal
+            signal: controller.signal,
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            }
         })
             .then(res => res.json())
             .then(data => setSearchResults(data))
