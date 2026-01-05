@@ -10,9 +10,10 @@ type Slot = {
 type Props = {
   slot?: Slot;
   onClose: () => void;
+  onEventCreated?: () => void;
 };
 
-function Event({ slot, onClose }: Props) {
+function Event({ slot, onClose, onEventCreated }: Props) {
   type FormData = {
     title: string;
     desc: string;
@@ -56,6 +57,7 @@ function Event({ slot, onClose }: Props) {
 
     if (res.ok) {
       alert("Event succesvol aangemaakt!");
+      onEventCreated?.();
       onClose();
     } else {
       alert("Er ging iets mis bij het opslaan van het event.");

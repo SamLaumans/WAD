@@ -221,6 +221,7 @@ export default function WeekPlanner() {
                 onClose={() => setShowEventModal(false)}
                 position={modalPosition}
                 slot={selectedSlot}
+                onEventCreated={fetchEvents}
             />
 
             {/* Main grid */}
