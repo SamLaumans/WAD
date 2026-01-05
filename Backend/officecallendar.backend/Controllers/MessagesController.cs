@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Officecalendar.Backend.Models;
 using OfficeCalendar.Backend.DTOs;
@@ -13,10 +14,12 @@ namespace OfficeCalendar.Backend.Controllers;
 public class MessagesController : ControllerBase
 {
     private readonly MessageService _messageService;
+    private readonly IHubContext<MessagesHub> _hub;
 
-    public MessagesController(MessageService messageService)
+    public MessagesController(MessageService messageService, IHubContext<MessagesHub> hub)
     {
         _messageService = messageService;
+        _hub = hub;
     }
 
     [HttpGet]
@@ -86,6 +89,12 @@ public class MessagesController : ControllerBase
                 statuscode = 404,
                 message = response.error
             });
+        }
+
+        foreach (var receiver in response.message!.receivers)
+        {
+            await _hub.Clients.User(receiver)
+                .SendAsync("ReceiveMessage", response.message);
         }
 
         return CreatedAtAction(nameof(GetMessage), new { messageid = response.message.id }, response);

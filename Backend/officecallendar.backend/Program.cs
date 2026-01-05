@@ -54,6 +54,9 @@ builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddSignalR();
+
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -72,6 +75,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<MessagesHub>("/hubs/messages");
 
 using (var scope = app.Services.CreateScope())
 {
