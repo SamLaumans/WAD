@@ -28,6 +28,7 @@ import About from "./components/About"
 import SelectedEvent2 from "./components/SelectedEventWithReviews"
 import AdminRoutes from"./components/AdminRoutes.tsx";
 import LoggedinRoutes from"./components/LoggedinRoutes.tsx";
+import Unauthorized from "./pages/unauthorized/unauthorized";
 
 const AppContent: React.FC = () => {
   const location = useLocation();
@@ -36,7 +37,8 @@ const AppContent: React.FC = () => {
     location.pathname !== '/' &&
     location.pathname !== '/login' &&
     location.pathname !== '/registreer' &&
-    location.pathname !== '/forgot-pw';
+    location.pathname !== '/forgot-pw' &&
+    location.pathname !== '/unauthorized';
 
 const [user, setUser] = useState(null);
 const [loading, setLoading] = useState(true);
@@ -78,6 +80,7 @@ useEffect(() => {
           <Route path="/login" element={<Login />} />
           <Route path="/registreer" element={<Registreer />} />
           <Route path="/forgot-pw" element={<Forgot_Password />} />
+          <Route path="/unauthorized" element={<Unauthorized />} />
 
           {/* Routes that are accesible for loggedin users only */}
           <Route element ={<LoggedinRoutes user={user} isLoading={loading} />}>
