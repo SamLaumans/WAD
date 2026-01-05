@@ -39,9 +39,9 @@ public class MessagesController : ControllerBase
     }
 
     [HttpGet("me")]
-    public ActionResult<MessageGetDto[]> GetMessageForUser()
+    public ActionResult<MessageGetDto[]> GetMessageForUser([FromQuery] int skip = 0, [FromQuery] int take = 20)
     {
-        var messages = _messageService.GetMessagesForUser(User.Identity.Name);
+        var messages = _messageService.GetMessagesForUser(User.Identity.Name, skip, take);
 
         if (messages.Length == 0)
             return NotFound(new
@@ -54,9 +54,9 @@ public class MessagesController : ControllerBase
     }
 
     [HttpGet("sent")]
-    public ActionResult<MessageGetDto[]> GetMessagesSentByUser()
+    public ActionResult<MessageGetDto[]> GetMessagesSentByUser([FromQuery] int skip = 0, [FromQuery] int take = 20)
     {
-        var messages = _messageService.GetMessagesSentByUser(User.Identity.Name);
+        var messages = _messageService.GetMessagesSentByUser(User.Identity.Name, skip, take);
 
         if (messages.Length == 0)
             return NotFound(new
@@ -92,6 +92,7 @@ public class MessagesController : ControllerBase
         return CreatedAtAction(nameof(GetMessage), new { messageid = response.message.id }, response);
     }
 
+    [Authorize(Roles = "1")]
     [HttpDelete]
     public ActionResult<Message> DeleteMessage([FromQuery] Guid messageid)
     {

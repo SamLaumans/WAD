@@ -40,11 +40,14 @@ namespace OfficeCalendar.Backend.Services
             .FirstOrDefault();
         }
 
-        public MessageGetDto[] GetMessagesForUser(string username)
+        public MessageGetDto[] GetMessagesForUser(string username, int skip, int take)
         {
             return _context.Messages
                 .Where(m => m.MessageReceivers.Any(r => r.username == username))
                 .Where(m => m.visible == true)
+                .OrderByDescending(m => m.creation_date)
+                .Skip(skip)
+                .Take(take)
                 .Select(m => new MessageGetDto
                 {
                     id = m.id,
@@ -61,11 +64,14 @@ namespace OfficeCalendar.Backend.Services
                 .ToArray();
         }
 
-        public MessageGetDto[] GetMessagesSentByUser(string username)
+        public MessageGetDto[] GetMessagesSentByUser(string username, int skip, int take)
         {
             return _context.Messages
                 .Where(m => m.sender_username == username)
                 .Where(m => m.visible == true)
+                .OrderByDescending(m => m.creation_date)
+                .Skip(skip)
+                .Take(take)
                 .Select(m => new MessageGetDto
                 {
                     id = m.id,

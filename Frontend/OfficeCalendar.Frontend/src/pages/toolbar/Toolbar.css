@@ -58,6 +58,10 @@
     justify-content: flex-end;
 }
 
+.message-modal {
+    width: 80vw;
+}
+
 .overlay {
     position: fixed;
     inset: 0;
