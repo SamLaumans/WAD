@@ -14,18 +14,18 @@ namespace OfficeCalendar.Backend.Services
             _context = context;
         }
 
-        public Review? GetByGuid(Guid reviewId)
+        public async Task<Review?> GetByGuid(Guid reviewId)
         {
-            return _context.Reviews
+            return await _context.Reviews
             .Where(r => r.visible)
             .Include(m => m.User)
             .Include(r => r.Event)
-            .FirstOrDefault(r => r.id == reviewId);
+            .FirstOrDefaultAsync(r => r.id == reviewId);
         }
 
-        public ReviewsGetDto[] GetReviewsForUser(string username)
+        public async Task<ReviewsGetDto[]> GetReviewsForUser(string username)
         {
-            return _context.Reviews
+            return await _context.Reviews
                 .Where(r => r.username == username)
                 .Where(m => m.visible == true)
                 .Select(m => new ReviewsGetDto
@@ -39,10 +39,10 @@ namespace OfficeCalendar.Backend.Services
                     last_edited_date = m.last_edited_date
                 })
                 .AsNoTracking()
-                .ToArray();
+                .ToArrayAsync();
         }
 
-        public ReviewsGetDto PostReview(ReviewsPostDto dto, string username)
+        public async Task<ReviewsGetDto> PostReview(ReviewsPostDto dto, string username)
         {
             var review = new Review
             {
@@ -55,7 +55,7 @@ namespace OfficeCalendar.Backend.Services
             };
 
             _context.Reviews.Add(review);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             var reviewDto = new ReviewsGetDto
             {
@@ -72,13 +72,13 @@ namespace OfficeCalendar.Backend.Services
 
         }
 
-        public void DeleteReview(Review review)
+        public async Task DeleteReview(Review review)
         {
             review.visible = false;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void UpdateReview(Review review, ReviewsPutDto dto)
+        public async Task UpdateReview(Review review, ReviewsPutDto dto)
         {
             if (dto.stars.HasValue)
                 review.stars = (int)dto.stars;
@@ -94,11 +94,11 @@ namespace OfficeCalendar.Backend.Services
 
             review.last_edited_date = DateTime.UtcNow;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
-        public ReviewsGetDto[] GetReviewsForEvent(Guid eventId)
+        public async Task<ReviewsGetDto[]> GetReviewsForEvent(Guid eventId)
         {
-            return _context.Reviews
+            return await _context.Reviews
                 .Where(r => r.event_id == eventId)
                 .Where(r => r.visible)
                 .Select(r => new ReviewsGetDto
@@ -112,7 +112,7 @@ namespace OfficeCalendar.Backend.Services
                     last_edited_date = r.last_edited_date
                 })
                 .AsNoTracking()
-                .ToArray();
+                .ToArrayAsync();
         }
     }
 }

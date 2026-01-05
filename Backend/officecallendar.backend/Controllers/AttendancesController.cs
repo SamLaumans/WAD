@@ -20,9 +20,9 @@ public class AttendanceController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<AttendanceGetDto> GetAttendance([FromQuery] Guid attendanceId)
+    public async Task<ActionResult<AttendanceGetDto>> GetAttendance([FromQuery] Guid attendanceId)
     {
-        var attendance = _attendanceService.GetAttendanceDtoByGuid(attendanceId);
+        var attendance = await _attendanceService.GetAttendanceDtoByGuid(attendanceId);
         if (attendance == null)
             return NotFound(new
             {
@@ -39,9 +39,9 @@ public class AttendanceController : ControllerBase
     }
 
     [HttpGet("me")]
-    public ActionResult<AttendanceGetDto[]> GetAttendanceForUser()
+    public async Task<ActionResult<AttendanceGetDto[]>> GetAttendanceForUser()
     {
-        var attendances = _attendanceService.GetAttendancesForUser(User.Identity.Name);
+        var attendances = await _attendanceService.GetAttendancesForUser(User.Identity.Name);
 
         if (attendances.Length == 0)
             return NotFound(new
@@ -54,7 +54,7 @@ public class AttendanceController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult<AttendanceGetDto> CreateAttendance(AttendancePostDto dto)
+    public async Task<ActionResult<AttendanceGetDto>> CreateAttendance(AttendancePostDto dto)
     {
         if (!ModelState.IsValid)
             return BadRequest(
@@ -64,15 +64,15 @@ public class AttendanceController : ControllerBase
                     message = ModelState
                 });
 
-        var response = _attendanceService.PostAttendance(dto, User.Identity.Name);
+        var response = await _attendanceService.PostAttendance(dto, User.Identity.Name);
 
         return CreatedAtAction(nameof(GetAttendance), new { attendanceid = response.id }, response);
     }
 
     [HttpDelete]
-    public ActionResult<Attendance> DeleteAttendance([FromQuery] Guid attendanceid)
+    public async Task<ActionResult<Attendance>> DeleteAttendance([FromQuery] Guid attendanceid)
     {
-        var attendance = _attendanceService.GetAttendanceByGuid(attendanceid);
+        var attendance = await _attendanceService.GetAttendanceByGuid(attendanceid);
         if (attendance == null)
             return NotFound(new
             {
@@ -91,9 +91,9 @@ public class AttendanceController : ControllerBase
     }
 
     [HttpPut]
-    public ActionResult<AttendanceGetDto> UpdateAttendance([FromQuery] Guid attendanceid, AttendancePutDto dto)
+    public async Task<ActionResult<AttendanceGetDto>> UpdateAttendance([FromQuery] Guid attendanceid, AttendancePutDto dto)
     {
-        var attendance = _attendanceService.GetAttendanceByGuid(attendanceid);
+        var attendance = await _attendanceService.GetAttendanceByGuid(attendanceid);
         if (attendance == null)
             return NotFound(new
             {
@@ -106,7 +106,7 @@ public class AttendanceController : ControllerBase
             return Forbid();
         }
 
-        AttendanceGetDto updatedDto = _attendanceService.UpdateAttendance(attendance, dto);
+        AttendanceGetDto updatedDto = await _attendanceService.UpdateAttendance(attendance, dto);
 
         return Ok(updatedDto);
     }

@@ -20,9 +20,9 @@ public class RoomBookingsController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<RoomBookingGetDto> GetRoomBooking([FromQuery] Guid roomBookingId)
+    public async Task<ActionResult<RoomBookingGetDto>> GetRoomBooking([FromQuery] Guid roomBookingId)
     {
-        var roomBooking = _roomBookingService.GetRoomBookingDtoByGuid(roomBookingId);
+        var roomBooking = await _roomBookingService.GetRoomBookingDtoByGuid(roomBookingId);
         if (roomBooking == null)
             return NotFound(new
             {
@@ -41,9 +41,9 @@ public class RoomBookingsController : ControllerBase
     }
 
     [HttpGet("me")]
-    public ActionResult<RoomBookingGetDto> GetRoomBookingsForUser()
+    public async Task<ActionResult<RoomBookingGetDto>> GetRoomBookingsForUser()
     {
-        var roomBooking = _roomBookingService.GetRoomBookingsForUser(User.Identity.Name);
+        var roomBooking = await _roomBookingService.GetRoomBookingsForUser(User.Identity.Name);
         if (roomBooking == null)
             return NotFound(new
             {
@@ -55,7 +55,7 @@ public class RoomBookingsController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult<RoomBookingGetDto> CreateRoomBooking(RoomBookingPostDto dto)
+    public async Task<ActionResult<RoomBookingGetDto>> CreateRoomBooking(RoomBookingPostDto dto)
     {
         if (!ModelState.IsValid)
             return BadRequest(
@@ -65,7 +65,7 @@ public class RoomBookingsController : ControllerBase
                     message = ModelState
                 });
 
-        if (!_roomBookingService.IsTimeSlotAvailable(dto.start_time, dto.end_time, dto.room_id))
+        if (!await _roomBookingService.IsTimeSlotAvailable(dto.start_time, dto.end_time, dto.room_id))
         {
             return Conflict(new
             {
@@ -73,15 +73,15 @@ public class RoomBookingsController : ControllerBase
                 message = "Time slot overlaps with an existing room booking."
             });
         }
-        var response = _roomBookingService.PostRoomBooking(dto, User.Identity.Name);
+        var response = await _roomBookingService.PostRoomBooking(dto, User.Identity.Name);
 
         return CreatedAtAction(nameof(GetRoomBooking), new { roomBookingid = response.id }, response);
     }
 
     [HttpDelete]
-    public ActionResult<RoomBooking> DeleteRoomBooking([FromQuery] Guid roomBookingid)
+    public async Task<ActionResult<RoomBooking>> DeleteRoomBooking([FromQuery] Guid roomBookingid)
     {
-        var roomBooking = _roomBookingService.GetRoomBookingByGuid(roomBookingid);
+        var roomBooking = await _roomBookingService.GetRoomBookingByGuid(roomBookingid);
         if (roomBooking == null)
             return NotFound(new
             {
@@ -96,15 +96,15 @@ public class RoomBookingsController : ControllerBase
 
         // Update to role check once implemented
 
-        _roomBookingService.DeleteRoomBooking(roomBooking);
+        await _roomBookingService.DeleteRoomBooking(roomBooking);
 
         return NoContent();
     }
 
     [HttpPut]
-    public ActionResult<RoomBookingGetDto> UpdateRoomBooking([FromQuery] Guid roomBookingid, RoomBookingPutDto dto)
+    public async Task<ActionResult<RoomBookingGetDto>> UpdateRoomBooking([FromQuery] Guid roomBookingid, RoomBookingPutDto dto)
     {
-        var roomBooking = _roomBookingService.GetRoomBookingByGuid(roomBookingid);
+        var roomBooking = await _roomBookingService.GetRoomBookingByGuid(roomBookingid);
         if (roomBooking == null)
             return NotFound(new
             {
@@ -116,7 +116,7 @@ public class RoomBookingsController : ControllerBase
         var newEnd = dto.end_time ?? roomBooking.end_time;
         var roomId = dto.room_id ?? roomBooking.room_id;
 
-        if (!_roomBookingService.IsTimeSlotAvailable(newStart, newEnd, roomId, roomBooking.id))
+        if (!await _roomBookingService.IsTimeSlotAvailable(newStart, newEnd, roomId, roomBooking.id))
         {
             return Conflict(new
             {
@@ -132,7 +132,7 @@ public class RoomBookingsController : ControllerBase
 
         // Update to role check once implemented
 
-        RoomBookingGetDto updatedDto = _roomBookingService.UpdateRoomBooking(roomBooking, dto);
+        RoomBookingGetDto updatedDto = await _roomBookingService.UpdateRoomBooking(roomBooking, dto);
 
         return Ok(updatedDto);
     }

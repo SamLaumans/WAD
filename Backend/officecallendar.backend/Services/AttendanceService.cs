@@ -14,18 +14,18 @@ namespace OfficeCalendar.Backend.Services
             _context = context;
         }
 
-        public Attendance? GetAttendanceByGuid(Guid attendanceId)
+        public async Task<Attendance?> GetAttendanceByGuid(Guid attendanceId)
         {
-            return _context.Attendances
+            return await _context.Attendances
             .Where(a => a.visible == true)
             .Include(a => a.User)
             .Include(a => a.CreatorUser)
-            .FirstOrDefault(a => a.id == attendanceId);
+            .FirstOrDefaultAsync(a => a.id == attendanceId);
         }
 
-        public AttendanceGetDto? GetAttendanceDtoByGuid(Guid attendanceId)
+        public async Task<AttendanceGetDto?> GetAttendanceDtoByGuid(Guid attendanceId)
         {
-            return _context.Attendances
+            return await _context.Attendances
             .Where(a => a.id == attendanceId)
             .Where(a => a.visible == true)
             .Select(a => new AttendanceGetDto
@@ -36,12 +36,12 @@ namespace OfficeCalendar.Backend.Services
                 date = a.date,
                 status = a.status
             })
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
         }
 
-        public AttendanceGetDto[] GetAttendancesForUser(string username)
+        public async Task<AttendanceGetDto[]> GetAttendancesForUser(string username)
         {
-            return _context.Attendances
+            return await _context.Attendances
                 .Where(a => a.username == username)
                 .Where(a => a.visible == true)
                 .Select(a => new AttendanceGetDto
@@ -53,10 +53,10 @@ namespace OfficeCalendar.Backend.Services
                     status = a.status
                 })
                 .AsNoTracking()
-                .ToArray();
+                .ToArrayAsync();
         }
 
-        public AttendanceGetDto PostAttendance(AttendancePostDto dto, string creator_username)
+        public async Task<AttendanceGetDto> PostAttendance(AttendancePostDto dto, string creator_username)
         {
             DateTime date = DateTime.UtcNow;
 
@@ -69,8 +69,8 @@ namespace OfficeCalendar.Backend.Services
                 status = dto.status
             };
 
-            _context.Attendances.Add(attendance);
-            _context.SaveChanges();
+            await _context.Attendances.AddAsync(attendance);
+            await _context.SaveChangesAsync();
 
             var attendanceDto = new AttendanceGetDto
             {
@@ -84,13 +84,13 @@ namespace OfficeCalendar.Backend.Services
             return attendanceDto;
         }
 
-        public void DeleteAttendance(Attendance attendance)
+        public async Task DeleteAttendance(Attendance attendance)
         {
             attendance.visible = false;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public AttendanceGetDto UpdateAttendance(Attendance attendance, AttendancePutDto dto)
+        public async Task<AttendanceGetDto> UpdateAttendance(Attendance attendance, AttendancePutDto dto)
         {
             if (!string.IsNullOrEmpty(dto.username))
                 attendance.username = dto.username;
@@ -104,7 +104,7 @@ namespace OfficeCalendar.Backend.Services
             if (dto.visible is not null)
                 attendance.visible = dto.visible.Value;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return new AttendanceGetDto
             {

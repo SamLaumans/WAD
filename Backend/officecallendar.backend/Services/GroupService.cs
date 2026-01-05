@@ -14,32 +14,32 @@ namespace OfficeCalendar.Backend.Services
             _context = context;
         }
 
-        public GroupGetDto? GetGroupById(Guid groupId)
+        public async Task<GroupGetDto?> GetGroupById(Guid groupId)
         {
-            var group = _context.Groups
+            var group = await _context.Groups
                 .AsNoTracking()
-                .FirstOrDefault(g => g.id == groupId);
+                .FirstOrDefaultAsync(g => g.id == groupId);
 
             return group == null ? null : MapToDto(group);
         }
 
-        public List<MembershipDto>? GetMembershipForGroup(Guid groupId)
+        public async Task<List<MembershipDto>?> GetMembershipForGroup(Guid groupId)
         {
-            bool exists = _context.Groups.Any(g => g.id == groupId);
+            bool exists = await _context.Groups.AnyAsync(g => g.id == groupId);
             if (!exists) return null;
 
-            var memberships = _context.GroupMemberships
+            var memberships = await _context.GroupMemberships
                 .Where(m => m.group_id == groupId)
                 .Select(m => new MembershipDto
                 {
                     Username = m.username,
                     GroupId = m.group_id
                 })
-                .ToList();
+                .ToListAsync();
 
             return memberships;
         }
-        public GroupGetDto CreateGroup(CreateGroupDto dto)
+        public async Task<GroupGetDto> CreateGroup(CreateGroupDto dto)
         {
             var group = new Group
             {
@@ -49,40 +49,40 @@ namespace OfficeCalendar.Backend.Services
             };
 
             _context.Groups.Add(group);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return MapToDto(group);
         }
 
-        public void DeleteGroup(Guid groupId)
+        public async Task DeleteGroup(Guid groupId)
         {
-            var group = _context.Groups
+            var group = await _context.Groups
                 .Include(g => g.GroupMemberships)
-                .FirstOrDefault(g => g.id == groupId);
+                .FirstOrDefaultAsync(g => g.id == groupId);
 
             if (group == null) return;
 
             _context.GroupMemberships.RemoveRange(group.GroupMemberships);
             _context.Groups.Remove(group);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public GroupGetDto? UpdateGroup(GroupGetDto dto)
+        public async Task<GroupGetDto?> UpdateGroup(GroupGetDto dto)
         {
-            var group = _context.Groups.FirstOrDefault(g => g.id == dto.Id);
+            var group = await _context.Groups.FirstOrDefaultAsync(g => g.id == dto.Id);
             if (group == null) return null;
 
             group.name = dto.Name;
             group.desc = dto.Desc;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return MapToDto(group);
         }
 
-        public bool IsUserAdmin(string username)
+        public async Task<bool> IsUserAdmin(string username)
         {
-            var user = _context.Users.FirstOrDefault(u => u.username == username);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.username == username);
             if (user == null) return false;
 
             return true;

@@ -20,9 +20,9 @@ public class RoomsController : ControllerBase
     }
 
     [HttpGet("by-id")]
-    public ActionResult<RoomGetDto> GetRoom([FromQuery] Guid roomId)
+    public async Task<ActionResult<RoomGetDto>> GetRoom([FromQuery] Guid roomId)
     {
-        var room = _roomService.GetRoomDtoByGuid(roomId);
+        var room = await _roomService.GetRoomDtoByGuid(roomId);
         if (room == null)
             return NotFound(new
             {
@@ -41,9 +41,9 @@ public class RoomsController : ControllerBase
     }
 
     [HttpGet("by-location")]
-    public ActionResult<RoomGetDto> GetRoomByLocation([FromQuery] string location)
+    public async Task<ActionResult<RoomGetDto>> GetRoomByLocation([FromQuery] string location)
     {
-        var room = _roomService.GetRoomDtoByLocation(location);
+        var room = await _roomService.GetRoomDtoByLocation(location);
         if (room == null)
             return NotFound(new
             {
@@ -62,7 +62,7 @@ public class RoomsController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult<RoomGetDto> CreateRoom(RoomPostDto dto)
+    public async Task<ActionResult<RoomGetDto>> CreateRoom(RoomPostDto dto)
     {
         if (!ModelState.IsValid)
             return BadRequest(
@@ -72,15 +72,15 @@ public class RoomsController : ControllerBase
                     message = ModelState
                 });
 
-        var response = _roomService.PostRoom(dto);
+        var response = await _roomService.PostRoom(dto);
 
         return CreatedAtAction(nameof(GetRoom), new { roomid = response.id }, response);
     }
 
     [HttpDelete]
-    public ActionResult<Room> DeleteRoom([FromQuery] Guid roomid)
+    public async Task<ActionResult<Room>> DeleteRoom([FromQuery] Guid roomid)
     {
-        var room = _roomService.GetRoomByGuid(roomid);
+        var room = await _roomService.GetRoomByGuid(roomid);
         if (room == null)
             return NotFound(new
             {
@@ -95,15 +95,15 @@ public class RoomsController : ControllerBase
 
         // Update to role check once implemented
 
-        _roomService.DeleteRoom(room);
+        await _roomService.DeleteRoom(room);
 
         return NoContent();
     }
 
     [HttpPut]
-    public ActionResult<RoomGetDto> UpdateRoom([FromQuery] Guid roomid, RoomPutDto dto)
+    public async Task<ActionResult<RoomGetDto>> UpdateRoom([FromQuery] Guid roomid, RoomPutDto dto)
     {
-        var room = _roomService.GetRoomByGuid(roomid);
+        var room = await _roomService.GetRoomByGuid(roomid);
         if (room == null)
             return NotFound(new
             {
@@ -118,7 +118,7 @@ public class RoomsController : ControllerBase
 
         // Update to role check once implemented
 
-        RoomGetDto updatedDto = _roomService.UpdateRoom(room, dto);
+        RoomGetDto updatedDto = await _roomService.UpdateRoom(room, dto);
 
         return Ok(updatedDto);
     }

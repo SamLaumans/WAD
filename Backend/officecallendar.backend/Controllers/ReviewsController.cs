@@ -20,9 +20,9 @@ public class ReviewsController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<ReviewsGetDto> GetReview([FromQuery] Guid reviewid)
+    public async Task<ActionResult<ReviewsGetDto>> GetReview([FromQuery] Guid reviewid)
     {
-        var review = _reviewService.GetByGuid(reviewid);
+        var review = await _reviewService.GetByGuid(reviewid);
         if (review == null)
             return NotFound(new
             {
@@ -45,9 +45,9 @@ public class ReviewsController : ControllerBase
     }
 
     [HttpGet("me")]
-    public ActionResult<ReviewsGetDto[]> GetReviewForUser()
+    public async Task<ActionResult<ReviewsGetDto[]>> GetReviewForUser()
     {
-        var reviews = _reviewService.GetReviewsForUser(User.Identity.Name);
+        var reviews = await _reviewService.GetReviewsForUser(User.Identity.Name);
 
         if (reviews.Length == 0)
             return NotFound(new
@@ -60,7 +60,7 @@ public class ReviewsController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult<ReviewsGetDto> CreateReview(ReviewsPostDto dto)
+    public async Task<ActionResult<ReviewsGetDto>> CreateReview(ReviewsPostDto dto)
     {
         if (!ModelState.IsValid)
             return BadRequest(
@@ -70,15 +70,15 @@ public class ReviewsController : ControllerBase
                     review = ModelState
                 });
 
-        var response = _reviewService.PostReview(dto, User.Identity.Name);
+        var response = await _reviewService.PostReview(dto, User.Identity.Name);
 
         return CreatedAtAction(nameof(GetReview), new { reviewid = response.id }, response);
     }
 
     [HttpDelete]
-    public ActionResult<Review> DeleteReview([FromQuery] Guid reviewid)
+    public async Task<ActionResult<Review>> DeleteReview([FromQuery] Guid reviewid)
     {
-        var review = _reviewService.GetByGuid(reviewid);
+        var review = await _reviewService.GetByGuid(reviewid);
         if (review == null)
             return NotFound(new
             {
@@ -87,16 +87,16 @@ public class ReviewsController : ControllerBase
             });
 
 
-        _reviewService.DeleteReview(review);
+        await _reviewService.DeleteReview(review);
 
         return NoContent();
     }
 
     [HttpPut("{reviewid}")]
-    public ActionResult<ReviewsGetDto> UpdateReview(Guid reviewid, ReviewsPutDto dto)
+    public async Task<ActionResult<ReviewsGetDto>> UpdateReview(Guid reviewid, ReviewsPutDto dto)
 
     {
-        var review = _reviewService.GetByGuid(reviewid);
+        var review = await _reviewService.GetByGuid(reviewid);
         if (review == null)
             return NotFound(new
             {
@@ -109,7 +109,7 @@ public class ReviewsController : ControllerBase
             return Forbid();
         }
 
-        _reviewService.UpdateReview(review, dto);
+        await _reviewService.UpdateReview(review, dto);
 
         var updatedDto = new ReviewsGetDto
         {
@@ -125,9 +125,9 @@ public class ReviewsController : ControllerBase
         return Ok(updatedDto);
     }
     [HttpGet("get-all")]
-    public ActionResult<ReviewsGetDto[]> GetReviewsForEvent([FromQuery] Guid eventId)
+    public async Task<ActionResult<ReviewsGetDto[]>> GetReviewsForEvent([FromQuery] Guid eventId)
     {
-        var reviews = _reviewService.GetReviewsForEvent(eventId);
+        var reviews = await _reviewService.GetReviewsForEvent(eventId);
 
         // Always return 200 OK with an array
         return Ok(reviews);
