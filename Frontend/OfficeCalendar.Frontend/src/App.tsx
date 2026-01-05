@@ -42,8 +42,12 @@ const AppContent: React.FC = () => {
 
 const [user, setUser] = useState(null);
 const [loading, setLoading] = useState(true);
+const [revalidate, setRevalidate] = useState(0);
+
+const triggerRevalidation = () => setRevalidate(prev => prev + 1);
 
 useEffect(() => {
+  setLoading(true);
   const token = localStorage.getItem('token');
   if (token) {
     fetch('http://localhost:5267/api/me', {
@@ -59,9 +63,10 @@ useEffect(() => {
       setLoading(false);
     });
   } else {
+    setUser(null);
     setLoading(false);
   }
-}, []);
+}, [revalidate]);
 
 
   return (
@@ -76,8 +81,8 @@ useEffect(() => {
             <Route path="/admin-role-adjustment" element={<AdminRolBeheer />} />
           </Route>
 
-          <Route path="/" element={<Login />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Login onLoginSuccess={triggerRevalidation} />} />
+          <Route path="/login" element={<Login onLoginSuccess={triggerRevalidation} />} />
           <Route path="/registreer" element={<Registreer />} />
           <Route path="/forgot-pw" element={<Forgot_Password />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
@@ -107,7 +112,6 @@ useEffect(() => {
             <Route path="/selectedevent/:eventId" element={<SelectedEvent />} />
             <Route path="/selectedeventwithreviews/:eventId" element={<SelectedEvent2 />} />
           </Route>
-
         </Routes>
       </main>
     </div>
