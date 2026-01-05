@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import type { MessageDto } from "../types/MessageDto";
 import { getMyMessages, getMessageById, getSentMessages, sendMessage } from "../api/MessageApi";
 import "../Styling/MessagePopup.css";
+import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
+
 
 interface Props {
     onClose: () => void;
@@ -27,6 +29,39 @@ export default function MessagePopup({ onClose }: Props) {
     const [activeTab, setActiveTab] = useState<'inbox' | 'sent' | 'send'>('inbox'); 
 
     const [sentMessages, setSentMessages] = useState<MessageDto[]>([]);
+
+    const [hubConnection, setHubConnection] = useState<HubConnection | null>(null);
+
+    useEffect(() => {
+        const connection = new HubConnectionBuilder()
+            .withUrl("http://localhost:5267/hubs/messages", {
+                accessTokenFactory: () => localStorage.getItem("token") || ""
+            })
+            .withAutomaticReconnect()
+            .build();
+
+        connection.start()
+            .then(() => console.log("connected"))
+            .catch(err => console.error("connection error ", err));
+
+        connection.on("ReceiveMessage", (message: MessageDto) => {
+            console.log("message received:", message);
+            setLoadedMessages(prev => {
+                const updated = [message, ...prev].sort((a, b) =>
+                    new Date(b.creation_date).getTime() - new Date(a.creation_date).getTime()
+                );
+                localStorage.setItem('messageCache', JSON.stringify({ messages: updated, timestamp: Date.now() }));
+                return updated;
+            });
+        });
+
+        setHubConnection(connection);
+
+        return () => {
+            connection.stop();
+        };
+    }, []); 
+
 
     useEffect(() => {
         const cached = localStorage.getItem('messageCache');
