@@ -264,8 +264,12 @@ const Reviews: React.FC<ReviewsProps> = ({ eventId }) => {
                                     {/* Only show edit / delete button for review owner or admin */}
                                     {(review.username === currentUser || userRole === 1) && (
                                         <td>
-                                            <button onClick={() => startEditing(review)}>Edit</button>
                                             <button onClick={() => handleDeleteReview(review.id)}>Delete</button>
+                                        </td>
+                                    )}
+                                    {(review.username === currentUser) && (
+                                        <td>
+                                            <button onClick={() => startEditing(review)}>Edit</button>
                                         </td>
                                     )}
                                 </tr>
