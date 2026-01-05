@@ -8,7 +8,7 @@ interface AdminRouteProps {
 const AdminRoute: React.FC<AdminRouteProps> = ({ user, isLoading }) => {
   if (isLoading) return <div>Laden...</div>;
 
-  if (!user || user.role !==  2) {
+  if (!user || user.role !==  1) {
     return <Navigate to="/unauthorized" replace />;
   }
   return <Outlet />;

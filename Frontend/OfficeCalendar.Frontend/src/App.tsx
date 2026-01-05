@@ -44,7 +44,7 @@ const [loading, setLoading] = useState(true);
 useEffect(() => {
   const token = localStorage.getItem('token');
   if (token) {
-    fetch('https://localhost:5267/api/me', {
+    fetch('http://localhost:5267/api/me', {
       headers: { 'Authorization': `Bearer ${token}` }
     })
     .then(res => res.ok ? res.json() : null)
@@ -69,38 +69,41 @@ useEffect(() => {
 
       <main className="main-content" style={{ height: '80px' }}>
         <Routes>  
-          
+           {/* Routes that are accesible for admins only */}
           <Route element ={<AdminRoutes user={user} isLoading={loading} />}>  
-            <Route path="/admin/role-adjustment" element={<AdminRolBeheer />} />
+            <Route path="/admin-role-adjustment" element={<AdminRolBeheer />} />
           </Route>
 
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
           <Route path="/registreer" element={<Registreer />} />
           <Route path="/forgot-pw" element={<Forgot_Password />} />
-          <Route path="/main-page" element={<Main_Page />} />
-          <Route path="/messages" element={<Messages />} />
-          <Route path="/messages/:messageID" element={<SingleMessage />} />
-          <Route path="/events" element={<Events />} />
-          <Route path="/events/:eventID" element={<SingleEvent />} />
-          <Route path="/weekplanner" element={<WeekPlanner />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/faq" element={<FAQ />} />
-          <Route path="/event" element={<div><SelectedEvent /><Reviews eventId={""} /></div>} />
-          <Route path="/send-message" element={<Send_Message />} />
-          <Route path="/admin-panel" element={<AdminPanel />} />
-          <Route path="/admin-role-adjustment" element={<AdminRolBeheer />} />
-          <Route path="/admin-profile" element={<Profiel />} />
-          <Route path="/MonthPlanner" element={<MonthPlanner />} />
-          <Route path="/DayPlanner" element={<DayPlanner />} />
-          <Route path="/Reviews" element={<Reviews eventId={""} />} />
-          <Route path="/SelectedEvent" element={<SelectedEvent />} />
-          <Route path="/DayPlanner/:date" element={<DayPlanner />} />
-          <Route path="/MonthDayView" element={<MonthDayView />} />
-          <Route path="/About" element={<About />} />
-          <Route path="/events/:eventId" element={<SelectedEvent />} />
-          <Route path="/selectedevent/:eventId" element={<SelectedEvent />} />
-          <Route path="/selectedeventwithreviews/:eventId" element={<SelectedEvent2 />} />
+
+          {/* Routes that are accesible for loggedin users only */}
+          <Route element ={<LoggedinRoutes user={user} isLoading={loading} />}>
+            <Route path="/main-page" element={<Main_Page />} />
+            <Route path="/messages" element={<Messages />} />
+            <Route path="/messages/:messageID" element={<SingleMessage />} />
+            <Route path="/events" element={<Events />} />
+            <Route path="/events/:eventID" element={<SingleEvent />} />
+            <Route path="/weekplanner" element={<WeekPlanner />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/event" element={<div><SelectedEvent /><Reviews eventId={""} /></div>} />
+            <Route path="/send-message" element={<Send_Message />} />
+            <Route path="/admin-panel" element={<AdminPanel />} />
+            <Route path="/admin-profile" element={<Profiel />} />
+            <Route path="/MonthPlanner" element={<MonthPlanner />} />
+            <Route path="/DayPlanner" element={<DayPlanner />} />
+            <Route path="/Reviews" element={<Reviews eventId={""} />} />
+            <Route path="/SelectedEvent" element={<SelectedEvent />} />
+            <Route path="/DayPlanner/:date" element={<DayPlanner />} />
+            <Route path="/MonthDayView" element={<MonthDayView />} />
+            <Route path="/About" element={<About />} />
+            <Route path="/events/:eventId" element={<SelectedEvent />} />
+            <Route path="/selectedevent/:eventId" element={<SelectedEvent />} />
+            <Route path="/selectedeventwithreviews/:eventId" element={<SelectedEvent2 />} />
+          </Route>
 
         </Routes>
       </main>
